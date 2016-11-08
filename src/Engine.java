@@ -17,6 +17,7 @@ import java.util.ArrayList;
  * Created by Oliver on 08/11/2016.
  */
 //TODO: remove temporal expressions before getting event
+    //TODO:add more documentation and comments
 public class Engine {
     private final static int threshold = 10;
     private StanfordCoreNLP coreNLP;
