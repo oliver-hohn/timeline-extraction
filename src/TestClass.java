@@ -36,18 +36,14 @@ public class TestClass {
                 "tokenize.language", "en"
         ));
 
+        String text = "I can almost always tell when movies use fake dinosaurs. On the 12th of December I played football. " +
+                "Yesterday Marry disappeared while running on North St, it was a cold night. ";
+        text += "John, who was the CEO of a company, played golf. On the 12th of December I played Basketball with Oliver and Tom. Yesterday," +
+                " I studied for 40 hours, lmao. ";
 
+        text += "A fire killed a firefighter who was fatally injured as he searched the house. Illegal fireworks injured hundreds of people and started six fires. ";
 
-
-
-       /* String text = "I can almost always tell when movies use fake dinosaurs. On the 12th of December I played football. " +
-                "Yesterday Marry disappeared while running on North St, it was a cold night.";*/
-/*        String text = "John, who was the CEO of a company, played golf. On the 12th of December I played Basketball with Oliver and Tom. Yesterday," +
-                " I studied for 40 hours, lmao.";*/
-/*
-        String text = "A fire killed a firefighter who was fatally injured as he searched the house. Illegal fireworks injured hundreds of people and started six fires. ";
-*/
-        String text = "On Friday the Washington Post came out with the latest from its long-running investigation into Trump's charitable donations.\n" +
+        text += "On Friday the Washington Post came out with the latest from its long-running investigation into Trump's charitable donations.\n" +
                 "\n" +
                 "In its latest story, the paper called 420-plus charities with some connection to Trump but found only one personal gift from him between 2008 and the spring of this year. \n" +
                 "\n" +
@@ -90,17 +86,21 @@ public class TestClass {
                     result.addSubject(data);//add subjects to the result
                 }
             }
-
-            //subject can LOCATION;PERSON;COMPANY and nsubj
-            setGrammaticalSubjects(result,sentence);//find grammatical subjects, might remove this
-            //now need to summarise for the event
-            stanfordCoreNLP.prettyPrint(annotation,new PrintWriter(System.out));
-            Tree tree;
-            tree = sentence.get(TreeCoreAnnotations.TreeAnnotation.class);//create a dependencies tree from the current sentence
-            System.out.println("Printing a tree");
-            tree.pennPrint();
-            result.setEvent(event(tree));//get the event of the current sentence ( summary)
-            results.add(result);
+            if(result.getDates().size() > 0) {
+                //subject can LOCATION;PERSON;COMPANY and nsubj
+                setGrammaticalSubjects(result, sentence);//find grammatical subjects, might remove this
+                //now need to summarise for the event
+                stanfordCoreNLP.prettyPrint(annotation, new PrintWriter(System.out));
+                Tree tree;
+                tree = sentence.get(TreeCoreAnnotations.TreeAnnotation.class);//create a dependencies tree from the current sentence
+                //removeDates(tree,result);
+/*            System.out.println("Printing a tree");
+            tree.pennPrint();*/
+                result.setEvent(event(tree));//get the event of the current sentence ( summary)
+                results.add(result);
+            }else{
+                System.out.println("Not working on: "+sentence);
+            }
         }
         return results;
     }
@@ -170,8 +170,6 @@ public class TestClass {
         xpBeforeNp(leftmostLowest);
         cleanUp(leftmostLowest);
 
-
-        //TODO:
         //remove PPs from deepest rightmost node until length is below threshold (if not reached, then go back and do SBAR one)
         //remove SBARs from deepest rightmost node until length is below threshold
         //if threshold still not reached, then remove PPs from result of SBARs
@@ -186,6 +184,45 @@ public class TestClass {
         return toReturn;
     }
 
+    /**
+     * Isn't deleting dates properly should look into using named entity tags to find the nodes and delete them
+     * @param tree
+     * @param result
+     */
+    private void removeDates(Tree tree, Result result){
+        for(Tree node: tree.preOrderNodeList()){
+            //loop over current result and delete child if its a match to one of the results dates
+            if(!node.isLeaf()){
+                for(int i =0; i<node.children().length; i++){
+                    if(shouldDelete(node.children()[i],result)){
+                        System.out.println("Removing child: "+i+" from node: "+node);
+                        node.removeChild(i);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Takes in node which could potentially hold a date.
+     * Result object with list of dates that we want to remove from the tree
+     * @param node
+     * @param result
+     * @return
+     */
+    private boolean shouldDelete(Tree node, Result result){
+        for(int i=0; i<result.getDates().size(); i++){
+            if(result.getDates().get(i).equals(node.value())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Called to remove starting commas
+     * @param tree
+     */
     private void cleanUp(Tree tree){
         //want to remove punctuation that is the first leaf
         System.out.println("Clean up:");
@@ -236,6 +273,10 @@ public class TestClass {
         return tree;
     }
 
+    /**
+     * Remove trailing PPs if we are below the threshold
+     * @param tree
+     */
     private void removePPs(Tree tree){
         int threshold = 10;
         if(tree.yield(new ArrayList<Label>()).size() > threshold){
@@ -264,6 +305,10 @@ public class TestClass {
         }
     }
 
+    /**
+     * Remove trailing SBARs if we are below the threshold
+     * @param tree
+     */
     private void removeSBARs(Tree tree){
         int threshold = 10;
         if(tree.yield(new ArrayList<Label>()).size() > threshold){
@@ -291,6 +336,11 @@ public class TestClass {
         }
     }
 
+    /**
+     * Produce a string using the leaf nodes in the tree, going over them in pre order
+     * @param tree
+     * @return
+     */
     private String produceString(Tree tree){
         String toReturn = "";
         for(Tree node: tree.preOrderNodeList()){
