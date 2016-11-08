@@ -96,7 +96,7 @@ public class TestClass {
                 }
             }
             System.out.println("\n");
-
+            //
             //subject can LOCATION;PERSON;COMPANY and nsubj
             //now need to summarise for the event
 
