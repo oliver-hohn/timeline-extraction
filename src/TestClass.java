@@ -148,7 +148,7 @@ public class TestClass {
                 }
             }
         }
-
+        cleanUp(leftmostLowest);
         //TODO:remove time expressions could use named entity tag to determine them and remove them
 
         //then delete until text is below threshold
@@ -157,8 +157,10 @@ public class TestClass {
         //                       children of this one
         //delete iteratively, work your way up  until threshold is reached else continue below
         xpOverXp(leftmostLowest);
+        cleanUp(leftmostLowest);
         System.out.println("Resulting tree:");
         leftmostLowest.pennPrint();
+
         //delete any XP before the first NP (the subject) of the S chosen before
         //look at the children of S, if one is NP, then remember its location
         //then loop over list
@@ -166,6 +168,7 @@ public class TestClass {
         // then break for efficiency, as we reached subject)
         //and remove any NP and its children that came before this location
         xpBeforeNp(leftmostLowest);
+        cleanUp(leftmostLowest);
 
 
         //TODO:
@@ -175,11 +178,25 @@ public class TestClass {
         //then produce the final string with the data in the leaves, in the order in which they appear
         //and set that as the event in the result.
         Tree finalRes = shortenLast(leftmostLowest);
+        cleanUp(leftmostLowest);
 
         String toReturn = produceString(finalRes);
         System.out.println("Event: "+toReturn);
         //possibly final cleanup, eg sentences that start or end with , or dots
         return toReturn;
+    }
+
+    private void cleanUp(Tree tree){
+        //want to remove punctuation that is the first leaf
+        System.out.println("Clean up:");
+        tree.pennPrint();
+        //get root and check if first child is , (could add punctuation rule also
+        if(!tree.isLeaf() && tree.value().equals("S") && tree.children()[0].value().equals(",")){
+            System.out.println("Removing comma");
+            tree.removeChild(0);
+        }
+        System.out.println("After clean up");
+        tree.pennPrint();
     }
 
     /**
