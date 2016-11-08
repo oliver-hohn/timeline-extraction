@@ -57,6 +57,12 @@ public class TestClass {
             System.out.println(result);
         }
 
+        Engine engine = new Engine();
+        ArrayList<Result> results1 = engine.getResults(text);
+        for(Result result: results1){
+            System.out.println(result);
+        }
+
     }
 
     private ArrayList<Result> results(StanfordCoreNLP stanfordCoreNLP, String text){
@@ -402,6 +408,7 @@ public class TestClass {
                     if(toDeleteNode != null){
                         System.out.println("Removing from: "+toDeleteNode+ " child at index: "+childIndex);
                         toDeleteNode.removeChild(childIndex);
+                        xpBeforeNp(tree);
                     }
                 }
             }

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class Result {
     private ArrayList<String> dates;
     private String event;
-    private ArrayList<String> subjects;
+    private ArrayList<String> subjects;//could be a set to avoid duplicates
 
     public Result(){
         this("","");
