@@ -14,7 +14,8 @@ import edu.stanford.nlp.util.PropertiesUtils;
 import java.util.ArrayList;
 
 /**
- * Created by Oliver on 08/11/2016.
+ * Engine class that text in text as input and produces a list of Result objects, which are events depicted in the text. An event is only picked out, if it has a date
+ * associated with it.
  */
 //TODO: remove temporal expressions before getting event
     //TODO:add more documentation and comments
@@ -55,7 +56,7 @@ public class Engine {
         Result result = new Result();
         setDatesAndSubjectsNET(sentence,result);
         if(result.getDates().size() > 0){//we have found dates, so lets find more subjects and the event of the sentence
-            setGrammaticalSubjects(sentence,result);//setting grammatical subjects in the result object
+            //setGrammaticalSubjects(sentence,result);//setting grammatical subjects in the result object
             setEvent(sentence,result);//set the summarized sentence as the event depicted in the sentence
             return result;
         }
