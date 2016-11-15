@@ -337,6 +337,11 @@ public class Engine {
         }
     }
 
+    /**
+     * Remove time expressions in the tree.
+     * @param tree
+     * @param result
+     */
     private void removeTimeExpressions(Tree tree, Result result){
         //want to get the list of dates, form a string remove instances of dates
        // tree.pennPrint();
@@ -350,7 +355,7 @@ public class Engine {
             text = text.replace(date,"");
             System.out.println("After removal: "+text);
         }*/
-        threshold = 0;
+        threshold = 0;//maybe just run it once, as this will remove all XP's before the NP
         xpBeforeNP(tree);//most dates are PP's before the NP, so we set the threshold to 0, to delete all XP's before the NP (which would delete the dates)
         threshold = 10;//then set the threshold again as we need to use it later
     }

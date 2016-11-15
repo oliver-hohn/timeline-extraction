@@ -40,8 +40,8 @@
       <file leaf-file-name="Engine.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Engine.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="263">
-              <caret line="355" column="5" selection-start-line="355" selection-start-column="5" selection-end-line="355" selection-end-column="5" />
+            <state relative-caret-position="65">
+              <caret line="340" column="43" selection-start-line="340" selection-start-column="43" selection-end-line="340" selection-end-column="43" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -529,7 +529,14 @@
       <option name="project" value="LOCAL" />
       <updated>1479226657157</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Engine.java:&#10;-added the print of the work done by the annotator for development purpose of removing time expressions&#10;-made threshold non-final as we need to modify for a partial solution to remove time expressions&#10;-added method removeTimeExpressions() that removes time expressions from the tree, to trim it down&#10;-removeTimeExpressions() sets the threshold to 0 to remove any XP before the NP and calls xpBeforeNP, which if its a time expressions will be a PP (eg On the Friday...).Then sets the threshold back to its original value.&#10;-Added comments to removeTimeExpressions() for possible ways to remove time expressions.">
+      <created>1479228332531</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1479228332531</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -611,7 +618,8 @@
     <MESSAGE value="Engine.java:&#10;-added TODO for later work" />
     <MESSAGE value="Engine.java:&#10;-added class-level documentation&#10;-removed setting grammatical subjects, as it was sometimes giving double subjects; should make subject list in Result be a set to avoid having duplicates.&#10;&#10;TestClass.java:&#10;-commented out the call and print of Results that was obtained from code in the TestClass, as now the Engine is used for that." />
     <MESSAGE value="Engine.java:&#10;-uncommented setGrammaticalSubjects()" />
-    <option name="LAST_COMMIT_MESSAGE" value="Engine.java:&#10;-uncommented setGrammaticalSubjects()" />
+    <MESSAGE value="Engine.java:&#10;-added the print of the work done by the annotator for development purpose of removing time expressions&#10;-made threshold non-final as we need to modify for a partial solution to remove time expressions&#10;-added method removeTimeExpressions() that removes time expressions from the tree, to trim it down&#10;-removeTimeExpressions() sets the threshold to 0 to remove any XP before the NP and calls xpBeforeNP, which if its a time expressions will be a PP (eg On the Friday...).Then sets the threshold back to its original value.&#10;-Added comments to removeTimeExpressions() for possible ways to remove time expressions." />
+    <option name="LAST_COMMIT_MESSAGE" value="Engine.java:&#10;-added the print of the work done by the annotator for development purpose of removing time expressions&#10;-made threshold non-final as we need to modify for a partial solution to remove time expressions&#10;-added method removeTimeExpressions() that removes time expressions from the tree, to trim it down&#10;-removeTimeExpressions() sets the threshold to 0 to remove any XP before the NP and calls xpBeforeNP, which if its a time expressions will be a PP (eg On the Friday...).Then sets the threshold back to its original value.&#10;-Added comments to removeTimeExpressions() for possible ways to remove time expressions." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1344,8 +1352,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Engine.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="263">
-          <caret line="355" column="5" selection-start-line="355" selection-start-column="5" selection-end-line="355" selection-end-column="5" />
+        <state relative-caret-position="65">
+          <caret line="340" column="43" selection-start-line="340" selection-start-column="43" selection-end-line="340" selection-end-column="43" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
