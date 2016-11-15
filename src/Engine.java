@@ -56,7 +56,7 @@ public class Engine {
         Result result = new Result();
         setDatesAndSubjectsNET(sentence,result);
         if(result.getDates().size() > 0){//we have found dates, so lets find more subjects and the event of the sentence
-            //setGrammaticalSubjects(sentence,result);//setting grammatical subjects in the result object
+            setGrammaticalSubjects(sentence,result);//setting grammatical subjects in the result object
             setEvent(sentence,result);//set the summarized sentence as the event depicted in the sentence
             return result;
         }
