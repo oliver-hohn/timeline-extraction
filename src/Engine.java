@@ -1,4 +1,3 @@
-import edu.stanford.nlp.ling.CoreAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.Label;
 import edu.stanford.nlp.pipeline.Annotation;
@@ -11,6 +10,7 @@ import edu.stanford.nlp.trees.TreeCoreAnnotations;
 import edu.stanford.nlp.util.CoreMap;
 import edu.stanford.nlp.util.PropertiesUtils;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 /**
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 //TODO: remove temporal expressions before getting event
     //TODO:add more documentation and comments
 public class Engine {
-    private final static int threshold = 10;
+    private static int threshold = 10;
     private StanfordCoreNLP coreNLP;
     public Engine(){
         coreNLP = new StanfordCoreNLP(PropertiesUtils.asProperties(
@@ -35,6 +35,7 @@ public class Engine {
 
         Annotation annotation = new Annotation(input);
         coreNLP.annotate(annotation);
+        coreNLP.prettyPrint(annotation, new PrintWriter(System.out));
 
         for(CoreMap sentence: annotation.get(CoreAnnotations.SentencesAnnotation.class)){
             Result result = getResult(sentence);
@@ -106,6 +107,8 @@ public class Engine {
     private void setEvent(CoreMap sentence, Result result){
         Tree tree = sentence.get(TreeCoreAnnotations.TreeAnnotation.class);
         tree = getLeftmostLowestS(tree);//get leftmost-lowest S
+        //remove time expressions
+        removeTimeExpressions(tree,result);
         removeDeterminers(tree);//remove determiners
         xpOverXP(tree);//apply XP-over-XP rule
         xpBeforeNP(tree);//apply removal of XPs before NP rule
@@ -332,5 +335,23 @@ public class Engine {
         if(!tree.isLeaf() && tree.value().equals("S") && tree.children()[0].value().equals(",")){
             tree.removeChild(0);
         }
+    }
+
+    private void removeTimeExpressions(Tree tree, Result result){
+        //want to get the list of dates, form a string remove instances of dates
+       // tree.pennPrint();
+        //find the XP with the date and remove it, postorder prints the values first then parent
+        /* go over the list in post order, look at the date, start counting once the first string is read that matches the first string
+        * in the array, if at any point doesnt match then stop; if we read the entire thing then delete */
+/*        String text = produceString(tree);
+        for(String date: result.getDates()){
+            System.out.println("Date: "+date);
+            System.out.println("Before removal: "+text);
+            text = text.replace(date,"");
+            System.out.println("After removal: "+text);
+        }*/
+        threshold = 0;
+        xpBeforeNP(tree);//most dates are PP's before the NP, so we set the threshold to 0, to delete all XP's before the NP (which would delete the dates)
+        threshold = 10;//then set the threshold again as we need to use it later
     }
 }
