@@ -72,6 +72,7 @@ public class Engine {
             String namedEntityTag = mention.get(CoreAnnotations.NamedEntityTagAnnotation.class);
             if(namedEntityTag.equals("DATE")){
                 //found a date for the result object
+                System.out.println("Normalized entity tag: "+mention.get(CoreAnnotations.NormalizedNamedEntityTagAnnotation.class));
                 String date = mention.get(CoreAnnotations.TextAnnotation.class);
                 result.addDate(date);
             }else if(namedEntityTag.equals("LOCATION") || namedEntityTag.equals("ORGANIZATION") ||
