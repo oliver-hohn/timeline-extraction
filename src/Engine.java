@@ -1,3 +1,4 @@
+import edu.stanford.nlp.ling.CoreAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.Label;
 import edu.stanford.nlp.pipeline.Annotation;
@@ -18,7 +19,6 @@ import java.util.ArrayList;
  * associated with it.
  */
 //TODO: remove temporal expressions before getting event
-    //TODO:add more documentation and comments
 public class Engine {
     private static int threshold = 10;
     private StanfordCoreNLP coreNLP;
@@ -55,7 +55,10 @@ public class Engine {
      */
     private Result getResult(CoreMap sentence){
         Result result = new Result();
-        setDatesAndSubjectsNET(sentence,result);
+        String newString = setDatesAndSubjectsNET(sentence,result);
+        /*Annotation annotation = new Annotation(newString);
+        coreNLP.annotate(annotation);*/
+        //CoreMap coreMap = annotation.get(CoreAnnotations.SentencesAnnotation.class).get(0);
         if(result.getDates().size() > 0){//we have found dates, so lets find more subjects and the event of the sentence
             setGrammaticalSubjects(sentence,result);//setting grammatical subjects in the result object
             setEvent(sentence,result);//set the summarized sentence as the event depicted in the sentence
@@ -67,22 +70,27 @@ public class Engine {
     /**
      * Set the Dates and Subjects for the Result object based on Named-Entity Tags from the CoreMap passed in.
      */
-    private void setDatesAndSubjectsNET(CoreMap sentence, Result result){
-        for(CoreMap mention: sentence.get(CoreAnnotations.MentionsAnnotation.class)){
+    private String setDatesAndSubjectsNET(CoreMap sentence, Result result){
+        String actualText = sentence.toString();
+        for(CoreMap mention: sentence.get(CoreAnnotations.MentionsAnnotation.class)) {
             String namedEntityTag = mention.get(CoreAnnotations.NamedEntityTagAnnotation.class);
-            if(namedEntityTag.equals("DATE")){
+            if (namedEntityTag.equals("DATE")) {
                 //found a date for the result object
-                System.out.println("Normalized entity tag: "+mention.get(CoreAnnotations.NormalizedNamedEntityTagAnnotation.class));
+                //System.out.println("Normalized entity tag: "+mention.get(CoreAnnotations.NormalizedNamedEntityTagAnnotation.class));
                 String date = mention.get(CoreAnnotations.TextAnnotation.class);
                 result.addDate(date);
-            }else if(namedEntityTag.equals("LOCATION") || namedEntityTag.equals("ORGANIZATION") ||
-                    namedEntityTag.equals("PERSON") || namedEntityTag.equals("MONEY")){
+                actualText = actualText.replace(date, "");
+                System.out.println("Removed: " + date + " final: " + actualText);
+            } else if (namedEntityTag.equals("LOCATION") || namedEntityTag.equals("ORGANIZATION") ||
+                    namedEntityTag.equals("PERSON") || namedEntityTag.equals("MONEY")) {
                 //found a subject for the result object
                 String subject = mention.get(CoreAnnotations.TextAnnotation.class);
                 result.addSubject(subject);
+
             }
         }
-    }
+        return actualText;
+    }//TODO: would need to clean it up and delete any PPs that just have an IN, as these are left over when we delete strings
 
     /**
      * Sets the subjects of the sentence based on grammatical structure.
@@ -333,7 +341,7 @@ public class Engine {
      * @param tree
      */
     private void cleanUp(Tree tree){//if its the first character, than its the first child of root S
-        if(!tree.isLeaf() && tree.value().equals("S") && tree.children()[0].value().equals(",")){
+        if(!tree.isLeaf() && tree.value().equals("S") && tree.children()[0].value().equals(",")) {
             tree.removeChild(0);
         }
     }
@@ -360,4 +368,5 @@ public class Engine {
         xpBeforeNP(tree);//most dates are PP's before the NP, so we set the threshold to 0, to delete all XP's before the NP (which would delete the dates)
         threshold = 10;//then set the threshold again as we need to use it later
     }
+
 }
