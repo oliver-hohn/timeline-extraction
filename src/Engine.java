@@ -55,7 +55,7 @@ public class Engine {
      */
     private Result getResult(CoreMap sentence){
         Result result = new Result();
-        String newString = setDatesAndSubjectsNET(sentence,result);
+        setDatesAndSubjectsNET(sentence,result);
         /*Annotation annotation = new Annotation(newString);
         coreNLP.annotate(annotation);*/
         //CoreMap coreMap = annotation.get(CoreAnnotations.SentencesAnnotation.class).get(0);
@@ -70,8 +70,7 @@ public class Engine {
     /**
      * Set the Dates and Subjects for the Result object based on Named-Entity Tags from the CoreMap passed in.
      */
-    private String setDatesAndSubjectsNET(CoreMap sentence, Result result){
-        String actualText = sentence.toString();
+    private void setDatesAndSubjectsNET(CoreMap sentence, Result result){
         for(CoreMap mention: sentence.get(CoreAnnotations.MentionsAnnotation.class)) {
             String namedEntityTag = mention.get(CoreAnnotations.NamedEntityTagAnnotation.class);
             if (namedEntityTag.equals("DATE")) {
@@ -79,8 +78,6 @@ public class Engine {
                 //System.out.println("Normalized entity tag: "+mention.get(CoreAnnotations.NormalizedNamedEntityTagAnnotation.class));
                 String date = mention.get(CoreAnnotations.TextAnnotation.class);
                 result.addDate(date);
-                actualText = actualText.replace(date, "");
-                System.out.println("Removed: " + date + " final: " + actualText);
             } else if (namedEntityTag.equals("LOCATION") || namedEntityTag.equals("ORGANIZATION") ||
                     namedEntityTag.equals("PERSON") || namedEntityTag.equals("MONEY")) {
                 //found a subject for the result object
@@ -89,8 +86,8 @@ public class Engine {
 
             }
         }
-        return actualText;
-    }//TODO: would need to clean it up and delete any PPs that just have an IN, as these are left over when we delete strings
+        //return actualText;
+    }
 
     /**
      * Sets the subjects of the sentence based on grammatical structure.
