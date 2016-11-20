@@ -1,4 +1,3 @@
-import edu.stanford.nlp.ling.CoreAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.Label;
 import edu.stanford.nlp.pipeline.Annotation;
@@ -9,16 +8,19 @@ import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.TreeCoreAnnotations;
 import edu.stanford.nlp.util.CoreMap;
+import edu.stanford.nlp.util.Index;
+import edu.stanford.nlp.util.Pair;
 import edu.stanford.nlp.util.PropertiesUtils;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Engine class that text in text as input and produces a list of Result objects, which are events depicted in the text. An event is only picked out, if it has a date
  * associated with it.
  */
-//TODO: remove temporal expressions before getting event
+//TODO: remove temporal expressions before getting event, or threshold doesn't account for time expression
 public class Engine {
     private static int threshold = 10;
     private StanfordCoreNLP coreNLP;
@@ -35,7 +37,7 @@ public class Engine {
 
         Annotation annotation = new Annotation(input);
         coreNLP.annotate(annotation);
-        coreNLP.prettyPrint(annotation, new PrintWriter(System.out));
+        //coreNLP.prettyPrint(annotation, new PrintWriter(System.out));
 
         for(CoreMap sentence: annotation.get(CoreAnnotations.SentencesAnnotation.class)){
             Result result = getResult(sentence);
@@ -75,7 +77,7 @@ public class Engine {
             String namedEntityTag = mention.get(CoreAnnotations.NamedEntityTagAnnotation.class);
             if (namedEntityTag.equals("DATE")) {
                 //found a date for the result object
-                //System.out.println("Normalized entity tag: "+mention.get(CoreAnnotations.NormalizedNamedEntityTagAnnotation.class));
+                System.out.println("Normalized entity tag: "+mention.get(CoreAnnotations.NormalizedNamedEntityTagAnnotation.class));
                 String date = mention.get(CoreAnnotations.TextAnnotation.class);
                 result.addDate(date);
             } else if (namedEntityTag.equals("LOCATION") || namedEntityTag.equals("ORGANIZATION") ||
@@ -325,9 +327,14 @@ public class Engine {
      */
     private String produceString(Tree tree){
         String toReturn = "";
-        for(Tree node: tree.preOrderNodeList()){
+        List<Tree> preOrderList = tree.preOrderNodeList();
+        for(int i=0; i<preOrderList.size(); i++){
+            Tree node = preOrderList.get(i);
             if(node.isLeaf()) {
-                toReturn += node.value() + " ";
+                toReturn += node.value();
+                if(i != preOrderList.size() - 1){
+                    toReturn += " ";
+                }
             }
         }
         return toReturn;
@@ -349,21 +356,45 @@ public class Engine {
      * @param result
      */
     private void removeTimeExpressions(Tree tree, Result result){
-        //want to get the list of dates, form a string remove instances of dates
-       // tree.pennPrint();
-        //find the XP with the date and remove it, postorder prints the values first then parent
-        /* go over the list in post order, look at the date, start counting once the first string is read that matches the first string
-        * in the array, if at any point doesnt match then stop; if we read the entire thing then delete */
-/*        String text = produceString(tree);
-        for(String date: result.getDates()){
-            System.out.println("Date: "+date);
-            System.out.println("Before removal: "+text);
-            text = text.replace(date,"");
-            System.out.println("After removal: "+text);
-        }*/
-        threshold = 0;//maybe just run it once, as this will remove all XP's before the NP
-        xpBeforeNP(tree);//most dates are PP's before the NP, so we set the threshold to 0, to delete all XP's before the NP (which would delete the dates)
-        threshold = 10;//then set the threshold again as we need to use it later
+        /*go over the tree, for every PP check if it has a NP child, if so check if that NP contains the time expression, if so delete the PP.
+        * afterwards delete any NP that contains the time expression
+        * */
+        ArrayList<Pair<Tree,Integer>> toDeleteNodes = new ArrayList<>();
+        for(Tree node : tree.preOrderNodeList()){
+            if(!node.isLeaf()){
+                Tree[] children = node.children();
+                for(int i=0; i<children.length; i++){
+                    if(children[i].value().equals("PP") && !children[i].isLeaf()){
+                        Tree[] childOfChildren = children[i].children();
+                        for(int j=0; j<childOfChildren.length; j++){
+                            if(childOfChildren[j].value().equals("NP") && !childOfChildren[j].isLeaf()){
+                                String childOfChildrenString = produceString(childOfChildren[j]);
+                                System.out.println("Comparing: "+childOfChildrenString);
+                                if(result.hasDate(childOfChildrenString)){
+                                    System.out.println("Found a match");
+                                    toDeleteNodes.add(new Pair<>(node,i));
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //now delete
+        for(Pair<Tree,Integer> pair : toDeleteNodes){
+            if(pair.first.getChild(pair.second).value().equals("PP")){
+                System.out.println("Removing: "+pair.first.getChild(pair.second));
+                pair.first.removeChild(pair.second);
+            }
+        }
+        tree.pennPrint();
+
+        //now find any NP with the time expression
+
+//        threshold = 0;//maybe just run it once, as this will remove all XP's before the NP
+//        xpBeforeNP(tree);//most dates are PP's before the NP, so we set the threshold to 0, to delete all XP's before the NP (which would delete the dates)
+//        threshold = 10;//then set the threshold again as we need to use it later
     }
 
 }

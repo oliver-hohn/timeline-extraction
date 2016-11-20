@@ -18,15 +18,14 @@ public class Result {
         subjects = new ArrayList<>();
     }
 
-/*
-    public String getDate() {
-        return date;
+    public boolean hasDate(String date){
+        for(String dDate: dates){
+            if(dDate.equals(date)){
+                return true;
+            }
+        }
+        return false;
     }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-*/
 
     public String getEvent() {
         return event;
