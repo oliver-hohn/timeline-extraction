@@ -359,6 +359,8 @@ public class Engine {
         /*go over the tree, for every PP check if it has a NP child, if so check if that NP contains the time expression, if so delete the PP.
         * afterwards delete any NP that contains the time expression
         * */
+        System.out.println("Tree going in:");
+        tree.pennPrint();
         ArrayList<Pair<Tree,Integer>> toDeleteNodes = new ArrayList<>();
         for(Tree node : tree.preOrderNodeList()){
             if(!node.isLeaf()){
@@ -388,7 +390,7 @@ public class Engine {
                 pair.first.removeChild(pair.second);
             }
         }
-        tree.pennPrint();
+        //tree.pennPrint();
         //clear toDeleteNodes
         toDeleteNodes.clear();
         //now find any NP with the time expression
@@ -413,6 +415,7 @@ public class Engine {
                 pair.first.removeChild(pair.second);
             }
         }
+        System.out.println("Tree afterwards:");
         tree.pennPrint();
 
     }
