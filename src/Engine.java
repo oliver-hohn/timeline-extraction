@@ -389,12 +389,32 @@ public class Engine {
             }
         }
         tree.pennPrint();
-
+        //clear toDeleteNodes
+        toDeleteNodes.clear();
         //now find any NP with the time expression
+        for(Tree node: tree.preOrderNodeList()){
+            if(!node.isLeaf()){
+                Tree[] children = node.children();
+                for(int i=0; i<children.length; i++){
+                    if(children[i].value().equals("NP")&&!children[i].isLeaf()){
+                        String childString = produceString(children[i]);
+                        System.out.println("Comparing: "+childString);
+                        if(result.hasDate(childString)){
+                            System.out.println("Found a match");
+                            toDeleteNodes.add(new Pair<>(node,i));
+                        }
+                    }
+                }
+            }
+        }
+        for(Pair<Tree,Integer> pair : toDeleteNodes){
+            if(pair.first.getChild(pair.second).value().equals("NP")){
+                System.out.println("Removing: "+pair.first.getChild(pair.second));
+                pair.first.removeChild(pair.second);
+            }
+        }
+        tree.pennPrint();
 
-//        threshold = 0;//maybe just run it once, as this will remove all XP's before the NP
-//        xpBeforeNP(tree);//most dates are PP's before the NP, so we set the threshold to 0, to delete all XP's before the NP (which would delete the dates)
-//        threshold = 10;//then set the threshold again as we need to use it later
     }
 
 }
