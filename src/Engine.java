@@ -8,11 +8,9 @@ import edu.stanford.nlp.semgraph.SemanticGraphEdge;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.TreeCoreAnnotations;
 import edu.stanford.nlp.util.CoreMap;
-import edu.stanford.nlp.util.Index;
 import edu.stanford.nlp.util.Pair;
 import edu.stanford.nlp.util.PropertiesUtils;
 
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +34,7 @@ public class Engine {
         ArrayList<Result> results = new ArrayList<>();
 
         Annotation annotation = new Annotation(input);
+        annotation.set(CoreAnnotations.DocDateAnnotation.class,"2013-07-14");//setting a reference so that when it finds a normalazied entity tag that isnt complete will determine it
         coreNLP.annotate(annotation);
         //coreNLP.prettyPrint(annotation, new PrintWriter(System.out));
 
@@ -77,8 +76,10 @@ public class Engine {
             String namedEntityTag = mention.get(CoreAnnotations.NamedEntityTagAnnotation.class);
             if (namedEntityTag.equals("DATE")) {
                 //found a date for the result object
+                System.out.println("About to print time for the sentence: "+sentence);
                 System.out.println("Normalized entity tag: "+mention.get(CoreAnnotations.NormalizedNamedEntityTagAnnotation.class));
                 String date = mention.get(CoreAnnotations.TextAnnotation.class);
+                System.out.println("We are storing date: "+date);
                 result.addDate(date);
             } else if (namedEntityTag.equals("LOCATION") || namedEntityTag.equals("ORGANIZATION") ||
                     namedEntityTag.equals("PERSON") || namedEntityTag.equals("MONEY")) {
