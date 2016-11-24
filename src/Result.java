@@ -4,26 +4,27 @@ import java.util.ArrayList;
  * Created by Oliver on 29/10/2016.
  */
 public class Result {
-    private String date;
+    private ArrayList<String> dates;
     private String event;
-    private String subject;
+    private ArrayList<String> subjects;//could be a set to avoid duplicates
 
     public Result(){
-        this("","","");
+        this("","");
     }
 
-    public Result(String date, String event, String subject){
-        this.date = date;
+    public Result(String date, String event){
+        dates = new ArrayList<>();
         this.event = event;
-        this.subject = subject;
+        subjects = new ArrayList<>();
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
+    public boolean hasDate(String date){
+        for(String dDate: dates){
+            if(dDate.equals(date)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public String getEvent() {
@@ -34,35 +35,22 @@ public class Result {
         this.event = event;
     }
 
-    public String getSubject() {
-        return subject;
+    public void addDate(String date){
+        dates.add(date);
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
+    public ArrayList<String> getDates(){
+        return dates;
+    }
+    public ArrayList<String> getSubjects(){
+        return subjects;
     }
 
-    public void addToDate(String addDate){
-        date += " "+addDate;
+    public void addSubject(String subject){
+        subjects.add(subject);
     }
-
-    public void addToSubject(String subject){
-        if(this.subject.equals("")) {
-            System.out.println("yo");
-            setSubject(subject);
-            return;
-        }
-        this.subject += "-"+subject;
-    }
-
-    public void addToEvent(ArrayList<String> strings){
-        for(String s: strings){
-            event += s+"\n";
-        }
-    }
-
     @Override
     public String toString() {
-        return String.format("Date: %s, Subject: %s, Event: %s",date,subject,event);
+        return String.format("Date: %s, Subject: %s, Event: %s",dates, subjects,event);
     }
 }

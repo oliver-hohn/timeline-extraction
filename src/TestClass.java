@@ -1,3 +1,4 @@
+import edu.stanford.nlp.ling.CoreAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.IndexedWord;
 import edu.stanford.nlp.ling.Label;
@@ -18,7 +19,7 @@ import edu.stanford.nlp.util.logging.Redwood;
 
 import java.io.PrintWriter;
 import java.util.*;
-
+//TODO:clean up
 /**
  * Created by Oliver on 29/10/2016.
  */
@@ -35,18 +36,14 @@ public class TestClass {
                 "tokenize.language", "en"
         ));
 
+        String text = "I can almost always tell when movies use fake dinosaurs. On the 12th of December I played football. " +
+                "Yesterday Marry disappeared while running on North St, it was a cold night. ";
+        text += "John, who was the CEO of a company, played golf. On the 12th of December I played Basketball with Oliver and Tom. Yesterday," +
+                " I studied for 40 hours, lmao. ";
 
+        text += "A fire killed a firefighter who was fatally injured as he searched the house. Illegal fireworks injured hundreds of people and started six fires. ";
 
-
-
-       /* String text = "I can almost always tell when movies use fake dinosaurs. On the 12th of December I played football. " +
-                "Yesterday Marry disappeared while running on North St, it was a cold night.";*/
-/*        String text = "John, who was the CEO of a company, played golf. On the 12th of December I played Basketball with Oliver and Tom. Yesterday," +
-                " I studied for 40 hours, lmao.";*/
-/*
-        String text = "A fire killed a firefighter who was fatally injured as he searched the house. Illegal fireworks injured hundreds of people and started six fires. ";
-*/
-        String text = "On Friday the Washington Post came out with the latest from its long-running investigation into Trump's charitable donations.\n" +
+        text += "On Friday the Washington Post came out with the latest from its long-running investigation into Trump's charitable donations.\n" +
                 "\n" +
                 "In its latest story, the paper called 420-plus charities with some connection to Trump but found only one personal gift from him between 2008 and the spring of this year. \n" +
                 "\n" +
@@ -55,8 +52,16 @@ public class TestClass {
                 "One of the bizarre episodes the paper recounts is that in 1996, Trump showed up without an invitation to a charity for the Association to Benefit Children where he took a seat on the stage that had been reserved for a major donor, despite not being a donor himself.\n" +
                 "\n" +
                 "In response the piece, the Trump campaign told the Post that he \"has personally donated tens of millions of dollars... to charitable causes\".";
+/*
         ArrayList<Result> results = new TestClass().results(stanfordCoreNLP,text);
         for(Result result: results){
+            System.out.println(result);
+        }
+*/
+
+        Engine engine = new Engine();
+        ArrayList<Result> results1 = engine.getResults(text);
+        for(Result result: results1){
             System.out.println(result);
         }
 
@@ -68,154 +73,55 @@ public class TestClass {
 
         stanfordCoreNLP.annotate(annotation);
         List<CoreMap> sentences = annotation.get(CoreAnnotations.SentencesAnnotation.class);//all the sentences, that are annotated with pos and ner
-        for(CoreMap sentence: sentences){//look at each sentence individually
+        for(CoreMap sentence: sentences){//look at each sentence individually,
             Result result = new Result();
-            ArrayList<String> dateMentions = new ArrayList<>();
+            //need to use named entity
             //date will use mentions annotation
-            for(CoreMap mention: sentence.get(CoreAnnotations.MentionsAnnotation.class)){//get the date in the sentence
+            for(CoreMap mention: sentence.get(CoreAnnotations.MentionsAnnotation.class)){//get the mentions in the sentence
                 //get the date
-                if(mention.get(CoreAnnotations.NamedEntityTagAnnotation.class).equals("DATE")){
+                String namedEntityTag = mention.get(CoreAnnotations.NamedEntityTagAnnotation.class);//this will identify dates,locations,organisations and person
+                System.out.println("Printing out namedEntityTAg: "+namedEntityTag);
+                if(namedEntityTag.equals("DATE")){//if we found a date, add it to the result
+                    //found a date, add it to the result
+                    System.out.println("Printing out DATE CoreMap: ");
                     //got a date
                     String date = mention.get(CoreAnnotations.TextAnnotation.class);
-                    System.out.println("DATE: "+date);
-                    result.setDate(date);
-                    dateMentions.add(date);
+                    result.addDate(date);
+                }else if(namedEntityTag.equals("PERSON") || namedEntityTag.equals("ORGANIZATION") || namedEntityTag.equals("LOCATION")) {//we found possible subject of result
+                    //add subject to result
+                    String data = mention.get(CoreAnnotations.TextAnnotation.class);
+                    System.out.println("Adding subjecT: "+data);
+                    result.addSubject(data);//add subjects to the result
                 }
             }
-
-            //subject will use dependency
-            SemanticGraph graph = sentence.get(SemanticGraphCoreAnnotations.BasicDependenciesAnnotation.class);//break the sentence down into a graph
-            System.out.println("Edge Count: " +graph.edgeCount());
-            System.out.print("Subject: ");//set subject as location,person,company and/or subjects in the sentence.
-            for(SemanticGraphEdge semanticGraphEdge: graph.edgeIterable()){//for each edge in the graph, find ones that are a relation to the subject of the sentence
-                if(semanticGraphEdge.getRelation().getShortName().contains("subj")){//found a relation that contains some sort of subject in the sentence
-                    //later split it into more ifs
-                    System.out.print(semanticGraphEdge.toString()+"; ");
-                    //System.out.println(semanticGraphEdge.toString());
-                    result.addToSubject(semanticGraphEdge.getDependent().value());
-                }
+            if(result.getDates().size() > 0) {
+                //subject can LOCATION;PERSON;COMPANY and nsubj
+                setGrammaticalSubjects(result, sentence);//find grammatical subjects, might remove this
+                //now need to summarise for the event
+                stanfordCoreNLP.prettyPrint(annotation, new PrintWriter(System.out));
+                Tree tree;
+                tree = sentence.get(TreeCoreAnnotations.TreeAnnotation.class);//create a dependencies tree from the current sentence
+                //removeDates(tree,result);
+/*            System.out.println("Printing a tree");
+            tree.pennPrint();*/
+                result.setEvent(event(tree));//get the event of the current sentence ( summary)
+                results.add(result);
+            }else{
+                System.out.println("Not working on: "+sentence);
             }
-            System.out.println("\n");
-            //
-            //subject can LOCATION;PERSON;COMPANY and nsubj
-            //now need to summarise for the event
-
-            for(SemanticGraphEdge semanticGraphEdge: graph.edgeIterable()){//now for each edge, just print the relation
-                System.out.println(String.format("%s(%s,%s)",semanticGraphEdge.getRelation().getShortName(),semanticGraphEdge.getGovernor()
-                        +"-"+semanticGraphEdge.getGovernor().index(),semanticGraphEdge.getDependent()+"-"+semanticGraphEdge.getDependent().index()));
-            }
-            System.out.println("\n");
-            result.addToEvent(summarized(graph));//now what is the event, summarize what happens in the sentence
-            results.add(result);
-
-            stanfordCoreNLP.prettyPrint(annotation,new PrintWriter(System.out));
-            edu.stanford.nlp.trees.Tree tree;
-            tree = sentence.get(TreeCoreAnnotations.TreeAnnotation.class);
-            System.out.println("Printing a tree");
-            tree.pennPrint();
-
-            edu.stanford.nlp.trees.Tree root = tree.firstChild();
-            System.out.println("Got root");
-            Label rootLabel = root.label();
-            System.out.println(rootLabel.value());
-            System.out.println("\nPreOrder");
-            ArrayList<Tree> nodes = new ArrayList<>();
-            result.setEvent(event(tree));
-/*
-            //get the leftmost-lowest S
-            for(Tree tree1: tree.postOrderNodeList()){
-                System.out.println(tree1.value());
-                if(tree1.value().equals("S")){
-                    nodes.add(tree1);//nodes are added in post order so nodes on same depth, leftmost added in first
-                }
-            }
-            edu.stanford.nlp.trees.Tree leftmostLowest = null;
-            for(Tree tree1: nodes){
-                if(leftmostLowest == null){
-                    leftmostLowest = tree1;
-                }else if(root.depth(leftmostLowest)  < root.depth(tree1)){//only set if its lower down, if same depth wont set
-                    leftmostLowest = tree1;
-                }
-            }
-            System.out.println("Lowest S is: "+leftmostLowest);
-            System.out.println("S has "+root.children().length+ " children");
-*/
-/*
-
-            //remove determiners
-            String text1 = "";
-            for(Tree tree1: leftmostLowest.preOrderNodeList()){
-                //if(tree1.value().equals(""))
-                if(!tree1.isLeaf()){
-                    Tree childTree = tree1.getChild(0);
-                    if(!childTree.isLeaf() && childTree.value().equals("DT") && (childTree.children()[0].value().equals("the") || childTree.children()[0].value().equals("a"))){
-                        System.out.println("About to delete DT and its child");
-                        tree1.removeChild(0);
-                    }
-                }
-*/
-/*                if(!tree1.isLeaf() && tree1.value().equals("DT") && (tree1.children()[0].value().equals("the") || tree1.children()[0].value().equals("a"))){
-                    System.out.println("Deleting child that is DT");
-                    tree1.removeChild(0);
-                    tree1
-                    //then remove yourself
-                }*//*
-
-                */
-/*if(tree1.isLeaf() && !tree1.value().equals("the") && !tree1.value().equals("a")){
-                    text1 += tree1.value()+" ";
-
-                }*//*
-
-            }
-            System.out.println("About to print after attempted deletion:");
-            leftmostLowest.pennPrint();
-*/
-
-
-/*
-            System.out.println(text1);
-            //make a new tree with the resulting text
-            Annotation newAnnon = new Annotation(text1);
-            stanfordCoreNLP.annotate(newAnnon);
-            List<CoreMap> coreMap = newAnnon.get(CoreAnnotations.SentencesAnnotation.class);
-            //need to make it into a coreMap before getting a tree, else null pointer
-            System.out.println("Size of core map: "+coreMap.size());
-            Tree tree1 = coreMap.get(0).get(TreeCoreAnnotations.TreeAnnotation.class);
-            //to see size of a trees leafs(which is the number of words in the text, words like: long-running count as 1)
-            System.out.println("Size of tree1 leafs: "+tree1.yield(new ArrayList<Label>()).size());
-            System.out.println("Szie of text1: "+text1.length());//string.length gives you character length
-
-*/
-
-            //TODO:remove time expressions
-
-            //then delete until text is below threshold
-                //xp-over-xp
-                    //where you have [XP[XP ...]...] delete the other children of the higher XP, both XP have to be same type (eg NP NP)
-            //                       children of this one
-            //delete iteratively, work your way up  until threshold is reached else continue below
-/*
-            xpOverXp(tree);
-            System.out.println("Resulting tree:");
-            tree.pennPrint();
-*/
-
-            //TODO:
-            //delete any XP before the first NP (the subject) of the S chosen before
-                //look at the children of S, if one is NP, then remember its location
-                //then loop over list
-                //if node != node with np (can remove if node is XP (including PP?) but parent is not S (where its parent is root) or ROOT if it is
-                // then break for efficiency, as we reached subject)
-                //and remove any NP and its children that came before this location
-
-            //remove PPs from deepest rightmost node until length is below threshold (if not reached, then go back and do SBAR one)
-            //remove SBARs from deepest rightmost node until length is below threshold
-            //if threshold still not reached, then remove PPs from result of SBARs
-            //then produce the final string with the data in the leaves, in the order in which they appear
-            //and set that as the event in the result.
         }
         return results;
+    }
+
+    private void setGrammaticalSubjects(Result result, CoreMap coreMap){
+        SemanticGraph semanticGraph = coreMap.get(SemanticGraphCoreAnnotations.BasicDependenciesAnnotation.class);
+        for(SemanticGraphEdge edge: semanticGraph.edgeIterable()){
+            if(edge.getRelation().getShortName().contains("subj")){//find the relation that are subject related
+                System.out.println("Found possible subject relation: "+ String.format("%s(%s,%s)",edge.getRelation().getShortName(),edge.getGovernor().value(),edge.getDependent().value()));
+                //add subjct to current result
+                result.addSubject(edge.getDependent().value());
+            }
+        }
     }
 
     private String event(Tree root){
@@ -250,7 +156,7 @@ public class TestClass {
                 }
             }
         }
-
+        cleanUp(leftmostLowest);
         //TODO:remove time expressions could use named entity tag to determine them and remove them
 
         //then delete until text is below threshold
@@ -259,8 +165,10 @@ public class TestClass {
         //                       children of this one
         //delete iteratively, work your way up  until threshold is reached else continue below
         xpOverXp(leftmostLowest);
+        cleanUp(leftmostLowest);
         System.out.println("Resulting tree:");
         leftmostLowest.pennPrint();
+
         //delete any XP before the first NP (the subject) of the S chosen before
         //look at the children of S, if one is NP, then remember its location
         //then loop over list
@@ -268,20 +176,72 @@ public class TestClass {
         // then break for efficiency, as we reached subject)
         //and remove any NP and its children that came before this location
         xpBeforeNp(leftmostLowest);
+        cleanUp(leftmostLowest);
 
-
-        //TODO:
         //remove PPs from deepest rightmost node until length is below threshold (if not reached, then go back and do SBAR one)
         //remove SBARs from deepest rightmost node until length is below threshold
         //if threshold still not reached, then remove PPs from result of SBARs
         //then produce the final string with the data in the leaves, in the order in which they appear
         //and set that as the event in the result.
         Tree finalRes = shortenLast(leftmostLowest);
+        cleanUp(leftmostLowest);
 
         String toReturn = produceString(finalRes);
         System.out.println("Event: "+toReturn);
         //possibly final cleanup, eg sentences that start or end with , or dots
         return toReturn;
+    }
+
+    /**
+     * Isn't deleting dates properly should look into using named entity tags to find the nodes and delete them
+     * @param tree
+     * @param result
+     */
+    private void removeDates(Tree tree, Result result){
+        for(Tree node: tree.preOrderNodeList()){
+            //loop over current result and delete child if its a match to one of the results dates
+            if(!node.isLeaf()){
+                for(int i =0; i<node.children().length; i++){
+                    if(shouldDelete(node.children()[i],result)){
+                        System.out.println("Removing child: "+i+" from node: "+node);
+                        node.removeChild(i);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Takes in node which could potentially hold a date.
+     * Result object with list of dates that we want to remove from the tree
+     * @param node
+     * @param result
+     * @return
+     */
+    private boolean shouldDelete(Tree node, Result result){
+        for(int i=0; i<result.getDates().size(); i++){
+            if(result.getDates().get(i).equals(node.value())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Called to remove starting commas
+     * @param tree
+     */
+    private void cleanUp(Tree tree){
+        //want to remove punctuation that is the first leaf
+        System.out.println("Clean up:");
+        tree.pennPrint();
+        //get root and check if first child is , (could add punctuation rule also
+        if(!tree.isLeaf() && tree.value().equals("S") && tree.children()[0].value().equals(",")){
+            System.out.println("Removing comma");
+            tree.removeChild(0);
+        }
+        System.out.println("After clean up");
+        tree.pennPrint();
     }
 
     /**
@@ -321,6 +281,10 @@ public class TestClass {
         return tree;
     }
 
+    /**
+     * Remove trailing PPs if we are below the threshold
+     * @param tree
+     */
     private void removePPs(Tree tree){
         int threshold = 10;
         if(tree.yield(new ArrayList<Label>()).size() > threshold){
@@ -349,6 +313,10 @@ public class TestClass {
         }
     }
 
+    /**
+     * Remove trailing SBARs if we are below the threshold
+     * @param tree
+     */
     private void removeSBARs(Tree tree){
         int threshold = 10;
         if(tree.yield(new ArrayList<Label>()).size() > threshold){
@@ -376,6 +344,11 @@ public class TestClass {
         }
     }
 
+    /**
+     * Produce a string using the leaf nodes in the tree, going over them in pre order
+     * @param tree
+     * @return
+     */
     private String produceString(Tree tree){
         String toReturn = "";
         for(Tree node: tree.preOrderNodeList()){
@@ -437,6 +410,7 @@ public class TestClass {
                     if(toDeleteNode != null){
                         System.out.println("Removing from: "+toDeleteNode+ " child at index: "+childIndex);
                         toDeleteNode.removeChild(childIndex);
+                        xpBeforeNp(tree);
                     }
                 }
             }
@@ -477,103 +451,6 @@ public class TestClass {
                 //if not then do it again, else leave
             }else{
                 return;
-            }
-        }
-    }
-
-    private ArrayList<String> summarized(SemanticGraph graph){
-        ArrayList<String> strings = new ArrayList<>();
-        for(SemanticGraphEdge semanticGraphEdge: graph.edgeIterable()){//for each edge
-            if(semanticGraphEdge.getRelation().getShortName().contains("subj")){//look at the ones that are subject relation (could group with setting subject tag)
-                //find all relations that contain dep
-                System.out.println("For relation: "+String.format("%s(%s,%s)",semanticGraphEdge.getRelation().getShortName(),
-                        semanticGraphEdge.getGovernor().value(),semanticGraphEdge.getDependent().value()));
-                ArrayList<IndexedWord> indexedWords = new ArrayList<>();
-                IndexedWord dep = semanticGraphEdge.getDependent();//for the dependent value in the relation,
-                searchDep(dep,graph,indexedWords);// find other relations that contain it
-
-                IndexedWord gov = semanticGraphEdge.getGovernor();//for the governor value in the relation,
-                searchGov(gov,graph,indexedWords);// find other relations that contain it
-                indexedWords.add(dep);//then add them to the list of words that are part of the summary
-                indexedWords.add(gov);
-                for(IndexedWord indexedWord: indexedWords){//print to see what we have
-                    System.out.println(indexedWord.value());
-                }
-
-                //now for new ones, passing in the list to avoid duplicates, need a copy of the original array as we will add to the
-                //original while looping which throws an exception
-                ArrayList<IndexedWord> newIndexedWords = new ArrayList<>(indexedWords);
-                for(IndexedWord indexedWord: newIndexedWords){//for the new ones added, lets find others linked to them (no duplicates allowed in the list
-                                                                //thats why the list is passed in as a check is done
-                    searchDep(indexedWord,graph,indexedWords);
-                }
-
-                System.out.println("Size of indexedWords: "+indexedWords.size());
-
-                //now order them by their index in the original sentence
-                Collections.sort(indexedWords, new Comparator<IndexedWord>() {
-                    @Override
-                    public int compare(IndexedWord o1, IndexedWord o2) {
-                        return new Integer(o1.index()).compareTo(new Integer(o2.index()));
-                    }
-                });
-                System.out.println("\n\nPrinting indexed words");
-                String toAdd = "";//now form a sentence with the words that we obtained
-                for(IndexedWord indexedWord: indexedWords){
-                    toAdd += indexedWord.value()+" ";
-                }//and add them to the list of summarized sentences
-                strings.add(toAdd);
-            }
-        }
-
-        return strings;
-    }
-
-    /**
-     * Could be combined with the below one.
-     * @param indexedWord
-     * @param semanticGraph
-     * @param indexedWords
-     */
-    private void searchDep(IndexedWord indexedWord, SemanticGraph semanticGraph, ArrayList<IndexedWord> indexedWords){
-        //ArrayList<IndexedWord> indexedWords = new ArrayList<>();
-        System.out.println("For: "+indexedWord.value());
-        for(SemanticGraphEdge semanticGraphEdge: semanticGraph.edgeIterable()){//go through the edges
-            if(!semanticGraphEdge.getRelation().getShortName().contains("subj")){//if we find relations that arent subject related
-                System.out.println("Looking at: "+String.format("%s(%s,%s)",semanticGraphEdge.getRelation().getShortName()
-                                        , semanticGraphEdge.getGovernor().value(),semanticGraphEdge.getDependent().value()));
-                if(semanticGraphEdge.getDependent().equals(indexedWord) && !indexedWords.contains(semanticGraphEdge.getGovernor())){
-                    System.out.print("Adding Governer ");//add the other value in the relation to the list, if its not already in the list
-                    indexedWords.add(semanticGraphEdge.getGovernor());
-                    System.out.print("Added: "+semanticGraphEdge.getGovernor().value()+"\n");
-                }else if(semanticGraphEdge.getGovernor().equals(indexedWord) && !indexedWords.contains(semanticGraphEdge.getDependent())){
-                    System.out.print("Adding Governer ");
-                    indexedWords.add(semanticGraphEdge.getDependent());
-                    System.out.print("Added: "+semanticGraphEdge.getDependent().value()+"\n");
-                }
-
-            }
-        }
-    }
-
-
-
-
-    private void searchGov(IndexedWord indexedWord, SemanticGraph semanticGraph, ArrayList<IndexedWord> indexedWords){
-        System.out.println("For: "+indexedWord.value());
-        for(SemanticGraphEdge semanticGraphEdge: semanticGraph.edgeIterable()){
-            if(!semanticGraphEdge.getRelation().getShortName().contains("subj")){
-                System.out.println("Looking at: "+String.format("%s(%s,%s)",semanticGraphEdge.getRelation().getShortName()
-                        , semanticGraphEdge.getGovernor().value(),semanticGraphEdge.getDependent().value()));
-                if(semanticGraphEdge.getDependent().equals(indexedWord) && !indexedWords.contains(semanticGraphEdge.getGovernor())){
-                    System.out.print("Adding Governer ");
-                    indexedWords.add(semanticGraphEdge.getGovernor());
-                    System.out.print("Added: "+semanticGraphEdge.getGovernor().value()+"\n");
-                }else if(semanticGraphEdge.getGovernor().equals(indexedWord) && !indexedWords.contains(semanticGraphEdge.getDependent())){
-                    System.out.print("Adding Dependent ");
-                    indexedWords.add(semanticGraphEdge.getDependent());
-                    System.out.print("Added: "+semanticGraphEdge.getDependent().value()+"\n");
-                }
             }
         }
     }
