@@ -33,11 +33,22 @@ public class Engine {
     public ArrayList<Result> getResults(String input){
         ArrayList<Result> results = new ArrayList<>();
 
-        Annotation annotation = new Annotation(input);
+        Annotation annotation;
+        annotation = new Annotation(input);
         annotation.set(CoreAnnotations.DocDateAnnotation.class,"2013-07-14");//setting a reference so that when it finds a normalazied entity tag that isnt complete will determine it
         coreNLP.annotate(annotation);
         //coreNLP.prettyPrint(annotation, new PrintWriter(System.out));
 
+        for(CoreMap sentence: annotation.get(CoreAnnotations.SentencesAnnotation.class)){
+            Result result = getResult(sentence);
+            if(result != null){
+                results.add(result);
+            }
+        }
+
+        annotation = new Annotation(input);
+        annotation.set(CoreAnnotations.DocDateAnnotation.class,"2014-12-14");//setting a reference so that when it finds a normalazied entity tag that isnt complete will determine it
+        coreNLP.annotate(annotation);
         for(CoreMap sentence: annotation.get(CoreAnnotations.SentencesAnnotation.class)){
             Result result = getResult(sentence);
             if(result != null){
