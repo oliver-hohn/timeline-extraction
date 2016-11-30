@@ -30,25 +30,15 @@ public class Engine {
         ));
     }
 
-    public ArrayList<Result> getResults(String input){
+    public ArrayList<Result> getResults(String input, String date){
         ArrayList<Result> results = new ArrayList<>();
 
         Annotation annotation;
         annotation = new Annotation(input);
-        annotation.set(CoreAnnotations.DocDateAnnotation.class,"2013-07-14");//setting a reference so that when it finds a normalazied entity tag that isnt complete will determine it
+        annotation.set(CoreAnnotations.DocDateAnnotation.class,date);//setting a reference so that when it finds a normalazied entity tag that isnt complete will determine it
         coreNLP.annotate(annotation);
         //coreNLP.prettyPrint(annotation, new PrintWriter(System.out));
 
-        for(CoreMap sentence: annotation.get(CoreAnnotations.SentencesAnnotation.class)){
-            Result result = getResult(sentence);
-            if(result != null){
-                results.add(result);
-            }
-        }
-
-        annotation = new Annotation(input);
-        annotation.set(CoreAnnotations.DocDateAnnotation.class,"2014-12-14");//setting a reference so that when it finds a normalazied entity tag that isnt complete will determine it
-        coreNLP.annotate(annotation);
         for(CoreMap sentence: annotation.get(CoreAnnotations.SentencesAnnotation.class)){
             Result result = getResult(sentence);
             if(result != null){
@@ -376,7 +366,6 @@ public class Engine {
                         for(int j=0; j<childOfChildren.length; j++){
                             if(childOfChildren[j].value().equals("NP") && !childOfChildren[j].isLeaf()){
                                 String childOfChildrenString = produceString(childOfChildren[j]);
-                                System.out.println("Comparing: "+childOfChildrenString);
                                 if(result.hasDate(childOfChildrenString)){
                                     System.out.println("Found a match");
                                     toDeleteNodes.add(new Pair<>(node,i));
@@ -405,7 +394,6 @@ public class Engine {
                 for(int i=0; i<children.length; i++){
                     if(children[i].value().equals("NP")&&!children[i].isLeaf()){
                         String childString = produceString(children[i]);
-                        System.out.println("Comparing: "+childString);
                         if(result.hasDate(childString)){
                             System.out.println("Found a match");
                             toDeleteNodes.add(new Pair<>(node,i));

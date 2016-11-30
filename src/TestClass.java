@@ -61,7 +61,8 @@ public class TestClass {
 */
 
         Engine engine = new Engine();
-        ArrayList<Result> results1 = engine.getResults(text);
+        String date = "2016-11-30";
+        ArrayList<Result> results1 = engine.getResults(text,date);
         for(Result result: results1){
             System.out.println(result);
         }
