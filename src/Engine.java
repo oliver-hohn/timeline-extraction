@@ -62,7 +62,7 @@ public class Engine {
         coreNLP.annotate(annotation);*/
         //CoreMap coreMap = annotation.get(CoreAnnotations.SentencesAnnotation.class).get(0);
         if(result.getDates().size() > 0){//we have found dates, so lets find more subjects and the event of the sentence
-            setGrammaticalSubjects(sentence,result);//setting grammatical subjects in the result object
+            //setGrammaticalSubjects(sentence,result);//setting grammatical subjects in the result object
             setEvent(sentence,result);//set the summarized sentence as the event depicted in the sentence
             return result;
         }
