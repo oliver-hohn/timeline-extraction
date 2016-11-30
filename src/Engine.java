@@ -144,24 +144,17 @@ public class Engine {
      * @return
      */
     private Tree getLeftmostLowestS(Tree tree){
-        ArrayList<Tree> nodes = new ArrayList<>();
-        for(Tree node: tree.preOrderNodeList()){//loop over the list in pre order (from left to right)
-            if(node.value().equals("S")){//found an S
-                nodes.add(node);
+        //post-order to find first S
+        Tree firstS = null;
+        for(Tree node: tree.postOrderNodeList()){
+            if(!node.isLeaf() && node.value().equals("S")){
+                firstS = node;
+                break;
             }
         }
-        //now we need to find the lowest S, it will be the lowest leftmost as we went through the tree in preorder
-        //and added in the potential S nodes into the list in that order
-        Tree leftmostLowestS = null;
-        for(Tree node: nodes){
-            if(leftmostLowestS == null){
-                leftmostLowestS = node;
-            }else if(tree.depth(leftmostLowestS) < tree.depth(node)){//if the current node is further away from the root
-                leftmostLowestS = node;        //then thats the new lowest node, if there is a node that is at the same level
-                                //but to the right, it wont be picked as it needs to be lower to be updated.
-            }
-        }//if we haven't found a lowest S, then we use the root of the tree; else we just return the lowest S
-        return (leftmostLowestS == null) ? tree : leftmostLowestS;
+
+        //if we haven't found a lowest S, then we use the root of the tree; else we just return the lowest S
+        return (firstS == null) ? tree : firstS;
     }
 
     /**
