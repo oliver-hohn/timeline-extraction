@@ -52,7 +52,7 @@ public class TestClass {
                 "One of the bizarre episodes the paper recounts is that in 1996, Trump showed up without an invitation to a charity for the Association to Benefit Children where he took a seat on the stage that had been reserved for a major donor, despite not being a donor himself.\n" +
                 "\n" +
                 "In response the piece, the Trump campaign told the Post that he \"has personally donated tens of millions of dollars... to charitable causes\".";
-        text += "Last year I did well at uni.";
+        text += "Last year I did well at uni. Last Month I went to school. Last week I played basketball.";
         /*
         ArrayList<Result> results = new TestClass().results(stanfordCoreNLP,text);
         for(Result result: results){
