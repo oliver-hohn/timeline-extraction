@@ -1,4 +1,6 @@
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -9,6 +11,8 @@ public class Result {
     private ArrayList<String> dates;
     private String event;
     private Set<String> subjects;
+    private ArrayList<Date> dates_1;
+    private DateFormat dateFormat;
 
     public Result(){
         this("","");
@@ -18,6 +22,7 @@ public class Result {
         dates = new ArrayList<>();
         this.event = event;
         subjects = new HashSet<>();
+        dateFormat = DateFormat.getDateInstance();
     }
 
     public boolean hasDate(String date){
@@ -54,5 +59,10 @@ public class Result {
     @Override
     public String toString() {
         return String.format("Date: %s, Subject: %s, Event: %s",dates, subjects,event);
+    }
+
+    public void addDate_1(String date){
+        System.out.println("About to parse: "+date);
+
     }
 }
