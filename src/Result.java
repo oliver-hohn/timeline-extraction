@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Oliver on 29/10/2016.
@@ -6,7 +8,7 @@ import java.util.ArrayList;
 public class Result {
     private ArrayList<String> dates;
     private String event;
-    private ArrayList<String> subjects;//could be a set to avoid duplicates
+    private Set<String> subjects;
 
     public Result(){
         this("","");
@@ -15,7 +17,7 @@ public class Result {
     public Result(String date, String event){
         dates = new ArrayList<>();
         this.event = event;
-        subjects = new ArrayList<>();
+        subjects = new HashSet<>();
     }
 
     public boolean hasDate(String date){
@@ -42,7 +44,7 @@ public class Result {
     public ArrayList<String> getDates(){
         return dates;
     }
-    public ArrayList<String> getSubjects(){
+    public Set<String> getSubjects(){
         return subjects;
     }
 
