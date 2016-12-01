@@ -19,6 +19,8 @@ import edu.stanford.nlp.util.logging.Redwood;
 
 import java.io.PrintWriter;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 //TODO:clean up
 /**
  * Created by Oliver on 29/10/2016.
@@ -29,6 +31,17 @@ public class TestClass {
     private static final String modelPath = DependencyParser.DEFAULT_MODEL;
 
     public static void main(String[] args) {
+/*
+        Pattern yearPattern = Pattern.compile("(\\d{4}.*$)|(\\d{3}X.*$)|(\\d{2}XX.*$)|(\\dXXX.*$)");
+        String date_1 = "1X1X";
+        Matcher matcher = yearPattern.matcher(date_1);
+        System.out.println("Matched? "+matcher.matches());
+
+*/
+
+
+
+
       //  MaxentTagger maxentTagger = new MaxentTagger("edu/stanford/nlp/models/pos-tagger/english-left3words/english-left3words-distsim.tagger" );
         StanfordCoreNLP stanfordCoreNLP = new StanfordCoreNLP(PropertiesUtils.asProperties(
                 "annotators",
