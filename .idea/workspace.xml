@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="587ec24f-be60-4c16-80d8-cb2693c0111f" name="Default" comment="Result.java:&#10;-changed subjects to a set from a list.&#10;&#10;Engine.java:&#10;-commented out setting the Grammatical subject as it was adding subjects like &quot;that&quot; (need to filter subjects added in)">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/NLPPrototype/Result.class" afterPath="$PROJECT_DIR$/out/production/NLPPrototype/Result.class" />
+    <list default="true" id="587ec24f-be60-4c16-80d8-cb2693c0111f" name="Default" comment="Result.java:&#10;-added documentation and referencing.&#10;-formatted the code (spacing added).&#10;-removed else statement that returns in XpOverXP, as it wasn't needed, method ends anyways if it doesn't enter the if for the recursive call.">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Engine.java" afterPath="$PROJECT_DIR$/src/Engine.java" />
     </list>
     <ignored path="NLPPrototype.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -26,11 +24,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file leaf-file-name="TestClass.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="TestClass.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/TestClass.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="345">
-              <caret line="64" column="64" selection-start-line="64" selection-start-column="64" selection-end-line="64" selection-end-column="64" />
+            <state relative-caret-position="270">
+              <caret line="57" column="36" selection-start-line="57" selection-start-column="36" selection-end-line="57" selection-end-column="36" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -38,11 +36,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Engine.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Engine.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Engine.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="220">
-              <caret line="77" column="14" selection-start-line="77" selection-start-column="14" selection-end-line="77" selection-end-column="14" />
+            <state relative-caret-position="22">
+              <caret line="71" column="7" selection-start-line="71" selection-start-column="7" selection-end-line="71" selection-end-column="7" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -53,7 +51,7 @@
       <file leaf-file-name="Result.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Result.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
+            <state relative-caret-position="638">
               <caret line="36" column="23" selection-start-line="36" selection-start-column="23" selection-end-line="36" selection-end-column="23" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -97,9 +95,9 @@
         <option value="$PROJECT_DIR$/src/Token.java" />
         <option value="$PROJECT_DIR$/src/TreeNode.java" />
         <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/src/TestClass.java" />
         <option value="$PROJECT_DIR$/src/Result.java" />
         <option value="$PROJECT_DIR$/src/Engine.java" />
+        <option value="$PROJECT_DIR$/src/TestClass.java" />
       </list>
     </option>
   </component>
@@ -632,7 +630,14 @@
       <option name="project" value="LOCAL" />
       <updated>1480521320082</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Result.java:&#10;-added documentation and referencing.&#10;-formatted the code (spacing added).&#10;-removed else statement that returns in XpOverXP, as it wasn't needed, method ends anyways if it doesn't enter the if for the recursive call.">
+      <created>1480526557993</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1480526557993</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -656,7 +661,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32905984" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14636752" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.48076922" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32905984" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -712,7 +717,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Innitial Commit of rough prototype" />
     <MESSAGE value="Added coment to check it works" />
     <MESSAGE value="Began cleanup of prototype. Removed previous inaccurate summary system, and added as subjects the location,person,and organisation.&#10;Result now has a list of subjects and dates, to later analyse to produce proper dates and subjects." />
     <MESSAGE value="Added cleanup method, that removes starting commas from the tree" />
@@ -737,7 +741,8 @@
     <MESSAGE value="Engine.java:&#10;-changed the way the leftmostLowest S is picked, using postorder." />
     <MESSAGE value="Engine.java:&#10;-getResults(input, date) added in String date, as a reference date for the normalized entity date tags.&#10;-removed print statements in for loops.&#10;&#10;TestClass.java:&#10;-passed in a date into the Engine.getResults() call." />
     <MESSAGE value="Result.java:&#10;-changed subjects to a set from a list.&#10;&#10;Engine.java:&#10;-commented out setting the Grammatical subject as it was adding subjects like &quot;that&quot; (need to filter subjects added in)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Result.java:&#10;-changed subjects to a set from a list.&#10;&#10;Engine.java:&#10;-commented out setting the Grammatical subject as it was adding subjects like &quot;that&quot; (need to filter subjects added in)" />
+    <MESSAGE value="Result.java:&#10;-added documentation and referencing.&#10;-formatted the code (spacing added).&#10;-removed else statement that returns in XpOverXP, as it wasn't needed, method ends anyways if it doesn't enter the if for the recursive call." />
+    <option name="LAST_COMMIT_MESSAGE" value="Result.java:&#10;-added documentation and referencing.&#10;-formatted the code (spacing added).&#10;-removed else statement that returns in XpOverXP, as it wasn't needed, method ends anyways if it doesn't enter the if for the recursive call." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1165,19 +1170,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/TestClass.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="64" column="64" selection-start-line="64" selection-start-column="64" selection-end-line="64" selection-end-column="64" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Result.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
+        <state relative-caret-position="638">
           <caret line="36" column="23" selection-start-line="36" selection-start-column="23" selection-end-line="36" selection-end-column="23" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1187,8 +1182,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Engine.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="220">
-          <caret line="77" column="14" selection-start-line="77" selection-start-column="14" selection-end-line="77" selection-end-column="14" />
+        <state relative-caret-position="22">
+          <caret line="71" column="7" selection-start-line="71" selection-start-column="7" selection-end-line="71" selection-end-column="7" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/TestClass.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="57" column="36" selection-start-line="57" selection-start-column="36" selection-end-line="57" selection-end-column="36" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
