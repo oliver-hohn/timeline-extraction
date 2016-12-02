@@ -27,6 +27,10 @@ public class TimelineDate {
      */
     public void parse(String date){
         //if it starts with YYYY
+        //could put year, month and date in for loop as they will need to be reset after each date is created.
+        //INTERSECT PX[Y/M/W/D] every X Year/Month/Week/Day: if Y then range is from 0000-9999, if every month then 1 month to 12
+        //if every week then dates go up by 7, if every day then 1 to 31
+        //could ignore INTERSECT
         System.out.println("Passing date: "+date);
         if(yearPattern.matcher(date).matches()) {
             //System.out.println("Date is legal: "+date);
