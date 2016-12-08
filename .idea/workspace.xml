@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="587ec24f-be60-4c16-80d8-cb2693c0111f" name="Default" comment="">
+    <list default="true" id="587ec24f-be60-4c16-80d8-cb2693c0111f" name="Default" comment="TimelineDate.java:&#10;-added getDate() method that will for every date in the range passed into parse (which can be just 1) produce a list of dates (at most size 2) that represent that date: i.e. if have a range of a dates than the list will contain 2 dates, else will contain 1.&#10;-added comments to getDate() to explain the process of producing each date for each of the matching cases.&#10;-added comments to parse to define what to do in the case the date format includes INTERSECT PX[YMDW]. Two choices:  calculate the date passed along with INTERSECT... independently and just normalize INTERSECT... to a string that will be shown next to the date (most likely to work), or create a range representing the date and INTERSECT...(less likely to work).&#10;-added TODO of possible way to implement getDate which is to split it into methods to get year, month, day (returns the default values if not possible), and develop case when the month is known but not the year: XXXX-mm">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/NLPPrototype/TestClass.class" afterPath="$PROJECT_DIR$/out/production/NLPPrototype/TestClass.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/TestClass.java" afterPath="$PROJECT_DIR$/src/TestClass.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/TimelineDate.java" afterPath="$PROJECT_DIR$/src/TimelineDate.java" />
     </list>
     <ignored path="NLPPrototype.iws" />
@@ -29,8 +29,8 @@
       <file leaf-file-name="TestClass.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/TestClass.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="171">
-              <caret line="67" column="115" selection-start-line="67" selection-start-column="115" selection-end-line="67" selection-end-column="115" />
+            <state relative-caret-position="463">
+              <caret line="67" column="126" selection-start-line="67" selection-start-column="126" selection-end-line="67" selection-end-column="126" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -41,9 +41,11 @@
       <file leaf-file-name="TimelineDate.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/TimelineDate.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="44">
-              <caret line="32" column="32" selection-start-line="32" selection-start-column="32" selection-end-line="32" selection-end-column="32" />
-              <folding />
+            <state relative-caret-position="211">
+              <caret line="43" column="12" selection-start-line="43" selection-start-column="12" selection-end-line="43" selection-end-column="12" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -51,8 +53,8 @@
       <file leaf-file-name="Engine.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Engine.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="193">
-              <caret line="387" column="11" selection-start-line="387" selection-start-column="11" selection-end-line="387" selection-end-column="11" />
+            <state relative-caret-position="148">
+              <caret line="52" column="37" selection-start-line="52" selection-start-column="37" selection-end-line="52" selection-end-column="37" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -63,7 +65,7 @@
       <file leaf-file-name="Result.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Result.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="445">
+            <state relative-caret-position="990">
               <caret line="65" column="31" selection-start-line="65" selection-start-column="31" selection-end-line="65" selection-end-column="31" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -153,6 +155,35 @@
     </navigator>
     <panes>
       <pane id="Scratches" />
+      <pane id="Scope">
+        <subPane subId="Project Files">
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT USER_OBJECT="timeline-extraction">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT USER_OBJECT="timeline-extraction">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT USER_OBJECT="src">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -183,35 +214,6 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="src" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
-      <pane id="PackagesPane" />
-      <pane id="Scope">
-        <subPane subId="Project Files">
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT USER_OBJECT="timeline-extraction">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT USER_OBJECT="timeline-extraction">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT USER_OBJECT="src">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
@@ -737,7 +739,14 @@
       <option name="project" value="LOCAL" />
       <updated>1480709028325</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="TimelineData.java:&#10;-added comments for further parsing of possible ouputs of StanfordCoreNLP, ie XXXX-MM INTERSECT PX[Y/M/W/D] ( every [Y/M/W/D] in M ...)&#10;&#10;TestClass.java:&#10;-added an extra sentence to see how the StanfordCoreNLP gives normalized dates for when an event is repeated every day/week/month/year on a certain month.&#10;">
+      <created>1480713469672</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1480713469672</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -751,17 +760,17 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-9" y="-9" width="1938" height="1098" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32905984" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28739315" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28739315" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32905984" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.51816237" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3525641" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32905984" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -817,9 +826,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Engine.java:&#10;-added TODO for later work" />
-    <MESSAGE value="Engine.java:&#10;-added class-level documentation&#10;-removed setting grammatical subjects, as it was sometimes giving double subjects; should make subject list in Result be a set to avoid having duplicates.&#10;&#10;TestClass.java:&#10;-commented out the call and print of Results that was obtained from code in the TestClass, as now the Engine is used for that." />
-    <MESSAGE value="Engine.java:&#10;-uncommented setGrammaticalSubjects()" />
     <MESSAGE value="Engine.java:&#10;-added the print of the work done by the annotator for development purpose of removing time expressions&#10;-made threshold non-final as we need to modify for a partial solution to remove time expressions&#10;-added method removeTimeExpressions() that removes time expressions from the tree, to trim it down&#10;-removeTimeExpressions() sets the threshold to 0 to remove any XP before the NP and calls xpBeforeNP, which if its a time expressions will be a PP (eg On the Friday...).Then sets the threshold back to its original value.&#10;-Added comments to removeTimeExpressions() for possible ways to remove time expressions." />
     <MESSAGE value="Engine.java:&#10;-added partial documentation for removeTimeExpressions()&#10;-added a comment for other possible way to remove time expressions" />
     <MESSAGE value="Engine.java:&#10;- Got the normalized entity tag, the suggested date by the stanford corenlp" />
@@ -842,7 +848,10 @@
     <MESSAGE value="TimelineDate.java:&#10;-will be used to parse the String dates given by StanfordCoreNLP to actual dates to then use in the timeline.&#10;-wrote pseudo-code for parse() (in comments)" />
     <MESSAGE value="TimelineDate.java:&#10;-added the efficient way of compiling patterns when they are going to be reused (being static and final).&#10;-started implementing the pseudo-code. Checks if the given input starts with YYYY or YYYX or YYXX or YXXX.&#10;&#10;Engine.java:&#10;-tested if for the dates found in the pre-defined text (which always have some form of start year), matches with the regex in TimelineDate (it does!).&#10;&#10;TestClass.java:&#10;-commented out code to test the pattern matching for the date" />
     <MESSAGE value="Engine.java:&#10;-calling TimelineDate.parse() to see how our date extraction system is working with the normalized dates provided by the StanfordCoreNLP&#10;&#10;TestClass.java:&#10;-added an extra sentence to see how the StanfordCoreNLP gives normalized dates for when an event is repeated every year on a certain month.&#10;&#10;TimelineDate.java:&#10;-added the Patterns for the different formats found up to now for the Normalized Dates provided by the StanfordCoreNLP. Identifies just years, years and months (even with the years that are unspecified), years,months and days, years and week number, years and season.&#10;-added comments for format when years are unknown but month is: where the text is of the type XXXX-MM INTERSECT P1Y." />
-    <option name="LAST_COMMIT_MESSAGE" value="Engine.java:&#10;-calling TimelineDate.parse() to see how our date extraction system is working with the normalized dates provided by the StanfordCoreNLP&#10;&#10;TestClass.java:&#10;-added an extra sentence to see how the StanfordCoreNLP gives normalized dates for when an event is repeated every year on a certain month.&#10;&#10;TimelineDate.java:&#10;-added the Patterns for the different formats found up to now for the Normalized Dates provided by the StanfordCoreNLP. Identifies just years, years and months (even with the years that are unspecified), years,months and days, years and week number, years and season.&#10;-added comments for format when years are unknown but month is: where the text is of the type XXXX-MM INTERSECT P1Y." />
+    <MESSAGE value="TimelineData.java:&#10;-added comments for further parsing of possible ouputs of StanfordCoreNLP, ie XXXX-MM INTERSECT PX[Y/M/W/D] ( every [Y/M/W/D] in M ...)&#10;&#10;TestClass.java:&#10;-added an extra sentence to see how the StanfordCoreNLP gives normalized dates for when an event is repeated every day/week/month/year on a certain month.&#10;" />
+    <MESSAGE value="TimelineDate.java:&#10;-added getDate() method that will for every date in the range passed into parse (which can be just 1) produce a list of dates (at most size 2) that represent that date: i.e. if have a range of a dates than the list will contain 2 dates, else will contain 1.&#10;-added comments to getDate() to explain the process of producing each date for each of the matching cases.&#10;-added comments to parse to define what to do in the case the date format includes INTERSECT PX[YMDW]. Two choices:  calculate the date passed along with INTERSECT... independently and just normalize INTERSECT... to a string that will be shown next to the date (most likely to work), or create a range representing the date and INTERSECT...(less likely to work)." />
+    <MESSAGE value="TimelineDate.java:&#10;-added getDate() method that will for every date in the range passed into parse (which can be just 1) produce a list of dates (at most size 2) that represent that date: i.e. if have a range of a dates than the list will contain 2 dates, else will contain 1.&#10;-added comments to getDate() to explain the process of producing each date for each of the matching cases.&#10;-added comments to parse to define what to do in the case the date format includes INTERSECT PX[YMDW]. Two choices:  calculate the date passed along with INTERSECT... independently and just normalize INTERSECT... to a string that will be shown next to the date (most likely to work), or create a range representing the date and INTERSECT...(less likely to work).&#10;-added TODO of possible way to implement getDate which is to split it into methods to get year, month, day (returns the default values if not possible), and develop case when the month is known but not the year: XXXX-mm" />
+    <option name="LAST_COMMIT_MESSAGE" value="TimelineDate.java:&#10;-added getDate() method that will for every date in the range passed into parse (which can be just 1) produce a list of dates (at most size 2) that represent that date: i.e. if have a range of a dates than the list will contain 2 dates, else will contain 1.&#10;-added comments to getDate() to explain the process of producing each date for each of the matching cases.&#10;-added comments to parse to define what to do in the case the date format includes INTERSECT PX[YMDW]. Two choices:  calculate the date passed along with INTERSECT... independently and just normalize INTERSECT... to a string that will be shown next to the date (most likely to work), or create a range representing the date and INTERSECT...(less likely to work).&#10;-added TODO of possible way to implement getDate which is to split it into methods to get year, month, day (returns the default values if not possible), and develop case when the month is known but not the year: XXXX-mm" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -855,16 +864,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/Result.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="8" column="70" selection-start-line="8" selection-start-column="70" selection-end-line="8" selection-end-column="70" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/TestClass.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="9372">
@@ -1259,7 +1258,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Result.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="445">
+        <state relative-caret-position="990">
           <caret line="65" column="31" selection-start-line="65" selection-start-column="31" selection-end-line="65" selection-end-column="31" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1267,10 +1266,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="jar://$USER_HOME$/Downloads/stanford-corenlp-full-2015-12-09/stanford-corenlp-3.6.0-sources.jar!/edu/stanford/nlp/trees/TreeCoreAnnotations.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="301">
+          <caret line="20" column="13" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Engine.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="193">
-          <caret line="387" column="11" selection-start-line="387" selection-start-column="11" selection-end-line="387" selection-end-column="11" />
+        <state relative-caret-position="148">
+          <caret line="52" column="37" selection-start-line="52" selection-start-column="37" selection-end-line="52" selection-end-column="37" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1279,8 +1285,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/TestClass.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="67" column="115" selection-start-line="67" selection-start-column="115" selection-end-line="67" selection-end-column="115" />
+        <state relative-caret-position="463">
+          <caret line="67" column="126" selection-start-line="67" selection-start-column="126" selection-end-line="67" selection-end-column="126" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -1289,9 +1295,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/TimelineDate.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="44">
-          <caret line="32" column="32" selection-start-line="32" selection-start-column="32" selection-end-line="32" selection-end-column="32" />
-          <folding />
+        <state relative-caret-position="211">
+          <caret line="43" column="12" selection-start-line="43" selection-start-column="12" selection-end-line="43" selection-end-column="12" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

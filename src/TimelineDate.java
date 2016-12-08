@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 /**
@@ -29,7 +31,9 @@ public class TimelineDate {
         //if it starts with YYYY
         //could put year, month and date in for loop as they will need to be reset after each date is created.
         //INTERSECT PX[Y/M/W/D] every X Year/Month/Week/Day: if Y then range is from 0000-9999, if every month then 1 month to 12
-        //if every week then dates go up by 7, if every day then 1 to 31
+        //if XXXX-MM INTERSECT PXY then starting from XXXX-MM (every X years),  or if XXXX-MM INTERSECT PXD then starting from XXXX-MM (every X days)
+        // if every week then dates go up , if every day then 1 to 31 (should normalize INTERSECT PX[YMWD] to a text to hold eg
+        //if INTERSECT P2Y the normalized text should be every 2 years, and so on.
         //could ignore INTERSECT
         System.out.println("Passing date: "+date);
         if(yearPattern.matcher(date).matches()) {
@@ -99,5 +103,41 @@ public class TimelineDate {
 
             //add dates to list of dates
         }
+        //split and call getDate for each part in split
+        //there check patterns
+
+    }
+    //TODO: case when month is known but not year (could break this into methods to determine year,month and day by passing in split data.
+    private ArrayList<Date> getDate(String date){
+        ArrayList<Date> dates = new ArrayList<>();
+        if(onlyYearPattern.matcher(date).matches()){//just year
+            if(yearPatternWithX.matcher(date).matches()) {//if our date consists unknown year info
+                String startYear = date.replaceAll("X", "0");
+                String endYear = date.replaceAll("X", "9");
+            }//else get date and use default month and day to make date.
+            //make two dates: startYear-month-day and endYear-month-day and add them to dates
+        }else if(yearMonthPattern.matcher(date).matches()){//just year-month
+            String[] splitDate = date.split("-");//know it has this format
+            String year = splitDate[0];
+            String month = splitDate[1];
+            //make one date: year-month-day and add to dates
+        }else if(yearMonthDayPattern.matcher(date).matches()){//full date: year-month-day
+            //make one date and add it to dates
+        }else if(yearWeekNumberPattern.matcher(date).matches()){//just year-weeknumber
+            String[] splitDate = date.split("-");
+            String year = splitDate[0];
+            String weeknumber = splitDate[1].substring(1);//remove the w in the weeknumber
+            //find where the week number points to (ie start year-month-day and end year-month-day)
+            //make two date: with the above data and add it to dates.
+        }else if(yearSeasonPattern.matcher(date).matches()){//just year-season
+            String[] splitDate = date.split("-");
+            String year = splitDate[0];
+            String season = splitDate[1];//need to find what start month-day and end month-day this season corresponds to
+            //make two dates: with start year-month-day and end year-month-day (year might be increased if season goes to next year
+            //check if end month is < start month, now need to increase year by 1
+        }//else if you have [DATE] INTERSECT PX[YMDW] then split into: [DATE] and INTERSECT PX[YMDW]
+        //run just the [DATE] through this method again, interpret intersect to get string eg: INTERSECT P1Y every year
+        //add the date to dates and pass the string back to the Result object.
+        return dates;
     }
 }
