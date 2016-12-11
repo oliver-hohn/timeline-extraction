@@ -23,6 +23,7 @@ public class Result {
         this.event = event;
         subjects = new HashSet<>();
         dateFormat = DateFormat.getDateInstance();
+        dates_1 = new ArrayList<>();
     }
 
     public boolean hasDate(String date){
@@ -32,6 +33,14 @@ public class Result {
             }
         }
         return false;
+    }
+
+    public ArrayList<Date> getDates_1() {
+        return dates_1;
+    }
+
+    public void setDates_1(ArrayList<Date> dates_1) {
+        this.dates_1 = dates_1;
     }
 
     public String getEvent() {
@@ -64,5 +73,6 @@ public class Result {
     public void addDate_1(String date){
         System.out.println("About to parse: "+date);
         //build own date system
+        dates_1.addAll(new TimelineDate().parse(date));
     }
 }

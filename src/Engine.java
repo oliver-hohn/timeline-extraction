@@ -101,7 +101,7 @@ public class Engine {
                 System.out.println("We are storing date: " + date);
                 result.addDate(date);
                 result.addDate_1(date_1);
-                new TimelineDate().parse(date_1);
+
             } else if (namedEntityTag.equals("LOCATION") || namedEntityTag.equals("ORGANIZATION") ||
                     namedEntityTag.equals("PERSON") || namedEntityTag.equals("MONEY")) {
                 //found a subject for the result object
