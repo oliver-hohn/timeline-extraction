@@ -25,7 +25,7 @@ public class TimelineDate {
         seasonMap = map;
     }
                                                                     //wont pick up for dates like: every year in january, which has format XXXX-01
-    private final static Pattern yearPattern = Pattern.compile("(\\d{4}.*$)|(\\d{3}X.*$)|(\\d{2}XX.*$)|(\\dXXX.*$)");//pattern to check the start of the sentence matching year
+    private final static Pattern yearPattern = Pattern.compile("(\\d{4}.*$)|(\\d{3}X.*$)|(\\d{2}XX.*$)|(\\dXXX.*$)|(XXXX.*$)");//pattern to check the start of the sentence matching year
     private final static Pattern onlyYearPattern = Pattern.compile("(\\d{4})|(\\d{3}X)|(\\d{2}XX)|(\\dXXX)");
     private final static Pattern yearMonthPattern = Pattern.compile("\\d{4}\\-\\d{2}");
     private final static Pattern yearMonthDayPattern = Pattern.compile("\\d{4}\\-\\d{2}\\-\\d{2}");
@@ -55,7 +55,14 @@ public class TimelineDate {
         if(yearPattern.matcher(date).matches()) {
             String[] splitDate = date.split("/");
             for(String split : splitDate){
+                System.out.println(split);
                 //check for INTERSECT and remove it appropriately
+                if(split.contains("INTERSECT")){
+                    System.out.println("Contains INTERSECT");
+                    System.out.println("Split gives you length: "+split.split("INTERSECT").length);
+                    System.out.println(split.split("INTERSECT")[0]);
+                }
+
                 dates.addAll(getDate(split));
             }
             /*//System.out.println("Date is legal: "+date);
