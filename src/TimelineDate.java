@@ -1,5 +1,3 @@
-import edu.stanford.nlp.util.Execution;
-import edu.stanford.nlp.util.Index;
 import edu.stanford.nlp.util.Pair;
 
 import java.text.ParseException;
@@ -10,6 +8,11 @@ import java.util.regex.Pattern;
 /**
  * Represents the dates for a timeline event.
  * Months and days start from 1
+ *
+ *
+ * stores passed in date as toString
+ * generates an exact date to order
+ *  TODO: method for addding to this timelinedate (when we already generated exact dates), store the list
  */
 public class TimelineDate {
     private static final String year = "0001";
@@ -32,11 +35,7 @@ public class TimelineDate {
     private final static Pattern yearWeekNumberPattern = Pattern.compile("\\d{4}\\-W\\d{2}");
     private final static Pattern yearSeasonPattern = Pattern.compile("\\d{4}\\-[A-Z]{2}");
     private final static Pattern yearPatternWithX = Pattern.compile("(\\d{3}X)|(\\d{2}XX)|(\\dXXX)");
-    public TimelineDate(){
-/*        year = "0001";
-        month = "01";
-        day = "01";*/
-    }
+    public TimelineDate(){    }
 
     /**
      *
@@ -65,57 +64,6 @@ public class TimelineDate {
 
                 dates.addAll(getDate(split));
             }
-            /*//System.out.println("Date is legal: "+date);
-            //split to check for range
-            //System.out.println(date.split("/").length);
-            String[] splitDate = date.split("/");
-            for(int i=0; i<splitDate.length; i++){
-                //split into year month and day
-                if(onlyYearPattern.matcher(splitDate[i]).matches()){//checking just for year dates
-                    System.out.println("Date: "+splitDate[i]+ " is just a year YYYY");
-                    if(yearPatternWithX.matcher(splitDate[i]).matches()) {
-                        //need to check X's (check if it has any), for first, replace every X with 0, for last replace every X with 9
-                        String startYear = splitDate[i].replaceAll("X", "0");
-                        String endYear = splitDate[i].replaceAll("X", "9");
-
-                        System.out.println("Our years for: "+splitDate[i]+" is: "+startYear+" - "+endYear);
-                    }
-                    //break into year and set it
-                }else if(yearMonthPattern.matcher(splitDate[i]).matches()){//checking just for year-month dates
-                    System.out.println("Date: "+splitDate[i]+" has the format YYYY-MM");
-                    //break into year and month and set it
-                    String[] splitString = splitDate[i].split("-");//as we are in if, the string has format YYYY-MM can split it
-                    String year = splitString[0];
-                    String month = splitString[1];
-
-                    System.out.println("For: "+splitDate[i]+" we have as year: "+year+" and month: "+month);
-                }else if(yearMonthDayPattern.matcher(splitDate[i]).matches()){//checking for year-month-date
-                    System.out.println("Date: "+splitDate[i]+" has the format YYYY-MM-DD");
-                    //break into year, month and day, or just set it to date directly
-                    String[] splitString = splitDate[i].split("-");//because of above matching we know we have a string of the format YYYY-MM-DD
-                    String year = splitString[0];
-                    String month = splitString[1];
-                    String day = splitString[2];
-
-                    System.out.println("For: "+splitDate[i]+" we have as year: "+year+" , month: "+month+" and day: "+day);
-                }else if(yearWeekNumberPattern.matcher(splitDate[i]).matches()){//checking for year-weeknumber
-                    System.out.println("Date: "+splitDate[i]+" has the format YYYY-Wdd");
-                    //break into year and weeknumber, then calculate month from week number
-                    String[] splitString = splitDate[i].split("-");
-                    String year = splitString[0];
-                    String weekNo = splitString[1].substring(1);//need to remove the W to just get the week number, gives you substring from position 1
-
-                    System.out.println("For: "+splitDate[i]+" we have as year: "+year+" and week number: "+weekNo);
-                }else if(yearSeasonPattern.matcher(splitDate[i]).matches()){//checking for year-season
-                    System.out.println("Date: "+splitDate[i]+" has the format YYYY-Season");
-                    //break into year and season, then create two date objects, with same year, one with start season month and day and other with end season month and day
-                    String[] splitString = splitDate[i].split("-");
-                    String year = splitString[0];
-                    String season = splitString[1];
-
-                    System.out.println("For: "+splitDate[i]+" we have as year: "+year+" and season: "+season);
-                }
-            }*/
             //split into year, month, and day
             //check what format it follows: YYYY, YYYY-MM, YYYY-dd-dd ,YYYY-Wdd, YYYY-Season ,YYYX, YYXX, YXXX
             //for YYYY just set it for the year
@@ -242,6 +190,13 @@ public class TimelineDate {
         //add the date to dates and pass the string back to the Result object.
         System.out.println("");
         return dates;
+    }
+
+    /**
+     * enforces rule that arraylist can only have two dates
+     */
+    private void cleanUp(){
+
     }
 
     private String returnDate(String year, String month, String day){
