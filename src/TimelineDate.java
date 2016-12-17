@@ -13,9 +13,9 @@ import java.util.regex.Pattern;
  *
  * stores passed in date as toString
  * generates an exact date to order
- *  TODO: method for addding to this timelinedate (when we already generated exact dates), store the list
+ *
  */
-public class TimelineDate {
+public class TimelineDate implements Comparable<TimelineDate>{
     private static final String year = "0001";
     private static final String month = "01";
     private static final String day = "01";
@@ -35,6 +35,9 @@ public class TimelineDate {
     private final static Pattern onlyDayPattern = Pattern.compile("\\d{2}");
 
     private Calendar calendar;
+    private Date date1;//first (min, start) date
+    private Date date2;//second (max, end) date
+    private String dateStr;
     public TimelineDate(){
         calendar = Calendar.getInstance();
     }
@@ -43,7 +46,7 @@ public class TimelineDate {
      *
      * @param date a date provided by the StanfordCoreNLP library: it is a normalized entity
      */
-    public ArrayList<Date> parse(String date){
+    public void parse(String date){
         ArrayList<Date> dates = new ArrayList<>();
         //splitting INTERSECT
         String[] splitDate = date.split("INTERSECT");
@@ -56,7 +59,7 @@ public class TimelineDate {
         }
         //if we had INTERSECT then we should process it for additional info to show
         //if we have more than 2 dates in the list, then keep the minimum date and max date and remove all the others
-        return dates;
+        enforceRule(dates,date);
     }
 
     private ArrayList<Date> getDate(String date){
@@ -150,11 +153,25 @@ public class TimelineDate {
          */
     }
 
-    /**
-     * enforces rule that arraylist can only have two dates
-     */
-    private void cleanUp(){
+    private void enforceRule(ArrayList<Date> newDates, String date){
+        sortList(newDates, date);
+    }
 
+    private void sortList(ArrayList<Date> toSort, String date){
+        Collections.sort(toSort);
+        Date date1 = toSort.get(0);
+        Date date2 = null;
+        if (toSort.size() > 1) {
+            date2 = toSort.get(toSort.size()-1);
+        }
+        if(this.date1 == null || this.date1.compareTo(date1) > 0){//we found a new lowest date
+            this.date1 = date1;
+            dateStr = date;
+        }
+        if(date2 != null && (this.date2 == null || this.date2.compareTo(date2) < 0)){//found a new max/highest date
+            this.date2 = date2;
+            dateStr = date;
+        }
     }
 
     private String returnDate(String year, String month, String day){
@@ -167,5 +184,33 @@ public class TimelineDate {
         }catch (Exception e){
             return 1;
         }
+    }
+
+    public String getDateStr() {
+        return dateStr;
+    }
+
+    @Override
+    public String toString() {
+        String toReturn = "";
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        if(date1 != null){
+            toReturn += simpleDateFormat.format(date1);
+        }
+        if(date2 != null){
+            toReturn += " -> "+simpleDateFormat.format(date2);
+        }
+        return toReturn;
+    }
+
+    @Override
+    public int compareTo(TimelineDate o) {
+        if(o.date1 != null && this.date1 != null){
+            return o.date1.compareTo(this.date1);
+        }
+        if(this.date1 == null){
+            return -1;
+        }
+        return 1;
     }
 }

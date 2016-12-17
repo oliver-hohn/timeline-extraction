@@ -1,29 +1,25 @@
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Created by Oliver on 29/10/2016.
  */
-public class Result {
+public class Result implements Comparable<Result> {
     private ArrayList<String> dates;
     private String event;
     private Set<String> subjects;
-    private ArrayList<Date> dates_1;
-    private DateFormat dateFormat;
+    private TimelineDate timelineDate;
 
     public Result(){
-        this("","");
+        this("");
     }
 
-    public Result(String date, String event){
+    public Result(String event){
         dates = new ArrayList<>();
         this.event = event;
         subjects = new HashSet<>();
-        dateFormat = DateFormat.getDateInstance();
-        dates_1 = new ArrayList<>();
+        timelineDate = new TimelineDate();
     }
 
     public boolean hasDate(String date){
@@ -33,14 +29,6 @@ public class Result {
             }
         }
         return false;
-    }
-
-    public ArrayList<Date> getDates_1() {
-        return dates_1;
-    }
-
-    public void setDates_1(ArrayList<Date> dates_1) {
-        this.dates_1 = dates_1;
     }
 
     public String getEvent() {
@@ -58,6 +46,7 @@ public class Result {
     public ArrayList<String> getDates(){
         return dates;
     }
+
     public Set<String> getSubjects(){
         return subjects;
     }
@@ -67,12 +56,17 @@ public class Result {
     }
     @Override
     public String toString() {
-        return String.format("Date: %s, Subject: %s, Event: %s",dates, subjects,event);
+        return String.format("Date: %s, Subject: %s, Event: %s",timelineDate, subjects,event);
     }
 
     public void addDate_1(String date){
         System.out.println("About to parse: "+date);
-        //build own date system
-        dates_1.addAll(new TimelineDate().parse(date));
+        timelineDate.parse(date);
+    }
+
+
+    @Override
+    public int compareTo(Result o) {
+        return o.timelineDate.compareTo(this.timelineDate);
     }
 }
