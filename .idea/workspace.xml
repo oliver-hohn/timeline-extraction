@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="587ec24f-be60-4c16-80d8-cb2693c0111f" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/NLPPrototype/TestClass.class" afterPath="$PROJECT_DIR$/out/production/NLPPrototype/TestClass.class" />
+    <list default="true" id="587ec24f-be60-4c16-80d8-cb2693c0111f" name="Default" comment="TestClass.java:&#10;-removed the previous implementation of the Engine, that was unused, and just there for testing purposes.&#10;&#10;TimelineDate.java:&#10;-optimised imports.&#10;-added documentation.&#10;-formatted code.">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/NLPPrototype/Result.class" afterPath="$PROJECT_DIR$/out/production/NLPPrototype/Result.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Result.java" afterPath="$PROJECT_DIR$/src/Result.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/TestClass.java" afterPath="$PROJECT_DIR$/src/TestClass.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/TimelineDate.java" afterPath="$PROJECT_DIR$/src/TimelineDate.java" />
     </list>
@@ -28,11 +27,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file leaf-file-name="TestClass.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="TestClass.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/TestClass.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="242">
-              <caret line="85" column="39" selection-start-line="85" selection-start-column="39" selection-end-line="85" selection-end-column="39" />
+            <state relative-caret-position="66">
+              <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -40,19 +39,15 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TimelineDate.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="TimelineDate.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/TimelineDate.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="266">
-              <caret line="211" column="22" selection-start-line="211" selection-start-column="22" selection-end-line="211" selection-end-column="22" />
+            <state relative-caret-position="353">
+              <caret line="211" column="50" selection-start-line="211" selection-start-column="50" selection-end-line="211" selection-end-column="50" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#1548#1549#0" expanded="true" />
-                <element signature="e#1597#1598#0" expanded="true" />
-                <element signature="e#7701#7702#0" expanded="true" />
-                <element signature="e#7741#7742#0" expanded="true" />
-                <element signature="e#8692#8693#0" expanded="true" />
-                <element signature="e#8722#8723#0" expanded="true" />
+                <element signature="e#1970#1971#0" expanded="true" />
+                <element signature="e#2019#2020#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -61,7 +56,7 @@
       <file leaf-file-name="Engine.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Engine.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="569">
+            <state relative-caret-position="-3649">
               <caret line="103" column="0" selection-start-line="103" selection-start-column="0" selection-end-line="103" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -73,7 +68,7 @@
       <file leaf-file-name="Result.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Result.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="194">
+            <state relative-caret-position="1342">
               <caret line="67" column="13" selection-start-line="67" selection-start-column="13" selection-end-line="67" selection-end-column="13" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -131,8 +126,8 @@
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/src/Engine.java" />
         <option value="$PROJECT_DIR$/src/Result.java" />
-        <option value="$PROJECT_DIR$/src/TimelineDate.java" />
         <option value="$PROJECT_DIR$/src/TestClass.java" />
+        <option value="$PROJECT_DIR$/src/TimelineDate.java" />
       </list>
     </option>
   </component>
@@ -773,7 +768,14 @@
       <option name="project" value="LOCAL" />
       <updated>1481997500936</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="Result.java:&#10;-fixed the constructor.&#10;-removed unused list of dates&#10;-toString now uses the timelinedate as the date of a result object.&#10;-results are now comparable by their timeline dates.&#10;&#10;TimelineDate.java:&#10;-holds a start and end date ( both can be null), and the string that set these dates.&#10;-parse doesn't return a list anymore as TimelineDate is now responsible for holding the dates.&#10;-enforceRules() ensures that TimelineDate holds the min date and max date up to now, after having processed a date String.&#10;-sortList() is used to sort the resulting list of parse() to then get its min and max to compare to the min max of TimelineDate, to then update appropriately.&#10;-toString() prints the range of dates accordingly, only prints one if we don't have a second date.&#10;-compareTo() compares this TimelineDate with another, by just comparing the start date, i.e. in the timeline, if your start date is before another you will appear first (even in the other finishes first).&#10;&#10;TestClass.java:&#10;-tested out the sorting for the given input text, it works.">
+      <created>1482000512436</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1482000512436</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -791,13 +793,13 @@
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32905984" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2863248" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2863248" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.6645299" sideWeight="0.50214595" order="10" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3299356" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32905984" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.47863248" sideWeight="0.49785408" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.025641026" sideWeight="0.49785408" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32905984" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -853,8 +855,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Engine.java:&#10;- made setDatesAndSubjectsNET be void again.&#10;- removed from setDatesAndSubjects string that previously was supposed to not contain time expressions, and the prints of it that were used to debug." />
-    <MESSAGE value="Engine.java:&#10;-changed produceString to not add a space after the last word in the returned String.&#10;-for removeTimeExpressions() began implementing the removal of time expressions according to Hedge Trimmer: A Parse-and-Trim Approach to Headline Generation document. First deleting any PPs that contain a NP which itself has the time expression.(next: delete any NP that contains the time expression)." />
     <MESSAGE value="Engine.java:&#10;-added the implementation in removeTimeExpressions to delete any NP that contains a time expression. (In the future will try to combine the two for a better solution).&#10;-removed the previous implementation of removeTimeExpressions that would delete any XP before NP in the tree, but this would delete most of the time any time expression, but it could delete non time expressions that are also XP and appear before the NP (subject) of the sentence." />
     <MESSAGE value="Engine.java:&#10;-added print statements of the tree before going through removeTimeExpressions and afterwards" />
     <MESSAGE value="Engine.java:&#10;-added print statements of the tree before going through removeTimeExpressions and afterwards. (Commented out the print in the middle)" />
@@ -878,7 +878,9 @@
     <MESSAGE value="TimelineDate.java:&#10;-a year pattern can now also just be: XXXX (completely unknown date with range 0000-9999).&#10;-if the string date is of format DATE INTERSECT.., it will split it to get DATE and process DATE separately. (Later would process INTERSECT.. to pass in as additional information with the date retrieved: e.g. 2014-01-01 -&gt; 2016-01-01 every 2 days for 2014/2016 INTERSECT P2D.&#10;-prints added for clarity" />
     <MESSAGE value="TimelineDate.java:&#10;-optimised imports&#10;-removed commented out code&#10;-added method stub for cleanup() that cleans the arraylist of dates to have at most two" />
     <MESSAGE value="TimelineDate.java:&#10;-correctly produces a list for all known date formats produced by StanfordCoreNLP.&#10;-Made the hashmap of season hold the string representation of the start and end month of each season.&#10;-added the patterns that consider each part of a  date individually.&#10;-parse() now splits the date into the actual date information (e.g. YYYY-MM-DD) and the additional information (e.g. INTERSECT ...), to then process the date information independently.&#10;-getDate() know processes each part of a date (semi-) independently of each other. Breaking the input date into its parts, and evaluating each in a sequential order" />
-    <option name="LAST_COMMIT_MESSAGE" value="TimelineDate.java:&#10;-correctly produces a list for all known date formats produced by StanfordCoreNLP.&#10;-Made the hashmap of season hold the string representation of the start and end month of each season.&#10;-added the patterns that consider each part of a  date individually.&#10;-parse() now splits the date into the actual date information (e.g. YYYY-MM-DD) and the additional information (e.g. INTERSECT ...), to then process the date information independently.&#10;-getDate() know processes each part of a date (semi-) independently of each other. Breaking the input date into its parts, and evaluating each in a sequential order" />
+    <MESSAGE value="Result.java:&#10;-fixed the constructor.&#10;-removed unused list of dates&#10;-toString now uses the timelinedate as the date of a result object.&#10;-results are now comparable by their timeline dates.&#10;&#10;TimelineDate.java:&#10;-holds a start and end date ( both can be null), and the string that set these dates.&#10;-parse doesn't return a list anymore as TimelineDate is now responsible for holding the dates.&#10;-enforceRules() ensures that TimelineDate holds the min date and max date up to now, after having processed a date String.&#10;-sortList() is used to sort the resulting list of parse() to then get its min and max to compare to the min max of TimelineDate, to then update appropriately.&#10;-toString() prints the range of dates accordingly, only prints one if we don't have a second date.&#10;-compareTo() compares this TimelineDate with another, by just comparing the start date, i.e. in the timeline, if your start date is before another you will appear first (even in the other finishes first).&#10;&#10;TestClass.java:&#10;-tested out the sorting for the given input text, it works." />
+    <MESSAGE value="TestClass.java:&#10;-removed the previous implementation of the Engine, that was unused, and just there for testing purposes.&#10;&#10;TimelineDate.java:&#10;-optimised imports.&#10;-added documentation.&#10;-formatted code." />
+    <option name="LAST_COMMIT_MESSAGE" value="TestClass.java:&#10;-removed the previous implementation of the Engine, that was unused, and just there for testing purposes.&#10;&#10;TimelineDate.java:&#10;-optimised imports.&#10;-added documentation.&#10;-formatted code." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1449,7 +1451,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Engine.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="569">
+        <state relative-caret-position="-3649">
           <caret line="103" column="0" selection-start-line="103" selection-start-column="0" selection-end-line="103" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1459,7 +1461,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Result.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="194">
+        <state relative-caret-position="1342">
           <caret line="67" column="13" selection-start-line="67" selection-start-column="13" selection-end-line="67" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -1479,28 +1481,24 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/TimelineDate.java">
+    <entry file="file://$PROJECT_DIR$/src/TestClass.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="266">
-          <caret line="211" column="22" selection-start-line="211" selection-start-column="22" selection-end-line="211" selection-end-column="22" />
+        <state relative-caret-position="66">
+          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1548#1549#0" expanded="true" />
-            <element signature="e#1597#1598#0" expanded="true" />
-            <element signature="e#7701#7702#0" expanded="true" />
-            <element signature="e#7741#7742#0" expanded="true" />
-            <element signature="e#8692#8693#0" expanded="true" />
-            <element signature="e#8722#8723#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/TestClass.java">
+    <entry file="file://$PROJECT_DIR$/src/TimelineDate.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="242">
-          <caret line="85" column="39" selection-start-line="85" selection-start-column="39" selection-end-line="85" selection-end-column="39" />
+        <state relative-caret-position="353">
+          <caret line="211" column="50" selection-start-line="211" selection-start-column="50" selection-end-line="211" selection-end-column="50" />
           <folding>
             <element signature="imports" expanded="true" />
+            <element signature="e#1970#1971#0" expanded="true" />
+            <element signature="e#2019#2020#0" expanded="true" />
           </folding>
         </state>
       </provider>

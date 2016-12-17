@@ -1,4 +1,3 @@
-import edu.stanford.nlp.util.Index;
 import edu.stanford.nlp.util.Pair;
 
 import java.text.ParseException;
@@ -7,27 +6,31 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * Represents the dates for a timeline event.
- * Months and days start from 1
- *
- *
- * stores passed in date as toString
- * generates an exact date to order
- *
+ * Attempts to generate an exact date for an event, to then order the events.
+ * Holds the start and end date (appropriately) for each event in the timeline. It updates as new dates, relevant to the
  */
-public class TimelineDate implements Comparable<TimelineDate>{
+public class TimelineDate implements Comparable<TimelineDate> {
     private static final String year = "0001";
     private static final String month = "01";
     private static final String day = "01";
-    private static final Map<String, Pair<String,String>> seasonMap;
+    private static final Map<String, Pair<String, String>> seasonMap;
+
     static {
-        Map<String, Pair<String,String>> map = new HashMap<>();
+        /*
+            Seasons are given according to educationuk.org, by:
+                Winter December , January, February (12,1,2)
+                Spring is March, April and May (3,4,5)
+                Summer is June, July, August (6,7,8)
+                Autumn September, October, November (9,10,11)
+         */
+        Map<String, Pair<String, String>> map = new HashMap<>();
         map.put("WI", new Pair<>("12", "02"));
         map.put("SP", new Pair<>("03", "05"));
         map.put("SU", new Pair<>("06", "08"));
         map.put("FA", new Pair<>("09", "11"));
         seasonMap = map;
     }
+
     private final static Pattern onlyYearPattern = Pattern.compile("(\\d{4})|(\\d{3}X)|(\\d{2}XX)|(\\dXXX)|(XXXX)");
     private final static Pattern onlyMonthPattern = Pattern.compile("\\d{2}");
     private final static Pattern onlyWeekNumberPattern = Pattern.compile("W\\d{2}");
@@ -38,31 +41,42 @@ public class TimelineDate implements Comparable<TimelineDate>{
     private Date date1;//first (min, start) date
     private Date date2;//second (max, end) date
     private String dateStr;
-    public TimelineDate(){
+
+    /**
+     * Initialises the Calendar used to determine dates based on week number.
+     */
+    public TimelineDate() {
         calendar = Calendar.getInstance();
     }
 
     /**
+     * Update the dates hold by this, based on the input text.
      *
      * @param date a date provided by the StanfordCoreNLP library: it is a normalized entity
      */
-    public void parse(String date){
+    public void parse(String date) {
         ArrayList<Date> dates = new ArrayList<>();
         //splitting INTERSECT
         String[] splitDate = date.split("INTERSECT");
-        if(splitDate.length > 0){// on the first part of the date, which is just a date, get its specfic date
+        if (splitDate.length > 0) {// on the first part of the date, which is just a date, get its specfic date
             String possibleDates = splitDate[0];//this date could also be a range, ie include /
             String[] splitRange = possibleDates.split("/");
-            for(String possibleDate: splitRange){
+            for (String possibleDate : splitRange) {
                 dates.addAll(getDate(possibleDate));// from processing the individual date, add it to dates
             }
         }
         //if we had INTERSECT then we should process it for additional info to show
         //if we have more than 2 dates in the list, then keep the minimum date and max date and remove all the others
-        enforceRule(dates,date);
+        enforceRule(dates, date);
     }
 
-    private ArrayList<Date> getDate(String date){
+    /**
+     * For the given input, produce a list of dates based on it.
+     *
+     * @param date an input text that contains date information (can be exact or relative).
+     * @return a list of exact Dates formed from the input.
+     */
+    private ArrayList<Date> getDate(String date) {
         ArrayList<Date> dates = new ArrayList<>();
         String year1 = year;//setting the default values
         String month1 = month;
@@ -73,25 +87,24 @@ public class TimelineDate implements Comparable<TimelineDate>{
 
         //now need to split date into its individual components
         String[] dateInfo = date.split("-");
-        for(int i=0; i<dateInfo.length; i++){
-            if(i == 0){//this can only be a year
+        for (int i = 0; i < dateInfo.length; i++) {
+            if (i == 0) {//this can only be a year
                 //check year format
-                if(onlyYearPattern.matcher(dateInfo[i]).matches()){
-                    year1 = dateInfo[i].replace("X","0");
-                    if(dateInfo[i].contains("X")) {//if we do have a range then we need to set the values for the second date
-                        year2 = dateInfo[i].replace("X","9");
+                if (onlyYearPattern.matcher(dateInfo[i]).matches()) {
+                    year1 = dateInfo[i].replace("X", "0");
+                    if (dateInfo[i].contains("X")) {//if we do have a range then we need to set the values for the second date
+                        year2 = dateInfo[i].replace("X", "9");
                         month2 = "12";//last day of the second year
                         day2 = "31";//assuming a range for 1980s means 1980 to the last day of 1989 (maximum possible range)
                     }
                 }
-                continue;//move onto the next part of the year
-            }else if(i == 1){//this can be a week number, a month number or a season
+            } else if (i == 1) {//this can be a week number, a month number or a season
                 //checking if its a month
-                System.out.println("Checking: "+dateInfo[i]);
-                if(onlyMonthPattern.matcher(dateInfo[i]).matches()){
+                System.out.println("Checking: " + dateInfo[i]);
+                if (onlyMonthPattern.matcher(dateInfo[i]).matches()) {
                     System.out.println("In onlyMonthPattern");
                     month1 = dateInfo[i];
-                }else if(onlyWeekNumberPattern.matcher(dateInfo[i]).matches()){//checking if its a week number
+                } else if (onlyWeekNumberPattern.matcher(dateInfo[i]).matches()) {//checking if its a week number
                     //calculate month and start day-end
                     //split W from actual week number
                     String weekNumber = dateInfo[i].substring(1);//W is the first part of the string, after it is the week number
@@ -105,30 +118,29 @@ public class TimelineDate implements Comparable<TimelineDate>{
                     month2 = new SimpleDateFormat("MM").format(calendar.getTime());
                     day2 = new SimpleDateFormat("dd").format(calendar.getTime());
                     year2 = new SimpleDateFormat("yyyy").format(calendar.getTime());
-                }else if(onlySeasonPattern.matcher(dateInfo[i]).matches()){//checking if its a season
+                } else if (onlySeasonPattern.matcher(dateInfo[i]).matches()) {//checking if its a season
                     String season = dateInfo[i];
                     Pair<String, String> seasonPair = seasonMap.get(season);//get the start and end month for the season
-                    if(seasonPair != null){//year1 should be set previously
-                        month1 = seasonPair.first.toString();
-                        month2 = seasonPair.second.toString();
+                    if (seasonPair != null) {//year1 should be set previously
+                        month1 = seasonPair.first;
+                        month2 = seasonPair.second;
                         day2 = "31";//set the second day as we are using a range
-                        if(seasonPair.first.equals("12")){//move onto the next year, so year2 should be updated
-                            year2 = (getInt(year1)+1)+"";
-                        }else{//we dont need to increment the year as the season is within the same year
+                        if (seasonPair.first.equals("12")) {//move onto the next year, so year2 should be updated
+                            year2 = (getInt(year1) + 1) + "";
+                        } else {//we dont need to increment the year as the season is within the same year
                             year2 = year1;
                         }
                     }
                 }
-                continue;//move onto next part
-            }else if(i == 2){//can only be a day
-                if(onlyDayPattern.matcher(dateInfo[i]).matches()){//got the day
-                    day1= dateInfo[i];
+            } else if (i == 2) {//can only be a day
+                if (onlyDayPattern.matcher(dateInfo[i]).matches()) {//got the day
+                    day1 = dateInfo[i];
                 }
             }
         }
-        System.out.println("For: "+date);
-        System.out.println("For Date1 we have: "+year1+"-"+month1+"-"+day1);
-        System.out.println("For Date2 we have: "+year2+"-"+month2+"-"+day2);
+        System.out.println("For: " + date);
+        System.out.println("For Date1 we have: " + year1 + "-" + month1 + "-" + day1);
+        System.out.println("For Date2 we have: " + year2 + "-" + month2 + "-" + day2);
         //trying to form date objects
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
@@ -140,75 +152,90 @@ public class TimelineDate implements Comparable<TimelineDate>{
                 dates.add(date2);
                 System.out.println(date2);
             }
-        }catch (ParseException e){
+        } catch (ParseException e) {
             //could not add the dates
         }
         System.out.println("\n");
         return dates;
-        /* according to educationuk.org:
-            Autumn September, October, November (9,10,11) (9-11)
-            Winter December , January, February (12,1,2) (0-2)
-            Spring is March, April and May (3,4,5) (3-5)
-            Summer is June, July, August (6,7,8) (6-8)
-         */
     }
 
-    private void enforceRule(ArrayList<Date> newDates, String date){
-        sortList(newDates, date);
-    }
-
-    private void sortList(ArrayList<Date> toSort, String date){
-        Collections.sort(toSort);
-        Date date1 = toSort.get(0);
+    /**
+     * Used to find update the min/max dates held. Will update the dates held if a new min/max has been found.
+     *
+     * @param newDates a list of possible new min/max dates
+     * @param date     the string that produced these dates.
+     */
+    private void enforceRule(ArrayList<Date> newDates, String date) {
+        Collections.sort(newDates);
+        Date date1 = newDates.get(0);
         Date date2 = null;
-        if (toSort.size() > 1) {
-            date2 = toSort.get(toSort.size()-1);
+        if (newDates.size() > 1) {
+            date2 = newDates.get(newDates.size() - 1);
         }
-        if(this.date1 == null || this.date1.compareTo(date1) > 0){//we found a new lowest date
+        if (this.date1 == null || this.date1.compareTo(date1) > 0) {//we found a new lowest date
             this.date1 = date1;
             dateStr = date;
         }
-        if(date2 != null && (this.date2 == null || this.date2.compareTo(date2) < 0)){//found a new max/highest date
+        if (date2 != null && (this.date2 == null || this.date2.compareTo(date2) < 0)) {//found a new max/highest date
             this.date2 = date2;
             dateStr = date;
         }
     }
 
-    private String returnDate(String year, String month, String day){
-        return String.format("%s-%s-%s",year,month,day);
+    /**
+     * Produces a date String of the format yyyy-MM-dd, for the given input.
+     *
+     * @param year  the year of the date
+     * @param month the month of the date
+     * @param day   the day of the date
+     * @return a String of the format yyyy-MM-dd
+     */
+    private String returnDate(String year, String month, String day) {
+        return String.format("%s-%s-%s", year, month, day);
     }
 
-    private int getInt(String number){
-        try{
-            return new Integer(number).intValue();
-        }catch (Exception e){
+    /**
+     * On the given input, produce an integer.
+     *
+     * @param number a number in String form.
+     * @return the integer value corresponding to the string, or 1 if it is not possible to produce an int.
+     */
+    private int getInt(String number) {
+        try {
+            return Integer.parseInt(number);
+        } catch (Exception e) {
             return 1;
         }
     }
 
-    public String getDateStr() {
-        return dateStr;
-    }
-
+    /**
+     * @return date1 -> date2, or just date1 if we don't have a date2
+     */
     @Override
     public String toString() {
         String toReturn = "";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        if(date1 != null){
+        if (date1 != null) {
             toReturn += simpleDateFormat.format(date1);
         }
-        if(date2 != null){
-            toReturn += " -> "+simpleDateFormat.format(date2);
+        if (date2 != null) {
+            toReturn += " -> " + simpleDateFormat.format(date2);
         }
         return toReturn;
     }
 
+    /**
+     * Compares two TimelineDates based on their start date.
+     *
+     * @param o the other TimelineDate that is being compared to.
+     * @return the comparison of this date1 to the other's date1, or -1 if the other result does not have a date1, or 1 if this does not have a date1.
+     */
     @Override
     public int compareTo(TimelineDate o) {
-        if(o.date1 != null && this.date1 != null){
+        if (o.date1 != null && this.date1 != null) {
             return o.date1.compareTo(this.date1);
         }
-        if(this.date1 == null){
+        if (this.date1 == null) {
             return -1;
         }
         return 1;
