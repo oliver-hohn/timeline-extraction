@@ -1,3 +1,4 @@
+import edu.stanford.nlp.util.Index;
 import edu.stanford.nlp.util.Pair;
 
 import java.text.ParseException;
@@ -18,24 +19,25 @@ public class TimelineDate {
     private static final String year = "0001";
     private static final String month = "01";
     private static final String day = "01";
-    private static final Map<String, Pair<Integer,Integer>> seasonMap;
+    private static final Map<String, Pair<String,String>> seasonMap;
     static {
-        Map<String, Pair<Integer,Integer>> map = new HashMap<>();
-        map.put("WI", new Pair<>(0, 2));
-        map.put("SP", new Pair<>(3, 5));
-        map.put("SU", new Pair<>(6, 8));
-        map.put("FA", new Pair<>(9, 11));
+        Map<String, Pair<String,String>> map = new HashMap<>();
+        map.put("WI", new Pair<>("12", "02"));
+        map.put("SP", new Pair<>("03", "05"));
+        map.put("SU", new Pair<>("06", "08"));
+        map.put("FA", new Pair<>("09", "11"));
         seasonMap = map;
     }
-                                                                    //wont pick up for dates like: every year in january, which has format XXXX-01
-    private final static Pattern yearPattern = Pattern.compile("(\\d{4}.*$)|(\\d{3}X.*$)|(\\d{2}XX.*$)|(\\dXXX.*$)|(XXXX.*$)");//pattern to check the start of the sentence matching year
-    private final static Pattern onlyYearPattern = Pattern.compile("(\\d{4})|(\\d{3}X)|(\\d{2}XX)|(\\dXXX)");
-    private final static Pattern yearMonthPattern = Pattern.compile("\\d{4}\\-\\d{2}");
-    private final static Pattern yearMonthDayPattern = Pattern.compile("\\d{4}\\-\\d{2}\\-\\d{2}");
-    private final static Pattern yearWeekNumberPattern = Pattern.compile("\\d{4}\\-W\\d{2}");
-    private final static Pattern yearSeasonPattern = Pattern.compile("\\d{4}\\-[A-Z]{2}");
-    private final static Pattern yearPatternWithX = Pattern.compile("(\\d{3}X)|(\\d{2}XX)|(\\dXXX)");
-    public TimelineDate(){    }
+    private final static Pattern onlyYearPattern = Pattern.compile("(\\d{4})|(\\d{3}X)|(\\d{2}XX)|(\\dXXX)|(XXXX)");
+    private final static Pattern onlyMonthPattern = Pattern.compile("\\d{2}");
+    private final static Pattern onlyWeekNumberPattern = Pattern.compile("W\\d{2}");
+    private final static Pattern onlySeasonPattern = Pattern.compile("[A-Z]{2}");
+    private final static Pattern onlyDayPattern = Pattern.compile("\\d{2}");
+
+    private Calendar calendar;
+    public TimelineDate(){
+        calendar = Calendar.getInstance();
+    }
 
     /**
      *
@@ -43,153 +45,109 @@ public class TimelineDate {
      */
     public ArrayList<Date> parse(String date){
         ArrayList<Date> dates = new ArrayList<>();
-        //if it starts with YYYY
-        //could put year, month and date in for loop as they will need to be reset after each date is created.
-        //INTERSECT PX[Y/M/W/D] every X Year/Month/Week/Day: if Y then range is from 0000-9999, if every month then 1 month to 12
-        //if XXXX-MM INTERSECT PXY then starting from XXXX-MM (every X years),  or if XXXX-MM INTERSECT PXD then starting from XXXX-MM (every X days)
-        // if every week then dates go up , if every day then 1 to 31 (should normalize INTERSECT PX[YMWD] to a text to hold eg
-        //if INTERSECT P2Y the normalized text should be every 2 years, and so on.
-        //could ignore INTERSECT
-        System.out.println("Passing date: "+date);
-        if(yearPattern.matcher(date).matches()) {
-            String[] splitDate = date.split("/");
-            for(String split : splitDate){
-                System.out.println(split);
-                //check for INTERSECT and remove it appropriately
-                if(split.contains("INTERSECT")){
-                    System.out.println("Contains INTERSECT");
-                    System.out.println("Split gives you length: "+split.split("INTERSECT").length);
-                    System.out.println(split.split("INTERSECT")[0]);
-                }
-
-                dates.addAll(getDate(split));
+        //splitting INTERSECT
+        String[] splitDate = date.split("INTERSECT");
+        if(splitDate.length > 0){// on the first part of the date, which is just a date, get its specfic date
+            String possibleDates = splitDate[0];//this date could also be a range, ie include /
+            String[] splitRange = possibleDates.split("/");
+            for(String possibleDate: splitRange){
+                dates.addAll(getDate(possibleDate));// from processing the individual date, add it to dates
             }
-            //split into year, month, and day
-            //check what format it follows: YYYY, YYYY-MM, YYYY-dd-dd ,YYYY-Wdd, YYYY-Season ,YYYX, YYXX, YXXX
-            //for YYYY just set it for the year
-            //for YYYY-MM split it and set it for year and month
-            //for YYYY-mm-dd split and set it for year, month and day
-            //for YYYY-Wdd split it, set the date, and calculate the MM from Wdd
-            //for YYYY-Season split it, produce two dates (its a range), set year for both and put start month and day for that season, and for other date put end month and day for that season
-            //for YYYX make two dates, one for YYY0 and YYY9
-            //for YYXX make two dates, one for YY00 and YY99
-            //for YXXX make two dates, one for Y000 and Y999
-            //for XXXX-MM range from 0000-MM to 9999-MM
-            //every year in month:  XXXX-MM INTERSECT P1Y
-
-            //add dates to list of dates
         }
-        //split and call getDate for each part in split
-        //there check patterns
+        //if we had INTERSECT then we should process it for additional info to show
+        //if we have more than 2 dates in the list, then keep the minimum date and max date and remove all the others
         return dates;
     }
-    //TODO: case when month is known but not year (could break this into methods to determine year,month and day by passing in split data.
+
     private ArrayList<Date> getDate(String date){
         ArrayList<Date> dates = new ArrayList<>();
-        System.out.print("For: "+date+" have: ");
-        if(onlyYearPattern.matcher(date).matches()){//just year
-            if(yearPatternWithX.matcher(date).matches()) {//if our date consists unknown year info
-                String startYear = date.replaceAll("X", "0");
-                String endYear = date.replaceAll("X", "9");
-                System.out.print("start year: "+returnDate(startYear,month,day)+" and end year: "+returnDate(endYear,month,day));
-                try {
-                    dates.add(new SimpleDateFormat("yyyy-MM-dd").parse(returnDate(startYear,month,day)));//make a date object with the data obtained and add it to the list
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    dates.add(new SimpleDateFormat("yyyy-MM-dd").parse(returnDate(endYear,month,day)));//make a date object with the data obtained and add it to the list
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }else{
-                //else get date and use default month and day to make date.
-                String year = date;
-                System.out.print("one year: "+returnDate(year,month,day));
-                try {//make a date object with the data obtained and add it to the list
-                    dates.add(new SimpleDateFormat("yyyy-MM-dd").parse(returnDate(year,month,day)));
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-            //make two dates: startYear-month-day and endYear-month-day and add them to dates
-        }else if(yearMonthPattern.matcher(date).matches()){//just year-month
-            String[] splitDate = date.split("-");//know it has this format
-            String year = splitDate[0];
-            String month = splitDate[1];
-            System.out.print("year and month: "+returnDate(year,month,day));
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            try {//make a date object with the data obtained and add it to the list
-                dates.add(simpleDateFormat.parse(returnDate(year,month,day)));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            //make one date: year-month-day and add to dates
-        }else if(yearMonthDayPattern.matcher(date).matches()){//full date: year-month-day
-            //make one date and add it to dates
-            String[] splitDate = date.split("-");//based on format matched
-            String year = splitDate[0];
-            String month = splitDate[1];
-            String day = splitDate[2];
-            System.out.print("year, month and day: "+returnDate(year,month,day));
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            try {//make a date object with the data obtained and add it to the list
-                Date parsedDate  = simpleDateFormat.parse(returnDate(year,month,day));
-                dates.add(parsedDate);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }else if(yearWeekNumberPattern.matcher(date).matches()){//just year-weeknumber
-            String[] splitDate = date.split("-");
-            String year = splitDate[0];
-            String weeknumber = splitDate[1].substring(1);//remove the w in the weeknumber
-            //find where the week number points to (ie start year-month-day and end year-month-day)
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");//used to format the date object returned by calendar (can use just date object)
-            Calendar calendar = Calendar.getInstance();//use the calendar to calculate the start and end date
-            calendar.set(Calendar.YEAR, getInt(year));//set the year to get the appropriate dates for that week
-            calendar.set(Calendar.WEEK_OF_YEAR, getInt(weeknumber));//pass in the week number for the range
-            calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);//assuming weeks start on monday
-            String start = simpleDateFormat.format(calendar.getTime());
-            dates.add(calendar.getTime());//add the start date to the returned list
-            calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);//and end on sundays
-            String end = simpleDateFormat.format(calendar.getTime());
-            dates.add(calendar.getTime());//add the tend date to the returned list
-            System.out.print("year and week number start: "+start+" end: "+end);//use the calendar to add the date object to the list
-        }else if(yearSeasonPattern.matcher(date).matches()){//just year-season
-            String[] splitDate = date.split("-");
-            String year = splitDate[0];
-            String season = splitDate[1];
-            Pair<Integer, Integer> startEndMonth = seasonMap.get(season);
-            if(startEndMonth != null){//got a pair of start and end month
-                //get the start of the season (start of a month), and the end (the start of the next season
-                System.out.print("year and season start: "+returnDate(year,startEndMonth.first().toString(),day)+" end: "+returnDate(year,(startEndMonth.second +1)+"",day));
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                try {//make a date objects with the data obtained and add them to the list
-                    Date parsedStartDate = simpleDateFormat.parse(returnDate(year,startEndMonth.first().toString(),day));
-                    Date parsedEndDate = simpleDateFormat.parse(returnDate(year,(startEndMonth.second +1)+"",day));
-                    dates.add(parsedStartDate);
-                    dates.add(parsedEndDate);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
+        String year1 = year;//setting the default values
+        String month1 = month;
+        String day1 = day;
+        String year2 = null;
+        String month2 = null;
+        String day2 = null;
 
-
-            //need to find what start month-day and end month-day this season corresponds to
-            //make two dates: with start year-month-day and end year-month-day (year might be increased if season goes to next year
-            //check if end month is < start month, now need to increase year by 1
-            /*
+        //now need to split date into its individual components
+        String[] dateInfo = date.split("-");
+        for(int i=0; i<dateInfo.length; i++){
+            if(i == 0){//this can only be a year
+                //check year format
+                if(onlyYearPattern.matcher(dateInfo[i]).matches()){
+                    year1 = dateInfo[i].replace("X","0");
+                    if(dateInfo[i].contains("X")) {//if we do have a range then we need to set the values for the second date
+                        year2 = dateInfo[i].replace("X","9");
+                        month2 = "12";//last day of the second year
+                        day2 = "31";//assuming a range for 1980s means 1980 to the last day of 1989 (maximum possible range)
+                    }
+                }
+                continue;//move onto the next part of the year
+            }else if(i == 1){//this can be a week number, a month number or a season
+                //checking if its a month
+                System.out.println("Checking: "+dateInfo[i]);
+                if(onlyMonthPattern.matcher(dateInfo[i]).matches()){
+                    System.out.println("In onlyMonthPattern");
+                    month1 = dateInfo[i];
+                }else if(onlyWeekNumberPattern.matcher(dateInfo[i]).matches()){//checking if its a week number
+                    //calculate month and start day-end
+                    //split W from actual week number
+                    String weekNumber = dateInfo[i].substring(1);//W is the first part of the string, after it is the week number
+                    calendar.set(Calendar.YEAR, getInt(year1));//should be set from previously
+                    calendar.set(Calendar.WEEK_OF_YEAR, getInt(weekNumber));
+                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);//assuming we start on monday and end on sunday
+                    month1 = new SimpleDateFormat("MM").format(calendar.getTime());
+                    day1 = new SimpleDateFormat("dd").format(calendar.getTime());
+                    //now for the end of the week
+                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+                    month2 = new SimpleDateFormat("MM").format(calendar.getTime());
+                    day2 = new SimpleDateFormat("dd").format(calendar.getTime());
+                    year2 = new SimpleDateFormat("yyyy").format(calendar.getTime());
+                }else if(onlySeasonPattern.matcher(dateInfo[i]).matches()){//checking if its a season
+                    String season = dateInfo[i];
+                    Pair<String, String> seasonPair = seasonMap.get(season);//get the start and end month for the season
+                    if(seasonPair != null){//year1 should be set previously
+                        month1 = seasonPair.first.toString();
+                        month2 = seasonPair.second.toString();
+                        day2 = "31";//set the second day as we are using a range
+                        if(seasonPair.first.equals("12")){//move onto the next year, so year2 should be updated
+                            year2 = (getInt(year1)+1)+"";
+                        }else{//we dont need to increment the year as the season is within the same year
+                            year2 = year1;
+                        }
+                    }
+                }
+                continue;//move onto next part
+            }else if(i == 2){//can only be a day
+                if(onlyDayPattern.matcher(dateInfo[i]).matches()){//got the day
+                    day1= dateInfo[i];
+                }
+            }
+        }
+        System.out.println("For: "+date);
+        System.out.println("For Date1 we have: "+year1+"-"+month1+"-"+day1);
+        System.out.println("For Date2 we have: "+year2+"-"+month2+"-"+day2);
+        //trying to form date objects
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date date1 = simpleDateFormat.parse(returnDate(year1, month1, day1));
+            dates.add(date1);
+            System.out.println(date1);
+            if (year2 != null && month2 != null && day2 != null) {
+                Date date2 = simpleDateFormat.parse(returnDate(year2, month2, day2));
+                dates.add(date2);
+                System.out.println(date2);
+            }
+        }catch (ParseException e){
+            //could not add the dates
+        }
+        System.out.println("\n");
+        return dates;
+        /* according to educationuk.org:
+            Autumn September, October, November (9,10,11) (9-11)
             Winter December , January, February (12,1,2) (0-2)
             Spring is March, April and May (3,4,5) (3-5)
             Summer is June, July, August (6,7,8) (6-8)
-            Autumn September, October, November (9,10,11) (9-11)
-             */
-            //according to educationuk.org:
-        }//else if you have [DATE] INTERSECT PX[YMDW] then split into: [DATE] and INTERSECT PX[YMDW]
-        //run just the [DATE] through this method again, interpret intersect to get string eg: INTERSECT P1Y every year
-        //add the date to dates and pass the string back to the Result object.
-        System.out.println("");
-        return dates;
+         */
     }
 
     /**

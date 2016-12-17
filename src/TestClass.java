@@ -80,7 +80,7 @@ public class TestClass {
             System.out.println(result);
         }
 
-        System.out.println("\n\n");
+/*        System.out.println("\n\n");
         System.out.println("Going to print the dates stored for each result");
         for(Result result: results1){
             System.out.println("For: "+result);
@@ -88,7 +88,7 @@ public class TestClass {
                 System.out.println("\t"+date1.toString());
             }
             System.out.println("\n");
-        }
+        }*/
 
     }
 
