@@ -94,11 +94,14 @@ public class Engine {
             String namedEntityTag = mention.get(CoreAnnotations.NamedEntityTagAnnotation.class);
             if (namedEntityTag.equals("DATE")) {
                 //found a date for the result object
+                String date_1 = mention.get(CoreAnnotations.NormalizedNamedEntityTagAnnotation.class);
                 System.out.println("About to print time for the sentence: " + sentence);
-                System.out.println("Normalized entity tag: " + mention.get(CoreAnnotations.NormalizedNamedEntityTagAnnotation.class));
+                System.out.println("Normalized entity tag: " + date_1);
                 String date = mention.get(CoreAnnotations.TextAnnotation.class);
                 System.out.println("We are storing date: " + date);
                 result.addDate(date);
+                result.addDate_1(date_1);
+
             } else if (namedEntityTag.equals("LOCATION") || namedEntityTag.equals("ORGANIZATION") ||
                     namedEntityTag.equals("PERSON") || namedEntityTag.equals("MONEY")) {
                 //found a subject for the result object
