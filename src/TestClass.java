@@ -1,3 +1,4 @@
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -7,6 +8,7 @@ import java.util.Collections;
 public class TestClass {
 
     public static void main(String[] args) {
+/*
         String text = "I can almost always tell when movies use fake dinosaurs. On the 12th of December I played football. " +
                 "Yesterday Marry disappeared while running on North St, it was a cold night. ";
         text += "John, who was the CEO of a company, played golf. On the 12th of December I played Basketball with Oliver and Tom. Yesterday," +
@@ -37,7 +39,14 @@ public class TestClass {
         for(Result result: results1){
             System.out.println(result);
         }
-
+*/
+        ProcessFiles processFiles = new ProcessFiles();
+        File file1 = new File("D:"+File.separator+"FYP"+File.separator+"text1.txt");
+        File file2 = new File("D:"+File.separator+"FYP"+File.separator+"text2.txt");
+        File file3 = new File("D:"+File.separator+"FYP"+File.separator+"text3.txt");
+        ArrayList<File> files = new ArrayList<>();
+        files.add(file1); files.add(file2); files.add(file3);
+        processFiles.processFiles(files);
     }
 
 }
