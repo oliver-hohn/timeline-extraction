@@ -93,9 +93,10 @@ public class TimelineDate implements Comparable<TimelineDate> {
                 if (onlyYearPattern.matcher(dateInfo[i]).matches()) {
                     year1 = dateInfo[i].replace("X", "0");
                     if (dateInfo[i].contains("X")) {//if we do have a range then we need to set the values for the second date
-                        year2 = dateInfo[i].replace("X", "9");
+                        year2 = dateInfo[i].replace("X", "9");//could be the casse that we dont want it to point to the last day in the year
                         month2 = "12";//last day of the second year
                         day2 = "31";//assuming a range for 1980s means 1980 to the last day of 1989 (maximum possible range)
+                        //could have every day in january, would want it to end in january?
                     }
                 }
             } else if (i == 1) {//this can be a week number, a month number or a season

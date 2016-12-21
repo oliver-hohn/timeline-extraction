@@ -30,11 +30,7 @@ public class Engine {
      * Set up the StanfordCoreNLP to analyze text.
      */
     public Engine() {
-        coreNLP = new StanfordCoreNLP(PropertiesUtils.asProperties(
-                "annotators",
-                "tokenize,ssplit,pos,lemma,ner,entitymentions,parse,dcoref",
-                "tokenize.language", "en"
-        ));
+        coreNLP = BackEndSystem.getInstance().getCoreNLP();//can have it like before as the models will already be  loaded, but this avoids having to check that
     }
 
     /**

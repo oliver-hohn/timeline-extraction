@@ -44,9 +44,17 @@ public class TestClass {
         File file1 = new File("D:"+File.separator+"FYP"+File.separator+"text1.txt");
         File file2 = new File("D:"+File.separator+"FYP"+File.separator+"text2.txt");
         File file3 = new File("D:"+File.separator+"FYP"+File.separator+"text3.txt");
+        File file4 = new File("D:"+File.separator+"FYP"+File.separator+"text4.txt");
         ArrayList<File> files = new ArrayList<>();
-        files.add(file1); files.add(file2); files.add(file3);
-        processFiles.processFiles(files);
+        files.add(file1); files.add(file2); files.add(file3); files.add(file4);
+        processFiles.processFiles(files, new CallbackResults() {
+            @Override
+            public void gotResults(ArrayList<Result> results) {
+                System.out.println("Finished running, got: "+results.size()+" results");
+            }
+        });
+
+        //need to wait for it finish processing
     }
 
 }
