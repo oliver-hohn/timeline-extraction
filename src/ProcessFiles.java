@@ -16,6 +16,7 @@ import java.util.concurrent.Semaphore;
 /**
  * Handles the parsing of files, and the multi-threading of the Engine.
  */
+//TODO:pdf, documentation
 public class ProcessFiles implements ProcessFileCallback{
     private static int maxNoOfThreads = 2;
     private Semaphore semaphore = new Semaphore(maxNoOfThreads);
@@ -30,7 +31,7 @@ public class ProcessFiles implements ProcessFileCallback{
         this.callbackResults = callbackResults;//set up who we need to call
         filesToGo = files.size();//and when we need to call
         //for each file in the list
-        //initalise a semaphore using maxnoofthreads
+        //initialise a semaphore using maxnoofthreads
         System.out.println("In Thread: "+Thread.currentThread().toString());
         //start the counter for the amount of files to still process, to know when to notify the listener it is done processing
 
@@ -63,10 +64,6 @@ public class ProcessFiles implements ProcessFileCallback{
         if(filesToGo == 0 && callbackResults != null){
             callbackResults.gotResults(this.results);//return all the results obtained until now
         }
-    }
-
-    public ArrayList<Result> getResults(){
-        return results;
     }
 
     private static class ProcessFile extends Thread{
@@ -127,7 +124,6 @@ public class ProcessFiles implements ProcessFileCallback{
             return "";
         }
 
-        //TODO
         private String getTextTXT(File file){
             //should determine character set, can look at https://code.google.com/archive/p/juniversalchardet/
             String toReturn = "";
