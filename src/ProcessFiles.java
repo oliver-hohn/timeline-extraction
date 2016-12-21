@@ -1,7 +1,11 @@
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,6 +18,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.Semaphore;
+
 
 /**
  * Handles the parsing of files, and the multi-threading of the Engine.
@@ -90,6 +95,7 @@ public class ProcessFiles implements ProcessFileCallback{
                 //run engine on this
                 if(!toProcess.equals("")){
                     String baseDate = getFileCreationDate(file);
+                    System.out.println("Base Date for "+file.getName()+" is: "+baseDate);
                     toReturnResults = new Engine().getResults(toProcess,baseDate);
                 }
             }
@@ -114,6 +120,8 @@ public class ProcessFiles implements ProcessFileCallback{
                     case ".txt"://file has a .txt extension
                         //call method to get string from txt
                         return getTextTXT(file);
+                    case ".docx":
+                        return getTextDoc(file);
                     default:
                         //get string from default process (open file and use buffered reader)
                         break;
@@ -132,7 +140,7 @@ public class ProcessFiles implements ProcessFileCallback{
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println("For file:"+file.getName()+" has text: "+toReturn);
+            //System.out.println("For file:"+file.getName()+" has text: "+toReturn);
             return toReturn;
         }
 
@@ -147,6 +155,19 @@ public class ProcessFiles implements ProcessFileCallback{
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
+            return toReturn;
+        }
+
+        private String getTextDoc(File file){
+            String toReturn = "";
+            try {
+                XWPFDocument xwpfDocument = new XWPFDocument(new FileInputStream(file));//used to process docx documents
+                XWPFWordExtractor xwpfWordExtractor = new XWPFWordExtractor(xwpfDocument);
+                toReturn = xwpfWordExtractor.getText();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //System.out.println("For file:"+file.getName()+" has text: "+toReturn);
             return toReturn;
         }
 

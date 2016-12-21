@@ -49,14 +49,16 @@ public class TestClass {
         ProcessFiles processFiles = new ProcessFiles();
         File file1 = new File("D:"+File.separator+"FYP"+File.separator+"text1.txt");
         File file2 = new File("D:"+File.separator+"FYP"+File.separator+"text2.txt");
-        //File file3 = new File("D:"+File.separator+"FYP"+File.separator+"text3.txt");
+        File file3 = new File("D:"+File.separator+"FYP"+File.separator+"text3.txt");
         File file4 = new File("D:"+File.separator+"FYP"+File.separator+"text4.txt");
         File file5 = new File("D:"+File.separator+"FYP"+File.separator+"text5.pdf");
+        File file6 = new File("D:"+File.separator+"FYP"+File.separator+"text6.docx");
         ArrayList<File> files = new ArrayList<>();
         files.add(file1); files.add(file2);
-       // files.add(file3);
+        files.add(file3);
         files.add(file4);
         files.add(file5);
+        files.add(file6);
         processFiles.processFiles(files, new CallbackResults() {
             @Override
             public void gotResults(ArrayList<Result> results) {
