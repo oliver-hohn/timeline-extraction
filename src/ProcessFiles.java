@@ -1,6 +1,8 @@
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
+
 import java.io.File;
 import java.io.FileNotFoundException;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,7 +18,7 @@ import java.util.concurrent.Semaphore;
 /**
  * Handles the parsing of files, and the multi-threading of the Engine.
  */
-//TODO:pdf, documentation
+//TODO:documentation
 public class ProcessFiles implements ProcessFileCallback{
     private static int maxNoOfThreads = 2;
     private Semaphore semaphore = new Semaphore(maxNoOfThreads);
@@ -67,6 +69,7 @@ public class ProcessFiles implements ProcessFileCallback{
     }
 
     private static class ProcessFile extends Thread{
+        //Need to release even if it messes up
         File file;
         ProcessFileCallback processFileCallback;
         ProcessFile(File file, ProcessFileCallback processFileCallback){//hold sempahore
@@ -105,10 +108,10 @@ public class ProcessFiles implements ProcessFileCallback{
                 String fileExtension = fileName.substring(lastDotPosition);//everything after the last dot, the extension
                 System.out.println("File name: "+fileName+" file extension: "+fileExtension);
                 switch (fileExtension){
-                    case ".pdf":
+                    case ".pdf"://file has a .pdf extension
                         //call method to get string from pdf
                         return getTextPDF(file);
-                    case ".txt":
+                    case ".txt"://file has a .txt extension
                         //call method to get string from txt
                         return getTextTXT(file);
                     default:
@@ -119,9 +122,18 @@ public class ProcessFiles implements ProcessFileCallback{
             return "";
         }
 
-        //TODO
-        private String getTextPDF(File file){
-            return "";
+
+        private String getTextPDF(File file)  {
+            String toReturn = "";
+            try {
+                PDDocument pdDocument = PDDocument.load(file);
+                toReturn = new PDFTextStripper().getText(pdDocument);
+                pdDocument.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.out.println("For file:"+file.getName()+" has text: "+toReturn);
+            return toReturn;
         }
 
         private String getTextTXT(File file){
