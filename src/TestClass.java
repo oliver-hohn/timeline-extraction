@@ -71,6 +71,12 @@ public class TestClass {
                 }
             }
         });
+/*        processFiles.processFiles(files, new CallbackResults() {
+            @Override
+            public void gotResults(ArrayList<Result> results) {
+                System.out.println("Should never reach this, as it has not finished processing files");
+            }//Should never run, as the we are Processing the other files (only if they are all done, can this run)
+        });*/
 
     }
 

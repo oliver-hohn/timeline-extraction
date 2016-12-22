@@ -44,22 +44,27 @@ public class ProcessFiles implements ProcessFileCallback {
      */
     public void processFiles(ArrayList<File> files, CallbackResults callbackResults) {
         //should only run if we are not Processing
-        this.callbackResults = callbackResults;//set up who we need to call
-        filesToGo = files.size();//and when we need to call
-        BackEndSystem.getInstance().setSystemState(SystemState.PROCESSING);
-        System.out.println("In Thread: " + Thread.currentThread().toString());
-        for (File file : files) {
-            //acquire from the semaphore
-            try {
-                System.out.println("Trying to acquire semaphore for file: " + file);
-                semaphore.acquire();//will wait if there is already maxnoofthreads running, until one finishes: then it gets to run
-                System.out.println("Acquired semaphore for file: " + file);
-                //process file
-                Thread thread = new ProcessFile(file, this);//pass a reference so that the thread can call this when it finishes processing the file
-                thread.start();//start processing this file(get its text and pass it to the Engine)
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                //should release semaphore and reduce filesToGo count if the Thread is interrupted
+        //this will also set up the StanfordCoreNLP (when GUI is implemented, it will already by set up, as it will be the first thing ran)
+        System.out.println("Will try to run");
+        if(BackEndSystem.getInstance().getSystemState() != SystemState.PROCESSING) {//if we arent processing, then we can begin to do that
+            System.out.println("Is running");
+            this.callbackResults = callbackResults;//set up who we need to call
+            filesToGo = files.size();//and when we need to call
+            BackEndSystem.getInstance().setSystemState(SystemState.PROCESSING);
+            System.out.println("In Thread: " + Thread.currentThread().toString());
+            for (File file : files) {
+                //acquire from the semaphore
+                try {
+                    System.out.println("Trying to acquire semaphore for file: " + file);
+                    semaphore.acquire();//will wait if there is already maxnoofthreads running, until one finishes: then it gets to run
+                    System.out.println("Acquired semaphore for file: " + file);
+                    //process file
+                    Thread thread = new ProcessFile(file, this);//pass a reference so that the thread can call this when it finishes processing the file
+                    thread.start();//start processing this file(get its text and pass it to the Engine)
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    //should release semaphore and reduce filesToGo count if the Thread is interrupted
+                }
             }
         }
     }
