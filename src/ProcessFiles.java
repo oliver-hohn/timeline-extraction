@@ -43,10 +43,10 @@ public class ProcessFiles implements ProcessFileCallback {
      * @param callbackResults used to inform the listener that called this method that it finished processing, and to return the results.
      */
     public void processFiles(ArrayList<File> files, CallbackResults callbackResults) {
+        //should only run if we are not Processing
         this.callbackResults = callbackResults;//set up who we need to call
         filesToGo = files.size();//and when we need to call
-        //for each file in the list
-        //initialise a semaphore using maxnoofthreads
+        BackEndSystem.getInstance().setSystemState(SystemState.PROCESSING);
         System.out.println("In Thread: " + Thread.currentThread().toString());
         for (File file : files) {
             //acquire from the semaphore
@@ -83,7 +83,11 @@ public class ProcessFiles implements ProcessFileCallback {
         semaphore.release();
         //check if we have processed everything, if so inform listener
         if (filesToGo == 0 && callbackResults != null) {
+            //has processed
+            BackEndSystem.getInstance().setSystemState(SystemState.PROCESSED);
             callbackResults.gotResults(this.results);//return all the results obtained until now
+            //has returned the results so we finished
+            BackEndSystem.getInstance().setSystemState(SystemState.FINISHED);
         }
     }
 
