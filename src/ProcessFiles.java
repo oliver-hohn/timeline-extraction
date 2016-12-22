@@ -59,7 +59,7 @@ public class ProcessFiles implements ProcessFileCallback {
                 thread.start();//start processing this file(get its text and pass it to the Engine)
             } catch (InterruptedException e) {
                 e.printStackTrace();
-                //should release semaphore
+                //should release semaphore and reduce filesToGo count
             }
         }
     }
