@@ -10,6 +10,7 @@ public class TestClass {
 
     public static void main(String[] args) {
         //String text = "";
+/*
 
         String text = "I can almost always tell when movies use fake dinosaurs. On the 12th of December I played football. " +
                 "Yesterday Marry disappeared while running on North St, it was a cold night. ";
@@ -44,6 +45,7 @@ public class TestClass {
             System.out.println(result);
         }
 
+*/
 
         System.out.println("\n\nProcessing through files");
         ProcessFiles processFiles = new ProcessFiles();
@@ -56,10 +58,10 @@ public class TestClass {
         File file6 = new File("D:"+File.separator+"FYP"+File.separator+"text6.docx");
         ArrayList<File> files = new ArrayList<>();
         files.add(file1); files.add(file2);
-        files.add(file3);
+        //files.add(file3);
         files.add(file4);
         files.add(file5);
-        files.add(file6);
+        //files.add(file6);
         processFiles.processFiles(files, new CallbackResults() {
             @Override
             public void gotResults(ArrayList<Result> results) {
