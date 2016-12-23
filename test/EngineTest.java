@@ -10,14 +10,17 @@ import java.util.ArrayList;
  */
 public class EngineTest {
     private final static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
     /**
      * Gives Engine sample text and compares the expected and generated output.
      * Only compares the output by the date (checking that it is picking out the right sentence, not looking at sentence trimming).
+     *
+     * @throws ParseException thrown when we create the Dates for the expected TimelineDates and Results.
      */
     @Test
     public void testOutput() throws ParseException {
-        String sampleText = "On the 12th of December I ran tests on my final year project. The tests did not go so well. "+
-                "Yesterday I played games. "+"It was fun playing games! Tomorrow I am going to study. Last week I went to watch a football match.";
+        String sampleText = "On the 12th of December I ran tests on my final year project. The tests did not go so well. " +
+                "Yesterday I played games. " + "It was fun playing games! Tomorrow I am going to study. Last week I went to watch a football match.";
         ArrayList<Result> expectedResults = new ArrayList<>();
 
         Result result1 = new Result();
@@ -45,19 +48,23 @@ public class EngineTest {
         result4.setTimelineDate(timelineDate4);
         expectedResults.add(result4);
 
-/*        for (Result result: expectedResults){
-            System.out.println(result);
-        }*/
-
         Engine engine = new Engine();
         ArrayList<Result> results = engine.getResults(sampleText, "2016-12-23");
+        compareExpectedToActual(results, expectedResults);
+    }
 
-/*        for(Result result: results){
-            System.out.println(result);
-        }*/
-        Assert.assertEquals(results.size(), expectedResults.size());//if this does not hold then the test fails
-        for(int i=0; i<results.size(); i++){
-            Assert.assertEquals(results.get(i).getTimelineDate(), expectedResults.get(i).getTimelineDate());
+    /**
+     * Compares an actual list of Results with a expected one, by just looking at the dates picked out. Checking that the Engine
+     * is picking out the right sentence and producing the right dates, not caring about the sentence trimming or subject picking.
+     *
+     * @param actualResults   the list of produced Result objects
+     * @param expectedResults the list of expected Result objects
+     */
+    private void compareExpectedToActual(ArrayList<Result> actualResults, ArrayList<Result> expectedResults) {
+        System.out.println("Actual Results: " + actualResults);
+        Assert.assertEquals(actualResults.size(), expectedResults.size());//if this does not hold then the test fails
+        for (int i = 0; i < actualResults.size(); i++) {
+            Assert.assertEquals(actualResults.get(i).getTimelineDate(), expectedResults.get(i).getTimelineDate());
         }
     }
 }
