@@ -128,4 +128,12 @@ public class Result implements Comparable<Result> {
     public int compareTo(Result o) {
         return o.timelineDate.compareTo(this.timelineDate);
     }
+
+    public TimelineDate getTimelineDate() {
+        return timelineDate;
+    }
+
+    public void setTimelineDate(TimelineDate timelineDate) {
+        this.timelineDate = timelineDate;
+    }
 }
