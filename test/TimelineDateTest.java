@@ -6,11 +6,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Created by Oliver on 23/12/2016.
+ * Test for the parsing of Normalized Entity Tag in TimelineDate.
  */
-//TODO: pass in dates, and compare it to expected produced Dates
 public class TimelineDateTest {
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    //TODO: more complex dates to parse
+
+    /**
+     * Passes in a simple date of the format yyyy-MM-dd into TimelineDate, and checks the output date.
+     *
+     * @throws ParseException
+     */
     @Test
     public void testTimelineDateProcessSimple() throws ParseException {
         String dateStr = "2016-12-24";
