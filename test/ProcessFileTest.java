@@ -26,11 +26,13 @@ public class ProcessFileTest {
      * Chaining tests (all in same class running one after the other) for ProcessFile will overlap, as when the next
      * test runs, the other has not finished.
      *
+     * Test for processing a test file with sample text, and comparing its output to expected Result objects.
+     *
      * @throws ParseException       for the Dates that we create for the expected Results.
      * @throws InterruptedException as we are putting the Thread that runs this test to sleep to let ProcessFile finish running.
      */
     @Test
-    public void testOutput() throws ParseException, InterruptedException {
+    public void testSampleFileProcess() throws ParseException, InterruptedException {
         ArrayList<Result> expectedResults = new ArrayList<>();
         actualResults = null;
 
