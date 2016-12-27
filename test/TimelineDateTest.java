@@ -76,7 +76,8 @@ public class TimelineDateTest {
     }
 
     /**
-     * Passes in a year and a season to TimelineDate, and compares the output to expected start and end Dates.
+     * Passes in a year and a season to TimelineDate, and compares the output to an expected start and end Dates.
+     *
      * @throws ParseException when creating the expected Dates.
      */
     @Test
@@ -84,6 +85,29 @@ public class TimelineDateTest {
         String input = "1980-SP";
         String expectedStartDate = "1980-03-01";
         String expectedEndDate = "1980-05-31";
+
+        Date expectedStart = simpleDateFormat.parse(expectedStartDate);
+        Date expectedEnd = simpleDateFormat.parse(expectedEndDate);
+
+        TimelineDate timelineDate = new TimelineDate();
+        timelineDate.parse(input);
+
+        System.out.println(timelineDate);
+
+        Assert.assertEquals(expectedStart, timelineDate.getDate1());
+        Assert.assertEquals(expectedEnd, timelineDate.getDate2());
+    }
+
+    /**
+     * Passes in a year with a week number to TimelineDate, and compares the output to an expected start and end Dates.
+     *
+     * @throws ParseException when creating the expected Dates.
+     */
+    @Test
+    public void testTimelineDateProcessWeekNumber() throws ParseException {
+        String input = "2016-W47";
+        String expectedStartDate = "2016-11-21";
+        String expectedEndDate = "2016-11-27";
 
         Date expectedStart = simpleDateFormat.parse(expectedStartDate);
         Date expectedEnd = simpleDateFormat.parse(expectedEndDate);
