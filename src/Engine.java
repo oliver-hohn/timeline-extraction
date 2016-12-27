@@ -49,6 +49,7 @@ public class Engine {
         //coreNLP.prettyPrint(annotation, new PrintWriter(System.out));
 
         for (CoreMap sentence : annotation.get(CoreAnnotations.SentencesAnnotation.class)) {
+            System.out.println(sentence);
             Result result = getResult(sentence);
             if (result != null) {
                 results.add(result);
@@ -87,6 +88,8 @@ public class Engine {
     private void setDatesAndSubjectsNET(CoreMap sentence, Result result) {
         for (CoreMap mention : sentence.get(CoreAnnotations.MentionsAnnotation.class)) {
             String namedEntityTag = mention.get(CoreAnnotations.NamedEntityTagAnnotation.class);
+            System.out.println(namedEntityTag+": " +mention.get(CoreAnnotations.TextAnnotation.class));
+
             if (namedEntityTag.equals("DATE")) {
                 //found a date for the result object
                 String date_1 = mention.get(CoreAnnotations.NormalizedNamedEntityTagAnnotation.class);
@@ -98,7 +101,7 @@ public class Engine {
                 result.addDate_1(date_1);
 
             } else if (namedEntityTag.equals("LOCATION") || namedEntityTag.equals("ORGANIZATION") ||
-                    namedEntityTag.equals("PERSON") || namedEntityTag.equals("MONEY")) {
+                    namedEntityTag.equals("PERSON") || namedEntityTag.equals("MONEY") || namedEntityTag.equals("MISC")) {
                 //found a subject for the result object
                 String subject = mention.get(CoreAnnotations.TextAnnotation.class);
                 result.addSubject(subject);

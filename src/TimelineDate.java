@@ -273,4 +273,12 @@ public class TimelineDate implements Comparable<TimelineDate> {
     public void setDate2(Date date2) {
         this.date2 = date2;
     }
+
+    public Date getDate1() {
+        return date1;
+    }
+
+    public Date getDate2() {
+        return date2;
+    }
 }
