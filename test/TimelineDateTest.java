@@ -15,7 +15,7 @@ public class TimelineDateTest {
     /**
      * Passes in a simple date of the format yyyy-MM-dd into TimelineDate, and checks the output date.
      *
-     * @throws ParseException
+     * @throws ParseException when comparing the expected Date to check.
      */
     @Test
     public void testTimelineDateProcessSimple() throws ParseException {
@@ -27,5 +27,28 @@ public class TimelineDateTest {
 
         Assert.assertEquals(expectedDate, timelineDate.getDate1());
         Assert.assertEquals(null, timelineDate.getDate2());//should have only picked up one date
+    }
+
+    /**
+     * Passes in a normalized entity tag for a year range, 198X, and checks the output to the expected start and end Date
+     * of the year range.
+     *
+     * @throws ParseException when creating the expected Dates to check.
+     */
+    @Test
+    public void testTimelineDateProcessYearRange() throws ParseException {
+        String yearRange = "198X";
+        String expectedStartDate = "1980-01-01";
+        String expectedEndDate = "1989-12-31";
+
+        Date expectedStart = simpleDateFormat.parse(expectedStartDate);
+        Date expectedEnd = simpleDateFormat.parse(expectedEndDate);
+
+        TimelineDate timelineDate = new TimelineDate();
+        timelineDate.parse(yearRange);
+
+        Assert.assertEquals(expectedStart, timelineDate.getDate1());
+        Assert.assertEquals(expectedEnd, timelineDate.getDate2());
+
     }
 }
