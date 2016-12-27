@@ -51,4 +51,26 @@ public class TimelineDateTest {
         Assert.assertEquals(expectedEnd, timelineDate.getDate2());
 
     }
+
+    /**
+     * Passes in a normalized entity tag for an actual year range, 1980-01-01/2016-10-25, and checks the output to the
+     * expected start and end Date.
+     * @throws ParseException when creating the expected Dates.
+     */
+    @Test
+    public void testTimelineDateProcessActualDateRange() throws ParseException {
+        String input = "1980-01-01/2016-10-25";
+        String expectedStartDate = "1980-01-01";
+        String expectedEndDate = "2016-10-25";
+
+        Date expectedStart = simpleDateFormat.parse(expectedStartDate);
+        Date expectedEnd = simpleDateFormat.parse(expectedEndDate);
+
+        TimelineDate timelineDate = new TimelineDate();
+        timelineDate.parse(input);
+
+        System.out.println(timelineDate);
+        Assert.assertEquals(expectedStart, timelineDate.getDate1());
+        Assert.assertEquals(expectedEnd, timelineDate.getDate2());
+    }
 }
