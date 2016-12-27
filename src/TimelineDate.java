@@ -245,39 +245,60 @@ public class TimelineDate implements Comparable<TimelineDate> {
 
     /**
      * Checks whether a given TimelineDate object is equal to this object.
+     *
      * @param obj the other object we are comparing to.
      * @return true if the other TimelineDate object has the same dates as this.
      */
     @Override
     public boolean equals(Object obj) {
-        System.out.println("Comparing: "+this+" to "+obj);
+        System.out.println("Comparing: " + this + " to " + obj);
         boolean toReturn;
-        try{
+        try {
             TimelineDate other = (TimelineDate) obj;
             toReturn = date1.equals(other.date1);
-            if(toReturn){
-                if(date2 != null || other.date2 != null){//if we have a scond date then so should other, if we dont then they shouldnt either
+            if (toReturn) {
+                if (date2 != null || other.date2 != null) {//if we have a scond date then so should other, if we dont then they shouldnt either
                     toReturn = date2.equals(other.date2);
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
         return toReturn;
     }
 
+    /**
+     * Set the Date for date1.
+     *
+     * @param date1 Date for date1.
+     */
     public void setDate1(Date date1) {
         this.date1 = date1;
     }
 
+    /**
+     * Set the Date for date2.
+     *
+     * @param date2 Date for date2.
+     */
     public void setDate2(Date date2) {
         this.date2 = date2;
     }
 
+    /**
+     * Get the Date for date1.
+     *
+     * @return Date for date1.
+     */
     public Date getDate1() {
         return date1;
     }
 
+    /**
+     * Get the Date for date2.
+     *
+     * @return Date for date2.
+     */
     public Date getDate2() {
         return date2;
     }
