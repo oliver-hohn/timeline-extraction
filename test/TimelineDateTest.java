@@ -10,7 +10,7 @@ import java.util.Date;
  */
 public class TimelineDateTest {
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    //TODO: more complex dates to parse
+    //TODO: for INTERSECT and now tags
 
     /**
      * Passes in a simple date of the format yyyy-MM-dd into TimelineDate, and checks the output date.
@@ -119,5 +119,25 @@ public class TimelineDateTest {
 
         Assert.assertEquals(expectedStart, timelineDate.getDate1());
         Assert.assertEquals(expectedEnd, timelineDate.getDate2());
+    }
+
+    /**
+     * Passes in a year and a month, and checks the output to an expected start Date.
+     *
+     * @throws ParseException when creating the expected Date.
+     */
+    @Test
+    public void testTimelineDateProcessMonth() throws ParseException {
+        String input = "2016-10";
+        String expectedStartDate = "2016-10-01";
+
+        Date expectedStart = simpleDateFormat.parse(expectedStartDate);
+
+        TimelineDate timelineDate = new TimelineDate();
+        timelineDate.parse(input);
+
+        System.out.println(timelineDate);
+
+        Assert.assertEquals(expectedStart, timelineDate.getDate1());
     }
 }

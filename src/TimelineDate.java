@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
  * Attempts to generate an exact date for an event, to then order the events.
  * Holds the start and end date (appropriately) for each event in the timeline. It updates as new dates, relevant to the
  */
-//TODO: PRESENT_REF date means date now, check of date values are possible before trying to create (eg checking if month has 31 days).
+//TODO: PRESENT_REF date means date now, check of date values are possible before trying to create (eg checking if month has 31 days). If just year-month should create range?
 public class TimelineDate implements Comparable<TimelineDate> {
     private static final String year = "0001";
     private static final String month = "01";
