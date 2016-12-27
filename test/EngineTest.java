@@ -53,8 +53,12 @@ public class EngineTest {
         compareExpectedToActualDate(results, expectedResults);
     }
 
+    /**
+     * Tests the Engines ability to pick out Subjects from a given Sample text, and checks it to the expected Subjects
+     * for that text.
+     */
     @Test
-    public void testSubjects(){
+    public void testSubjects() {
         //picks up last 16 as a date (issue with casual language used)
         String sampleText = "Manchester City face Monaco in the Champions League, with the first leg on 21 February. In their last season, Liverpool narrowly missed out on the 2013/14 Premier League title to Manchester City, while Leicester won last year's title only playing domestically. ";
         ArrayList<Result> expectedResults = new ArrayList<>();//just looking at subjects, not dates
@@ -75,7 +79,7 @@ public class EngineTest {
 
         Engine engine = new Engine();
         ArrayList<Result> actualResults = engine.getResults(sampleText, "26-12-2016");
-        
+
         compareExpectedToActualSubject(actualResults, expectedResults);
     }
 
@@ -95,11 +99,18 @@ public class EngineTest {
         }
     }
 
-    private void compareExpectedToActualSubject(ArrayList<Result> actualResults, ArrayList<Result> expectedResults){
-        System.out.println("Actual Results: "+actualResults);
-        System.out.println("Expected Results: "+expectedResults);
+    /**
+     * Compares the Subjects (only) in the list of Expected Result objects to the list of Actual Result objects.
+     * Compares each actual Result object individually to its expected counterpart.
+     *
+     * @param actualResults   the list of produced Result objects
+     * @param expectedResults the list of expected Result objects
+     */
+    private void compareExpectedToActualSubject(ArrayList<Result> actualResults, ArrayList<Result> expectedResults) {
+        System.out.println("Actual Results: " + actualResults);
+        System.out.println("Expected Results: " + expectedResults);
         Assert.assertEquals(expectedResults.size(), actualResults.size());
-        for(int i=0; i < actualResults.size(); i++){
+        for (int i = 0; i < actualResults.size(); i++) {
             Assert.assertEquals(expectedResults.get(i).getSubjects(), actualResults.get(i).getSubjects());
         }
     }
