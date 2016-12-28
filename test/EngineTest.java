@@ -1,3 +1,6 @@
+import backend.process.Engine;
+import backend.process.Result;
+import backend.process.TimelineDate;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -6,13 +9,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
- * Test class for the Engine. Gives in a sample text, and compares that the generated and predicted Result objects are equal
+ * Test class for the backend.process.Engine. Gives in a sample text, and compares that the generated and predicted backend.process.Result objects are equal
  */
 public class EngineTest {
     private final static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     /**
-     * Gives Engine sample text and compares the expected and generated output.
+     * Gives backend.process.Engine sample text and compares the expected and generated output.
      * Only compares the output by the date (checking that it is picking out the right sentence, not looking at sentence trimming).
      *
      * @throws ParseException thrown when we create the Dates for the expected TimelineDates and Results.
@@ -85,11 +88,11 @@ public class EngineTest {
 
 
     /**
-     * Compares an actual list of Results with a expected one, by just looking at the dates picked out. Checking that the Engine
+     * Compares an actual list of Results with a expected one, by just looking at the dates picked out. Checking that the backend.process.Engine
      * is picking out the right sentence and producing the right dates, not caring about the sentence trimming or subject picking.
      *
-     * @param actualResults   the list of produced Result objects
-     * @param expectedResults the list of expected Result objects
+     * @param actualResults   the list of produced backend.process.Result objects
+     * @param expectedResults the list of expected backend.process.Result objects
      */
     private void compareExpectedToActualDate(ArrayList<Result> actualResults, ArrayList<Result> expectedResults) {
         System.out.println("Actual Results: " + actualResults);
@@ -100,11 +103,11 @@ public class EngineTest {
     }
 
     /**
-     * Compares the Subjects (only) in the list of Expected Result objects to the list of Actual Result objects.
-     * Compares each actual Result object individually to its expected counterpart.
+     * Compares the Subjects (only) in the list of Expected backend.process.Result objects to the list of Actual backend.process.Result objects.
+     * Compares each actual backend.process.Result object individually to its expected counterpart.
      *
-     * @param actualResults   the list of produced Result objects
-     * @param expectedResults the list of expected Result objects
+     * @param actualResults   the list of produced backend.process.Result objects
+     * @param expectedResults the list of expected backend.process.Result objects
      */
     private void compareExpectedToActualSubject(ArrayList<Result> actualResults, ArrayList<Result> expectedResults) {
         System.out.println("Actual Results: " + actualResults);

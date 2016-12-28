@@ -1,3 +1,4 @@
+import backend.process.TimelineDate;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -6,14 +7,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Test for the parsing of Normalized Entity Tag in TimelineDate.
+ * Test for the parsing of Normalized Entity Tag in backend.process.TimelineDate.
  */
 public class TimelineDateTest {
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     //TODO: for INTERSECT and now tags
 
     /**
-     * Passes in a simple date of the format yyyy-MM-dd into TimelineDate, and checks the output date.
+     * Passes in a simple date of the format yyyy-MM-dd into backend.process.TimelineDate, and checks the output date.
      *
      * @throws ParseException when comparing the expected Date to check.
      */
@@ -76,7 +77,7 @@ public class TimelineDateTest {
     }
 
     /**
-     * Passes in a year and a season to TimelineDate, and compares the output to an expected start and end Dates.
+     * Passes in a year and a season to backend.process.TimelineDate, and compares the output to an expected start and end Dates.
      *
      * @throws ParseException when creating the expected Dates.
      */
@@ -99,7 +100,7 @@ public class TimelineDateTest {
     }
 
     /**
-     * Passes in a year with a week number to TimelineDate, and compares the output to an expected start and end Dates.
+     * Passes in a year with a week number to backend.process.TimelineDate, and compares the output to an expected start and end Dates.
      *
      * @throws ParseException when creating the expected Dates.
      */

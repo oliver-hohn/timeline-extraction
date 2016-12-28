@@ -1,3 +1,6 @@
+package backend.process;
+
+import backend.system.BackEndSystem;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.Label;
 import edu.stanford.nlp.pipeline.Annotation;
@@ -14,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Engine class that text in text as input and produces a list of Result objects, which are events depicted in the text. An event is only picked out, if it has a date
+ * backend.process.Engine class that text in text as input and produces a list of backend.process.Result objects, which are events depicted in the text. An event is only picked out, if it has a date
  * associated with it.
  * <p>
  * Uses the algorithm proposed in: Bonnie Dorr, David Zajic and Richard Schwartz. Hedge Trimmer: A Parse-and-Trim Approach to Headline
@@ -59,12 +62,12 @@ public class Engine {
     }
 
     /**
-     * Returns a Result object if the sentence contains a date, else returns null.
-     * The Result object will include a list of subjects as well as a summary (or the entire text, depending on the
+     * Returns a backend.process.Result object if the sentence contains a date, else returns null.
+     * The backend.process.Result object will include a list of subjects as well as a summary (or the entire text, depending on the
      * length of text) of the sentence.
      *
-     * @param sentence the CoreMap that contains the Sentence we want to produce a Result for (if it has a date)
-     * @return a Result object if the sentence contained a Date; null instead.
+     * @param sentence the CoreMap that contains the Sentence we want to produce a backend.process.Result for (if it has a date)
+     * @return a backend.process.Result object if the sentence contained a Date; null instead.
      */
     private Result getResult(CoreMap sentence) {
         Result result = new Result();
@@ -79,11 +82,11 @@ public class Engine {
     }
 
     /**
-     * Set the Dates and Subjects for the Result based on Named-Entity Tags from the CoreMap passed in.
+     * Set the Dates and Subjects for the backend.process.Result based on Named-Entity Tags from the CoreMap passed in.
      * Dates have a DATE Named-Entity Tag. Subjects are LOCATIONs, ORGANIZATIONs, PERSONs, and MONEY.
      *
      * @param sentence a CoreMap that holds the sentence we want to extract data from.
-     * @param result   the Result object that we are determining the data for.
+     * @param result   the backend.process.Result object that we are determining the data for.
      */
     private void setDatesAndSubjectsNET(CoreMap sentence, Result result) {
         for (CoreMap mention : sentence.get(CoreAnnotations.MentionsAnnotation.class)) {
@@ -112,10 +115,10 @@ public class Engine {
     /**
      * Finds the subjects of the sentence based on grammatical structure.
      * Gets the Basic Dependencies in the sentence and for each relation that contains the name "subj" (eg nsubj),
-     * store its dependent in the Result object, this is the grammatical subject of a sentence.
+     * store its dependent in the backend.process.Result object, this is the grammatical subject of a sentence.
      *
      * @param sentence a CoreMap that holds the sentence we want to extract data from.
-     * @param result   the Result object that we are determining the grammatical subject for.
+     * @param result   the backend.process.Result object that we are determining the grammatical subject for.
      */
     private void setGrammaticalSubjects(CoreMap sentence, Result result) {
         SemanticGraph semanticGraph = sentence.get(SemanticGraphCoreAnnotations.BasicDependenciesAnnotation.class);
@@ -127,7 +130,7 @@ public class Engine {
     }
 
     /**
-     * For the sentence passed in, summarize it and set it as the event of the Result object.
+     * For the sentence passed in, summarize it and set it as the event of the backend.process.Result object.
      * <p>
      * Following the algorithm proposed in: Bonnie Dorr, David Zajic and Richard Schwartz. Hedge Trimmer: A
      * Parse-and-Trim Approach to Headline Generation. Proceedings of the HLT-NAACL 03 on Text summarization
@@ -364,7 +367,7 @@ public class Engine {
      * Computational Linguistics, pp. 1–8.
      *
      * @param tree   the Tree that contains the Grammatical Structure of the sentence we are summarizing.
-     * @param result the Result object that contains previously found time expressions in the original sentence.
+     * @param result the backend.process.Result object that contains previously found time expressions in the original sentence.
      */
     private void removeTimeExpressions(Tree tree, Result result) {
         /*go over the tree, for every PP check if it has a NP child, if so check if that NP contains the time expression, if so delete the PP.

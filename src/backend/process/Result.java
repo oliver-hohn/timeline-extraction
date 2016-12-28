@@ -1,3 +1,5 @@
+package backend.process;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,7 +33,7 @@ public class Result implements Comparable<Result> {
     }
 
     /**
-     * Checks whether this Result already has a given date (in String format)
+     * Checks whether this backend.process.Result already has a given date (in String format)
      *
      * @param date the String date being checked.
      * @return true if the list of String dates has date, false otherwise.
@@ -100,7 +102,7 @@ public class Result implements Comparable<Result> {
     }
 
     /**
-     * @return a String showing all the information held by this Result object.
+     * @return a String showing all the information held by this backend.process.Result object.
      */
     @Override
     public String toString() {
@@ -108,9 +110,9 @@ public class Result implements Comparable<Result> {
     }
 
     /**
-     * For the given passed in String date, it will update the TimelineDate of this Result object.
+     * For the given passed in String date, it will update the backend.process.TimelineDate of this backend.process.Result object.
      *
-     * @param date a String that contains date information that needs to be passed into the timeline date of this Result object.
+     * @param date a String that contains date information that needs to be passed into the timeline date of this backend.process.Result object.
      */
     public void addDate_1(String date) {
         System.out.println("About to parse: " + date);
@@ -119,10 +121,10 @@ public class Result implements Comparable<Result> {
 
 
     /**
-     * Used to compare two Result objects by their TimelineDate.
+     * Used to compare two backend.process.Result objects by their backend.process.TimelineDate.
      *
-     * @param o the other Result object.
-     * @return the result of comparing the TimelineDate of this object, with the TimelineDate of the other (input) Result object.
+     * @param o the other backend.process.Result object.
+     * @return the result of comparing the backend.process.TimelineDate of this object, with the backend.process.TimelineDate of the other (input) backend.process.Result object.
      */
     @Override
     public int compareTo(Result o) {

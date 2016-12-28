@@ -1,3 +1,5 @@
+package backend.process;
+
 import edu.stanford.nlp.util.Pair;
 
 import java.text.ParseException;
@@ -229,7 +231,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
     /**
      * Compares two TimelineDates based on their start date.
      *
-     * @param o the other TimelineDate that is being compared to.
+     * @param o the other backend.process.TimelineDate that is being compared to.
      * @return the comparison of this date1 to the other's date1, or -1 if the other result does not have a date1, or 1 if this does not have a date1.
      */
     @Override
@@ -244,10 +246,10 @@ public class TimelineDate implements Comparable<TimelineDate> {
     }
 
     /**
-     * Checks whether a given TimelineDate object is equal to this object.
+     * Checks whether a given backend.process.TimelineDate object is equal to this object.
      *
      * @param obj the other object we are comparing to.
-     * @return true if the other TimelineDate object has the same dates as this.
+     * @return true if the other backend.process.TimelineDate object has the same dates as this.
      */
     @Override
     public boolean equals(Object obj) {

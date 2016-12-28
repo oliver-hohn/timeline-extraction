@@ -1,3 +1,7 @@
+import backend.process.CallbackResults;
+import backend.process.ProcessFiles;
+import backend.process.Result;
+import backend.process.TimelineDate;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -7,7 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
- * Tests the the extracting of text in files and passing it to the Engine, and the fact that Threads are being created
+ * Tests the the extracting of text in files and passing it to the backend.process.Engine, and the fact that Threads are being created
  * to process the Files separately.
  */
 
@@ -26,7 +30,7 @@ public class ProcessFileTest {
      * Chaining tests (all in same class running one after the other) for ProcessFile will overlap, as when the next
      * test runs, the other has not finished.
      * <p>
-     * Test for processing a test file with sample text, and comparing its output to expected Result objects.
+     * Test for processing a test file with sample text, and comparing its output to expected backend.process.Result objects.
      *
      * @throws ParseException       for the Dates that we create for the expected Results.
      * @throws InterruptedException as we are putting the Thread that runs this test to sleep to let ProcessFile finish running.
@@ -94,15 +98,15 @@ public class ProcessFileTest {
         processFiles.processFiles(files, callbackResults);
         System.out.println("Actual Threads running" + Thread.activeCount());
         Assert.assertEquals(true, Thread.activeCount() >= 2);
-        Thread.sleep(5000);//give the Engine time to finish running
+        Thread.sleep(5000);//give the backend.process.Engine time to finish running
     }
 
     /**
-     * Compares an actual list of Results with a expected one, by just looking at the dates picked out. Checking that the Engine
+     * Compares an actual list of Results with a expected one, by just looking at the dates picked out. Checking that the backend.process.Engine
      * is picking out the right sentence and producing the right dates, not caring about the sentence trimming or subject picking.
      *
-     * @param actualResults   the list of produced Result objects
-     * @param expectedResults the list of expected Result objects
+     * @param actualResults   the list of produced backend.process.Result objects
+     * @param expectedResults the list of expected backend.process.Result objects
      */
     private void compareExpectedToActual(ArrayList<Result> actualResults, ArrayList<Result> expectedResults) {
         System.out.println("Actual Results: " + actualResults);

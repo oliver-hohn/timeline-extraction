@@ -1,3 +1,8 @@
+import backend.process.CallbackResults;
+import backend.process.ProcessFiles;
+import backend.process.Result;
+import backend.system.BackEndSystem;
+import backend.system.SystemState;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -12,8 +17,8 @@ public class SystemStateTest {
     private CallbackResults callbackResults = new CallbackResults() {
         @Override
         public void gotResults(ArrayList<Result> results) {
-            //we just finished processing a File, so our SystemState should be PROCESSED (FINISHED set after it passes the Results).
-            System.out.println("Checking if SystemState is PROCESSED");
+            //we just finished processing a File, so our backend.system.SystemState should be PROCESSED (FINISHED set after it passes the Results).
+            System.out.println("Checking if backend.system.SystemState is PROCESSED");
             Assert.assertEquals(BackEndSystem.getInstance().getSystemState(), SystemState.PROCESSED);
         }
     };
@@ -25,8 +30,8 @@ public class SystemStateTest {
      */
     @Test
     public void testSystemState() throws InterruptedException {
-        BackEndSystem.getInstance().setSystemState(SystemState.STARTED);//will start the system if it hasnt started before, if it has reset the SystemState
-        System.out.println("Checking if SystemState is STARTED");
+        BackEndSystem.getInstance().setSystemState(SystemState.STARTED);//will start the system if it hasnt started before, if it has reset the backend.system.SystemState
+        System.out.println("Checking if backend.system.SystemState is STARTED");
         Assert.assertEquals(BackEndSystem.getInstance().getSystemState(), SystemState.STARTED);//check the system is started
 
         ProcessFiles processFiles = new ProcessFiles();
@@ -42,7 +47,7 @@ public class SystemStateTest {
 
         processFiles.processFiles(files, callbackResults);
         //its processing Files, so its status should be: PROCESSING
-        System.out.println("Checking if SystemState is PROCESSING");
+        System.out.println("Checking if backend.system.SystemState is PROCESSING");
         Assert.assertEquals(BackEndSystem.getInstance().getSystemState(), SystemState.PROCESSING);
         Thread.sleep(5000);//wait for the ProcessFile to be completed
     }

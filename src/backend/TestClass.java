@@ -1,6 +1,11 @@
+package backend;
+
+import backend.process.CallbackResults;
+import backend.process.ProcessFiles;
+import backend.process.Result;
+
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
 /**
@@ -31,17 +36,17 @@ public class TestClass {
         text += "Last year I did well at uni. Last Month I went to school. Last week I played basketball. Every day in January, I play football.";
 
         System.out.println("Processing hard-coded text:");
-        Engine engine = new Engine();
+        backend.process.Engine engine = new backend.process.Engine();
         String date = "2016-11-30";
-        ArrayList<Result> results1 = engine.getResults(text,date);
-        for(Result result: results1){
+        ArrayList<backend.process.Result> results1 = engine.getResults(text,date);
+        for(backend.process.Result result: results1){
             System.out.println(result);
         }
 
         System.out.println("\n\nSorted List:");
 
         Collections.sort(results1);
-        for(Result result: results1){
+        for(backend.process.Result result: results1){
             System.out.println(result);
         }
 
@@ -73,9 +78,9 @@ public class TestClass {
                 }
             }
         });
-/*        processFiles.processFiles(files, new CallbackResults() {
+/*        processFiles.processFiles(files, new backend.process.CallbackResults() {
             @Override
-            public void gotResults(ArrayList<Result> results) {
+            public void gotResults(ArrayList<backend.process.Result> results) {
                 System.out.println("Should never reach this, as it has not finished processing files");
             }//Should never run, as the we are Processing the other files (only if they are all done, can this run)
         });*/

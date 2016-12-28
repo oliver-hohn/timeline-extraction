@@ -1,3 +1,7 @@
+package backend.process;
+
+import backend.system.BackEndSystem;
+import backend.system.SystemState;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
@@ -21,7 +25,7 @@ import java.util.concurrent.Semaphore;
 
 
 /**
- * Handles the parsing of files, and the multi-threading of the Engine.
+ * Handles the parsing of files, and the multi-threading of the backend.process.Engine.
  */
 public class ProcessFiles implements ProcessFileCallback {
     private static int maxNoOfThreads = 2;
@@ -36,7 +40,7 @@ public class ProcessFiles implements ProcessFileCallback {
     /**
      * For the list of Files passed in, it will process each in separate threads, while respecting the maximum number
      * of threads that can run at any given time (i.e. maximum 2 extra threads running at a time).
-     * Will call gotResults() on the CallbackResults object when all files have been processed, and a list of Results has
+     * Will call gotResults() on the backend.process.CallbackResults object when all files have been processed, and a list of Results has
      * been produced.
      *
      * @param files           the list of File objects that contain text that needs to be processed (atm only processes .docx/.pdf/.txt files)
@@ -60,7 +64,7 @@ public class ProcessFiles implements ProcessFileCallback {
                     System.out.println("Acquired semaphore for file: " + file);
                     //process file
                     Thread thread = new ProcessFile(file, this);//pass a reference so that the thread can call this when it finishes processing the file
-                    thread.start();//start processing this file(get its text and pass it to the Engine)
+                    thread.start();//start processing this file(get its text and pass it to the backend.process.Engine)
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     //should release semaphore and reduce filesToGo count if the Thread is interrupted
@@ -75,7 +79,7 @@ public class ProcessFiles implements ProcessFileCallback {
      * Enforces the rule of releasing the semaphore, as this Thread finished running, to then allow waiting Threads to run.
      * Will inform the CallbackResult object when it finishes processing all Files.
      *
-     * @param results the Result objects produced by Processing the given file in the Thread.
+     * @param results the backend.process.Result objects produced by Processing the given file in the Thread.
      */
     public synchronized void callBack(ArrayList<Result> results) {
         //we finished processing a file
@@ -106,10 +110,10 @@ public class ProcessFiles implements ProcessFileCallback {
 
         /**
          * Create a ProcessFile object that holds the data needed: the File to process and who to callback when the
-         * Engine finishes processing.
+         * backend.process.Engine finishes processing.
          *
          * @param file                the File to process.
-         * @param processFileCallback who to inform when the Engine finished processing the given file.
+         * @param processFileCallback who to inform when the backend.process.Engine finished processing the given file.
          */
         ProcessFile(File file, ProcessFileCallback processFileCallback) {//hold sempahore
             this.file = file;
@@ -118,7 +122,7 @@ public class ProcessFiles implements ProcessFileCallback {
 
         /**
          * What starts running on a separate Thread. Will first get the Text for the given file, and then pass it to the
-         * Engine, which will return a list of Results that is passed to the ProcessFileCallback.
+         * backend.process.Engine, which will return a list of Results that is passed to the backend.process.ProcessFileCallback.
          */
         @Override
         public void run() {
@@ -136,7 +140,7 @@ public class ProcessFiles implements ProcessFileCallback {
                     toReturnResults = new Engine().getResults(toProcess, baseDate);
                 }
             }
-            //call the ProcessFileCallback that we finished processing and return the results of processing that one File.
+            //call the backend.process.ProcessFileCallback that we finished processing and return the results of processing that one File.
             processFileCallback.callBack(toReturnResults);
         }
 

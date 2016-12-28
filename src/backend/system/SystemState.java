@@ -1,5 +1,7 @@
+package backend.system;
+
 /**
- * Represents all the different states the Back-end (specifically the Engine) can be in.
+ * Represents all the different states the Back-end (specifically the backend.process.Engine) can be in.
  */
 public enum SystemState {
     NOT_STARTED,//initially when the StanfordCoreNLP has not been started
