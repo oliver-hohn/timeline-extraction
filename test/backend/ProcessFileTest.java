@@ -38,7 +38,7 @@ public class ProcessFileTest {
      * @throws InterruptedException as we are putting the Thread that runs this test to sleep to let ProcessFile finish running.
      */
     @Test
-    public void testSampleFileProcess() throws ParseException, InterruptedException {
+    public void testSampleFileProcessTXT() throws ParseException, InterruptedException {
         ArrayList<Result> expectedResults = new ArrayList<>();
         actualResults = null;
 
@@ -101,6 +101,55 @@ public class ProcessFileTest {
         System.out.println("Actual Threads running" + Thread.activeCount());
         Assert.assertEquals(true, Thread.activeCount() >= 2);
         Thread.sleep(5000);//give the backend.process.Engine time to finish running
+    }
+
+    /**
+     * Tests the processing of a sample docx file, by checking the processed Result against expected Results. Only looks
+     * at dates picked out (checking only it is processing the File correctly, i.e. picking out the correct sentences, and
+     * their dates).
+     *
+     * @throws InterruptedException as we are putting the Thread that runs this test to sleep to let ProcessFile finish running.
+     * @throws ParseException       for the Dates that we create for the expected Results.
+     */
+    @Test
+    public void testSampleFileProcessDocx() throws InterruptedException, ParseException {
+        actualResults = null;
+        ArrayList<Result> expectedResults = new ArrayList<>();
+        //base date is 29/12/2016 (creation date of file)
+        Result result1 = new Result();
+        TimelineDate timelineDate1 = new TimelineDate();
+        timelineDate1.setDate1(simpleDateFormat.parse("2016-12-30"));
+        result1.setTimelineDate(timelineDate1);
+        expectedResults.add(result1);
+
+        Result result2 = new Result();
+        TimelineDate timelineDate2 = new TimelineDate();
+        timelineDate2.setDate1(simpleDateFormat.parse("2008-01-01"));//second sentence talks about donations between 2008 and spring of this year (2016)
+        timelineDate2.setDate2(simpleDateFormat.parse("2016-05-31"));//last day of spring
+        result2.setTimelineDate(timelineDate2);
+        expectedResults.add(result2);
+
+        Result result3 = new Result();
+        TimelineDate timelineDate3 = new TimelineDate();
+        timelineDate3.setDate1(simpleDateFormat.parse("1980-01-01"));//donated since the early 1980s (range so 1980 ->1989)
+        timelineDate3.setDate2(simpleDateFormat.parse("1989-12-31"));//last day of the 1980s
+        result3.setTimelineDate(timelineDate3);
+        expectedResults.add(result3);
+
+        Result result4 = new Result();
+        TimelineDate timelineDate4 = new TimelineDate();
+        timelineDate4.setDate1(simpleDateFormat.parse("1996-01-01"));//in 1996 an event happened (doesnt specify day or month, just year)
+        result4.setTimelineDate(timelineDate4);
+        expectedResults.add(result4);
+
+        File testFile = new File("test/resources/testfile4.docx");
+        ArrayList<File> files = new ArrayList<>();
+        files.add(testFile);
+
+        ProcessFiles processFiles = new ProcessFiles();
+        processFiles.processFiles(files, callbackResults);
+        Thread.sleep(10000);
+        compareExpectedToActual(actualResults, expectedResults);
     }
 
     /**
