@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * Tests the the extracting of text in files and passing it to the Engine, and the fact that Threads are being created
  * to process the Files separately.
  */
-//TODO: move test file to root directory of project
+
 public class ProcessFileTest {
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private ArrayList<Result> actualResults;
@@ -25,7 +25,7 @@ public class ProcessFileTest {
     /**
      * Chaining tests (all in same class running one after the other) for ProcessFile will overlap, as when the next
      * test runs, the other has not finished.
-     *
+     * <p>
      * Test for processing a test file with sample text, and comparing its output to expected Result objects.
      *
      * @throws ParseException       for the Dates that we create for the expected Results.
@@ -44,24 +44,24 @@ public class ProcessFileTest {
 
         Result result2 = new Result();
         TimelineDate timelineDate2 = new TimelineDate();
-        timelineDate2.setDate1(simpleDateFormat.parse("2016-12-22"));
+        timelineDate2.setDate1(simpleDateFormat.parse("2016-12-27"));
         result2.setTimelineDate(timelineDate2);
         expectedResults.add(result2);
 
         Result result3 = new Result();
         TimelineDate timelineDate3 = new TimelineDate();
-        timelineDate3.setDate1(simpleDateFormat.parse("2016-12-24"));
+        timelineDate3.setDate1(simpleDateFormat.parse("2016-12-29"));
         result3.setTimelineDate(timelineDate3);
         expectedResults.add(result3);
 
         Result result4 = new Result();
         TimelineDate timelineDate4 = new TimelineDate();
-        timelineDate4.setDate1(simpleDateFormat.parse("2016-12-12"));
-        timelineDate4.setDate2(simpleDateFormat.parse("2016-12-18"));
+        timelineDate4.setDate1(simpleDateFormat.parse("2016-12-19"));
+        timelineDate4.setDate2(simpleDateFormat.parse("2016-12-25"));
         result4.setTimelineDate(timelineDate4);
         expectedResults.add(result4);
 
-        File testFile = new File("D:" + File.separator + "FYP" + File.separator + "testfile.txt");
+        File testFile = new File("test/resources/testfile1.txt");
         ArrayList<File> files = new ArrayList<>();
         files.add(testFile);
 
@@ -81,9 +81,9 @@ public class ProcessFileTest {
     public void testMultiThread() throws InterruptedException {//check that processfile makes two more threads run
         // at least 2 Threads should be running (main and the one created by process file).
         actualResults = null;
-        File testFile1 = new File("D:" + File.separator + "FYP" + File.separator + "testfile.txt");
-        File testFile2 = new File("D:" + File.separator + "FYP" + File.separator + "testfile2.txt");
-        File testFile3 = new File("D:" + File.separator + "FYP" + File.separator + "testfile3.txt");
+        File testFile1 = new File("test/resources/testfile1.txt");
+        File testFile2 = new File("test/resources/testfile2.txt");
+        File testFile3 = new File("test/resources/testfile3.txt");
 
         ArrayList<File> files = new ArrayList<>();
         files.add(testFile1);

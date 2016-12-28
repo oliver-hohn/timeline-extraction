@@ -31,9 +31,9 @@ public class SystemStateTest {
 
         ProcessFiles processFiles = new ProcessFiles();
 
-        File testFile1 = new File("D:" + File.separator + "FYP" + File.separator + "testfile.txt");
-        File testFile2 = new File("D:" + File.separator + "FYP" + File.separator + "testfile2.txt");
-        File testFile3 = new File("D:" + File.separator + "FYP" + File.separator + "testfile3.txt");
+        File testFile1 = new File("test/resources/testfile1.txt");
+        File testFile2 = new File("test/resources/testfile2.txt");
+        File testFile3 = new File("test/resources/testfile3.txt");
 
         ArrayList<File> files = new ArrayList<>();
         files.add(testFile1);
