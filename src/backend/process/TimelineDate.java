@@ -17,7 +17,6 @@ public class TimelineDate implements Comparable<TimelineDate> {
     private static final String month = "01";
     private static final String day = "01";
     private static final Map<String, Pair<String, String>> seasonMap;
-
     static {
         /*
             Seasons are given according to educationuk.org, by:
@@ -44,6 +43,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
     private Date date1;//first (min, start) date
     private Date date2;//second (max, end) date
     private String dateStr;
+    private String baseDate;
 
     /**
      * Initialises the Calendar used to determine dates based on week number.
@@ -57,7 +57,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
      *
      * @param date a date provided by the StanfordCoreNLP library: it is a normalized entity
      */
-    public void parse(String date) {
+    public void parse(String date, String baseDate) {
         ArrayList<Date> dates = new ArrayList<>();
         //splitting INTERSECT
         String[] splitDate = date.split("INTERSECT");
@@ -87,6 +87,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
         String year2 = null;
         String month2 = null;
         String day2 = null;
+        System.out.println("Base Date: "+baseDate+" normalized Entity Tag: "+date);
 
         //now need to split date into its individual components
         String[] dateInfo = date.split("-");
