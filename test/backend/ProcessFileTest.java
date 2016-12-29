@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -143,6 +144,43 @@ public class ProcessFileTest {
         expectedResults.add(result4);
 
         File testFile = new File("test/resources/testfile4.docx");
+        ArrayList<File> files = new ArrayList<>();
+        files.add(testFile);
+
+        ProcessFiles processFiles = new ProcessFiles();
+        processFiles.processFiles(files, callbackResults);
+        Thread.sleep(10000);
+        compareExpectedToActual(actualResults, expectedResults);
+    }
+
+    /**
+     * Test for processing PDF Files, by checking the processed Results to the expected Results. Checks only their dates
+     * as we are interested in it picking out the right sentences and their dates in the documents parsed in.
+     *
+     * @throws InterruptedException as we are putting the Thread that runs this test to sleep to allow time for ProcessFile to finish (runs on separate Thread).
+     * @throws ParseException       for the Dates that we create for the expected Results.
+     */
+    @Test
+    public void testSampleFilePDF() throws InterruptedException, ParseException {
+        actualResults = null;
+        ArrayList<Result> expectedResults = new ArrayList<>();
+        //base date 2016-12-29
+
+        //on Friday = 2016-12-30
+        //1967 = 1967-01-01
+        Result result1 = new Result();
+        TimelineDate timelineDate1 = new TimelineDate();
+        timelineDate1.setDate1(simpleDateFormat.parse("2016-12-30"));
+        result1.setTimelineDate(timelineDate1);
+        expectedResults.add(result1);
+
+        Result result2 = new Result();
+        TimelineDate timelineDate2 = new TimelineDate();
+        timelineDate2.setDate1(simpleDateFormat.parse("1967-01-01"));
+        result2.setTimelineDate(timelineDate2);
+        expectedResults.add(result2);
+
+        File testFile = new File("test/resources/testfile5.pdf");//bbc article (http://www.bbc.com/news/world-us-canada-38451258)
         ArrayList<File> files = new ArrayList<>();
         files.add(testFile);
 
