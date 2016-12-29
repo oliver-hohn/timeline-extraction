@@ -8,7 +8,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
-import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
