@@ -13,6 +13,7 @@ import java.util.Date;
  */
 public class TimelineDateTest {
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private String baseDate = "2016-12-30";//doesn't affect the output of most tests, but has to be still passed in.
     //TODO: for INTERSECT and now tags
 
     /**
@@ -26,7 +27,7 @@ public class TimelineDateTest {
         Date expectedDate = simpleDateFormat.parse(dateStr);
 
         TimelineDate timelineDate = new TimelineDate();
-        timelineDate.parse(dateStr);//should make a Date object of the same type, not much processing.
+        timelineDate.parse(dateStr, baseDate);//should make a Date object of the same type, not much processing.
 
         Assert.assertEquals(expectedDate, timelineDate.getDate1());
         Assert.assertEquals(null, timelineDate.getDate2());//should have only picked up one date
@@ -48,7 +49,7 @@ public class TimelineDateTest {
         Date expectedEnd = simpleDateFormat.parse(expectedEndDate);
 
         TimelineDate timelineDate = new TimelineDate();
-        timelineDate.parse(yearRange);
+        timelineDate.parse(yearRange, baseDate);
 
         Assert.assertEquals(expectedStart, timelineDate.getDate1());
         Assert.assertEquals(expectedEnd, timelineDate.getDate2());
@@ -71,7 +72,7 @@ public class TimelineDateTest {
         Date expectedEnd = simpleDateFormat.parse(expectedEndDate);
 
         TimelineDate timelineDate = new TimelineDate();
-        timelineDate.parse(input);
+        timelineDate.parse(input, baseDate);
 
         System.out.println(timelineDate);
         Assert.assertEquals(expectedStart, timelineDate.getDate1());
@@ -93,7 +94,7 @@ public class TimelineDateTest {
         Date expectedEnd = simpleDateFormat.parse(expectedEndDate);
 
         TimelineDate timelineDate = new TimelineDate();
-        timelineDate.parse(input);
+        timelineDate.parse(input, baseDate);
 
         System.out.println(timelineDate);
 
@@ -116,7 +117,7 @@ public class TimelineDateTest {
         Date expectedEnd = simpleDateFormat.parse(expectedEndDate);
 
         TimelineDate timelineDate = new TimelineDate();
-        timelineDate.parse(input);
+        timelineDate.parse(input, baseDate);
 
         System.out.println(timelineDate);
 
@@ -137,7 +138,7 @@ public class TimelineDateTest {
         Date expectedStart = simpleDateFormat.parse(expectedStartDate);
 
         TimelineDate timelineDate = new TimelineDate();
-        timelineDate.parse(input);
+        timelineDate.parse(input, baseDate);
 
         System.out.println(timelineDate);
 

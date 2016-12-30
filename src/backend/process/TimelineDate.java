@@ -42,10 +42,12 @@ public class TimelineDate implements Comparable<TimelineDate> {
     private final static Pattern onlyPresentRefPattern = Pattern.compile(".*PRESENT_REF.*");
     private final static Pattern onlyBeforeYearPattern = Pattern.compile("(\\-\\d{4})|(\\-\\d{3}X)|(\\-\\d{2}XX)|(\\-\\dXXX)|(\\-XXXX)");
     private final static Pattern onlyWeekendPattern = Pattern.compile("WE");
+    private final static Pattern yearMonthDayPattern = Pattern.compile("\\d{4}\\-\\d{2}\\-\\d{2}");
     private Calendar calendar;
     private Date date1;//first (min, start) date
     private Date date2;//second (max, end) date
     private String dateStr;
+    private String baseDate;
 
     /**
      * Initialises the Calendar used to determine dates based on week number.
@@ -59,8 +61,9 @@ public class TimelineDate implements Comparable<TimelineDate> {
      *
      * @param date a date provided by the StanfordCoreNLP library: it is a normalized entity
      */
-    public void parse(String date) {
+    public void parse(String date, String baseDate) {
         ArrayList<Date> dates = new ArrayList<>();
+        this.baseDate = baseDate;
         //splitting INTERSECT
         String[] splitDate = date.split("INTERSECT");
         if (splitDate.length > 0) {// on the first part of the date, which is just a date, get its specfic date
@@ -93,6 +96,14 @@ public class TimelineDate implements Comparable<TimelineDate> {
         //can have a date that is PRESENT_REF (when the text has now)
         if(onlyPresentRefPattern.matcher(date).matches()){
             //should be base date, as it means this current moment?
+            System.out.println("We have now, so we should use baseDate: "+baseDate);
+            if(yearMonthDayPattern.matcher(baseDate).matches()) {
+                System.out.println("BaseDate matches: "+baseDate);
+                String[] splitDate = baseDate.split("-");//so its safe to split it into 3 parts as pattern matched above
+                year1 = splitDate[0];
+                month1 = splitDate[1];
+                day1 = splitDate[2];
+            }
         }else if(onlyBeforeYearPattern.matcher(date).matches()){
             System.out.println("Matches BC pattern");
             //create this into a normalized date

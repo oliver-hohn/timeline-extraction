@@ -27,6 +27,7 @@ import java.util.List;
 public class Engine {
     private static int threshold = 10;
     private StanfordCoreNLP coreNLP;
+    private String baseDate;
 
     /**
      * Set up the StanfordCoreNLP to analyze text.
@@ -44,6 +45,7 @@ public class Engine {
      */
     public ArrayList<Result> getResults(String input, String date) {
         ArrayList<Result> results = new ArrayList<>();
+        baseDate = date;
 
         Annotation annotation;
         annotation = new Annotation(input);
@@ -101,7 +103,7 @@ public class Engine {
                 String date = mention.get(CoreAnnotations.TextAnnotation.class);
                 System.out.println("We are storing date: " + date);
                 result.addDate(date);
-                result.addDate_1(date_1);
+                result.addDate_1(date_1, baseDate);
 
             } else if (namedEntityTag.equals("LOCATION") || namedEntityTag.equals("ORGANIZATION") ||
                     namedEntityTag.equals("PERSON") || namedEntityTag.equals("MONEY") || namedEntityTag.equals("MISC")) {

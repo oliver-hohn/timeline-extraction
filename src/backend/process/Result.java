@@ -114,9 +114,9 @@ public class Result implements Comparable<Result> {
      *
      * @param date a String that contains date information that needs to be passed into the timeline date of this backend.process.Result object.
      */
-    public void addDate_1(String date) {
+    public void addDate_1(String date, String baseDate) {
         System.out.println("About to parse: " + date);
-        timelineDate.parse(date);
+        timelineDate.parse(date, baseDate);
     }
 
 
