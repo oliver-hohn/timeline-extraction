@@ -7,6 +7,7 @@ import backend.process.Result;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 
 /**
@@ -85,9 +86,13 @@ public class TestClass {
                 System.out.println("Should never reach this, as it has not finished processing files");
             }//Should never run, as the we are Processing the other files (only if they are all done, can this run)
         });*/
-        String text = "Now I am going to play playstation. In the 5th Century B.C. they played football. Next weekend I'm playing basketball. Next week we play football.";
+        String text = "Now I am going to play playstation. In the 5th Century B.C. they played football. Next weekend I'm playing basketball. Next week we play football. Last week on Friday.";
         Engine engine = new Engine();
-        engine.getResults(text, "2016-12-30");
+        ArrayList<Result> results = engine.getResults(text, "2016-12-30");
+        Collections.sort(results);
+        for(Result result: results){
+            System.out.println(result);
+        }
     }
 
 }
