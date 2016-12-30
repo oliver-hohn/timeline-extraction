@@ -39,7 +39,9 @@ public class TimelineDate implements Comparable<TimelineDate> {
     private final static Pattern onlyWeekNumberPattern = Pattern.compile("W\\d{2}");
     private final static Pattern onlySeasonPattern = Pattern.compile("[A-Z]{2}");
     private final static Pattern onlyDayPattern = Pattern.compile("\\d{2}");
-
+    private final static Pattern onlyPresentRefPattern = Pattern.compile(".*PRESENT_REF.*");
+    private final static Pattern onlyBeforeYearPattern = Pattern.compile("(\\-\\d{4})|(\\-\\d{3}X)|(\\-\\d{2}XX)|(\\-\\dXXX)|(\\-XXXX)");
+    private final static Pattern onlyWeekendPattern = Pattern.compile("WE");
     private Calendar calendar;
     private Date date1;//first (min, start) date
     private Date date2;//second (max, end) date
@@ -80,6 +82,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
      * @return a list of exact Dates formed from the input.
      */
     private ArrayList<Date> getDate(String date) {
+        calendar.clear();
         ArrayList<Date> dates = new ArrayList<>();
         String year1 = year;//setting the default values
         String month1 = month;
@@ -87,6 +90,16 @@ public class TimelineDate implements Comparable<TimelineDate> {
         String year2 = null;
         String month2 = null;
         String day2 = null;
+        //can have a date that is PRESENT_REF (when the text has now)
+        if(onlyPresentRefPattern.matcher(date).matches()){
+            //should be base date, as it means this current moment?
+        }else if(onlyBeforeYearPattern.matcher(date).matches()){
+            System.out.println("Matches BC pattern");
+            //create this into a normalized date
+        }
+        //BC dates -dddd with Xs
+
+        //else
 
         //now need to split date into its individual components
         String[] dateInfo = date.split("-");
@@ -115,6 +128,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
                     calendar.set(Calendar.YEAR, getInt(year1));//should be set from previously
                     calendar.set(Calendar.WEEK_OF_YEAR, getInt(weekNumber));
                     calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);//assuming we start on monday and end on sunday
+                    year1 = new SimpleDateFormat("yyyy").format(calendar.getTime());//in the case the week goes into the next year, update our year1
                     month1 = new SimpleDateFormat("MM").format(calendar.getTime());
                     day1 = new SimpleDateFormat("dd").format(calendar.getTime());
                     //now for the end of the week
@@ -136,9 +150,22 @@ public class TimelineDate implements Comparable<TimelineDate> {
                         }
                     }
                 }
-            } else if (i == 2) {//can only be a day
+            } else if (i == 2) {//can be a day, or previously had week this could be weekend
                 if (onlyDayPattern.matcher(dateInfo[i]).matches()) {//got the day
                     day1 = dateInfo[i];
+                }else if(onlyWeekendPattern.matcher(dateInfo[i]).matches()){//previously should have had week number so its a range
+                    //checking its range has been set before
+                    if(day1 != null && day2 != null && month1 != null && month2 != null) {
+                        //then lets refine the dates that were just before a week long, now down to a weekend
+                        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+                        year1 = new SimpleDateFormat("yyyy").format(calendar.getTime());//in the case the week goes into the next year, update our year1
+                        month1 = new SimpleDateFormat("MM").format(calendar.getTime());
+                        day1 = new SimpleDateFormat("dd").format(calendar.getTime());
+                        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+                        month2 = new SimpleDateFormat("MM").format(calendar.getTime());
+                        day2 = new SimpleDateFormat("dd").format(calendar.getTime());
+                        year2 = new SimpleDateFormat("yyyy").format(calendar.getTime());
+                    }
                 }
             }
         }
