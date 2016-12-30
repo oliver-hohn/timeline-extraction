@@ -53,7 +53,6 @@ public class TestClass {
         }
 
 */
-/*
         System.out.println("\n\nProcessing through files");
         ProcessFiles processFiles = new ProcessFiles();
         //TODO: give each file a unique text to see the changes in the timeline better
@@ -79,20 +78,20 @@ public class TestClass {
                     System.out.println(result);
                 }
             }
-        });*/
+        });
 /*        processFiles.processFiles(files, new backend.process.CallbackResults() {
             @Override
             public void gotResults(ArrayList<backend.process.Result> results) {
                 System.out.println("Should never reach this, as it has not finished processing files");
             }//Should never run, as the we are Processing the other files (only if they are all done, can this run)
         });*/
-        String text = "Now I am going to play playstation. In the 5th Century B.C. they played football. Next weekend I'm playing basketball. Next week we play football. Last week on Friday.";
+/*        String text = "Now I am going to play playstation. In the 5th Century B.C. they played football. Next weekend I'm playing basketball. Next week we play football. Last week on Friday. Mary left on Thursday and John arrived the day after.";
         Engine engine = new Engine();
         ArrayList<Result> results = engine.getResults(text, "2016-12-30");
         Collections.sort(results);
         for(Result result: results){
             System.out.println(result);
-        }
+        }*/
     }
 
 }

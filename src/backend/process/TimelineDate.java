@@ -11,12 +11,14 @@ import java.util.regex.Pattern;
  * Attempts to generate an exact date for an event, to then order the events.
  * Holds the start and end date (appropriately) for each event in the timeline. It updates as new dates, relevant to the
  */
-//TODO: PRESENT_REF date means date now, check of date values are possible before trying to create (eg checking if month has 31 days). If just year-month should create range?
+//TODO: check of date values are possible before trying to create (eg checking if month has 31 days). If just year-month should create range?
+//TODO: BC full dates, range system
 public class TimelineDate implements Comparable<TimelineDate> {
     private static final String year = "0001";
     private static final String month = "01";
     private static final String day = "01";
     private static final Map<String, Pair<String, String>> seasonMap;
+    private static final SimpleDateFormat simpleDateFormatBC = new SimpleDateFormat("yyyy-MM-dd G");
 
     static {
         /*
@@ -94,32 +96,9 @@ public class TimelineDate implements Comparable<TimelineDate> {
         String month2 = null;
         String day2 = null;
 
-        //TODO:put each in their own method
         if (onlyBeforeYearPattern.matcher(date).matches()) {
             System.out.println("Matches BC pattern");
-            //create this into a normalized date
-            //remove - sign, will throw exception when parsing
-            String noSignDate = date.substring(1);
-            System.out.println(noSignDate);
-            //start date is furthest away, so we flip as its -
-            year1 = noSignDate.replace("X", "9");
-            if (noSignDate.contains("X")) {
-                year2 = noSignDate.replace("X", "0");
-                month2 = "01";
-                day2 = "01";
-            }
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd G");
-            try {
-                Date date1 = simpleDateFormat.parse(String.format("%s-%s-%s BC", year1, month1, day1));
-                System.out.println(date1);
-                Date date2 = simpleDateFormat.parse(String.format("%s-%s-%s BC", year2, month2, day2));
-                System.out.println(date2);
-
-                dates.add(date1);
-                dates.add(date2);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            dates.addAll(getBCDates(date));
         }else {
             //can have a date that is PRESENT_REF (when the text has now)
             if (onlyPresentRefPattern.matcher(date).matches()) {
@@ -224,7 +203,38 @@ public class TimelineDate implements Comparable<TimelineDate> {
     }
 
     /**
+     * Gets passed in a date of the format -YYYY, and attempts to produce an exact range of dates (if needed).
+     * @param date a date of the form B.C. (i.e. -YYYY)
+     * @return a list of Date objects, 1 if there was just one exact negative date string (now date object), or two if a range was created.
+     */
+    private ArrayList<Date> getBCDates(String date){
+        //passed in a negative year
+        ArrayList<Date> dates = new ArrayList<>();
+        String removeSign = date.substring(1);//remove the starting -
+        //now make the dates
+        //and update X values appropriately, for start
+        String year = removeSign.replaceAll("X","9");
+        try {
+            Date date1 = simpleDateFormatBC.parse(year+"-"+month+"-"+day+" BC");
+            dates.add(date1);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if(removeSign.contains("X")) {
+            year = removeSign.replaceAll("X", "0");
+            try {
+                Date date2 = simpleDateFormatBC.parse(year + "-12-31 BC");
+                dates.add(date2);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return dates;
+    }
+
+    /**
      * Used to find update the min/max dates held. Will update the dates held if a new min/max has been found.
+     * MinMax Algorithm.
      *
      * @param newDates a list of possible new min/max dates
      * @param date     the string that produced these dates.
