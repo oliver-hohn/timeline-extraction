@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  * Holds the start and end date (appropriately) for each event in the timeline. It updates as new dates, relevant to the
  */
 //TODO: check of date values are possible before trying to create (eg checking if month has 31 days). If just year-month should create range?
-//TODO: BC full dates, range system
+//TODO: range system
 public class TimelineDate implements Comparable<TimelineDate> {
     private static final String year = "0001";
     private static final String month = "01";
@@ -86,6 +86,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
      * @param date an input text that contains date information (can be exact or relative).
      * @return a list of exact Dates formed from the input.
      */
+    //TODO: split this up into smaller methods
     private ArrayList<Date> getDate(String date) {
         calendar.clear();
         ArrayList<Date> dates = new ArrayList<>();
@@ -95,140 +96,134 @@ public class TimelineDate implements Comparable<TimelineDate> {
         String year2 = null;
         String month2 = null;
         String day2 = null;
+        boolean isBC = false;
 
-        if (onlyBeforeYearPattern.matcher(date).matches()) {
-            System.out.println("Matches BC pattern");
-            dates.addAll(getBCDates(date));
-        }else {
-            //can have a date that is PRESENT_REF (when the text has now)
-            if (onlyPresentRefPattern.matcher(date).matches()) {
-                //should be base date, as it means this current moment?
-                System.out.println("We have now, so we should use baseDate: " + baseDate);
-                if (yearMonthDayPattern.matcher(baseDate).matches()) {
-                    System.out.println("BaseDate matches: " + baseDate);
-                    String[] splitDate = baseDate.split("-");//so its safe to split it into 3 parts as pattern matched above
-                    year1 = splitDate[0];
-                    month1 = splitDate[1];
-                    day1 = splitDate[2];
-                }
+        //can have a date that is PRESENT_REF (when the text has now)
+        if (onlyPresentRefPattern.matcher(date).matches()) {
+            //should be base date, as it means this current moment?
+            System.out.println("We have now, so we should use baseDate: " + baseDate);
+            if (yearMonthDayPattern.matcher(baseDate).matches()) {
+                System.out.println("BaseDate matches: " + baseDate);
+                String[] splitDate = baseDate.split("-");//so its safe to split it into 3 parts as pattern matched above
+                year1 = splitDate[0];
+                month1 = splitDate[1];
+                day1 = splitDate[2];
             }
-            //now need to split date into its individual components
-            String[] dateInfo = date.split("-");
-            for (int i = 0; i < dateInfo.length; i++) {
-                if (i == 0) {//this can only be a year
-                    //check year format
-                    if (onlyYearPattern.matcher(dateInfo[i]).matches()) {
+        }
+        if (date.length() > 5 && onlyBeforeYearPattern.matcher(date.substring(0, 5)).matches()) {//check if its BC
+            System.out.println("Negative date");
+            isBC = true;//if so flag it
+            date = date.substring(1, 5);//removed - sign infront of year
+            System.out.println(date);
+            //now we need to split it into its individual components like with AD dates.
+        }
+
+        String[] dateInfo = date.split("-");
+        for (int i = 0; i < dateInfo.length; i++) {
+            if (i == 0) {//this can only be a year
+                //check year format
+                if (onlyYearPattern.matcher(dateInfo[i]).matches()) {
+                    if (isBC) {
+                        year1 = dateInfo[i].replace("X", "9");
+                    } else {
                         year1 = dateInfo[i].replace("X", "0");
-                        if (dateInfo[i].contains("X")) {//if we do have a range then we need to set the values for the second date
+                    }
+                    if (dateInfo[i].contains("X")) {//if we do have a range then we need to set the values for the second date
+                        if (isBC) {
+                            year2 = dateInfo[i].replace("X", "0");
+                        } else {
                             year2 = dateInfo[i].replace("X", "9");//could be the casse that we dont want it to point to the last day in the year
-                            month2 = "12";//last day of the second year
-                            day2 = "31";//assuming a range for 1980s means 1980 to the last day of 1989 (maximum possible range)
-                            //could have every day in january, would want it to end in january?
+
+                        }
+                        month2 = "12";//last day of the second year
+                        day2 = "31";//assuming a range for 1980s means 1980 to the last day of 1989 (maximum possible range)
+                        //could have every day in january, would want it to end in january?
+                    }
+                }
+            } else if (i == 1) {//this can be a week number, a month number or a season
+                //checking if its a month
+                System.out.println("Checking: " + dateInfo[i]);
+                if (onlyMonthPattern.matcher(dateInfo[i]).matches()) {
+                    System.out.println("In onlyMonthPattern");
+                    month1 = dateInfo[i];
+                } else if (onlyWeekNumberPattern.matcher(dateInfo[i]).matches()) {//checking if its a week number
+                    //calculate month and start day-end
+                    //split W from actual week number
+                    if (isBC) {
+                        calendar.set(Calendar.ERA, GregorianCalendar.BC);
+                    } else {
+                        calendar.set(Calendar.ERA, GregorianCalendar.AD);
+                    }
+                    String weekNumber = dateInfo[i].substring(1);//W is the first part of the string, after it is the week number
+                    calendar.set(Calendar.YEAR, getInt(year1));//should be set from previously
+                    calendar.set(Calendar.WEEK_OF_YEAR, getInt(weekNumber));
+                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);//assuming we start on monday and end on sunday
+                    year1 = new SimpleDateFormat("yyyy").format(calendar.getTime());//in the case the week goes into the next year, update our year1
+                    month1 = new SimpleDateFormat("MM").format(calendar.getTime());
+                    day1 = new SimpleDateFormat("dd").format(calendar.getTime());
+                    //now for the end of the week
+                    calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+                    month2 = new SimpleDateFormat("MM").format(calendar.getTime());
+                    day2 = new SimpleDateFormat("dd").format(calendar.getTime());
+                    year2 = new SimpleDateFormat("yyyy").format(calendar.getTime());
+                } else if (onlySeasonPattern.matcher(dateInfo[i]).matches()) {//checking if its a season
+                    String season = dateInfo[i];
+                    Pair<String, String> seasonPair = seasonMap.get(season);//get the start and end month for the season
+                    if (seasonPair != null) {//year1 should be set previously
+                        //not quite sure what to do with BC here
+                        month1 = seasonPair.first;
+                        month2 = seasonPair.second;
+                        day2 = "31";//set the second day as we are using a range
+                        if (seasonPair.first.equals("12")) {//move onto the next year, so year2 should be updated
+                            year2 = (getInt(year1) + 1) + "";
+                        } else {//we dont need to increment the year as the season is within the same year
+                            year2 = year1;
                         }
                     }
-                } else if (i == 1) {//this can be a week number, a month number or a season
-                    //checking if its a month
-                    System.out.println("Checking: " + dateInfo[i]);
-                    if (onlyMonthPattern.matcher(dateInfo[i]).matches()) {
-                        System.out.println("In onlyMonthPattern");
-                        month1 = dateInfo[i];
-                    } else if (onlyWeekNumberPattern.matcher(dateInfo[i]).matches()) {//checking if its a week number
-                        //calculate month and start day-end
-                        //split W from actual week number
-                        String weekNumber = dateInfo[i].substring(1);//W is the first part of the string, after it is the week number
-                        calendar.set(Calendar.YEAR, getInt(year1));//should be set from previously
-                        calendar.set(Calendar.WEEK_OF_YEAR, getInt(weekNumber));
-                        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);//assuming we start on monday and end on sunday
+                }
+            } else if (i == 2) {//can be a day, or previously had week this could be weekend
+                if (onlyDayPattern.matcher(dateInfo[i]).matches()) {//got the day
+                    day1 = dateInfo[i];
+                } else if (onlyWeekendPattern.matcher(dateInfo[i]).matches()) {//previously should have had week number so its a range
+                    //checking its range has been set before
+                    if (day1 != null && day2 != null && month1 != null && month2 != null) {
+                        //then lets refine the dates that were just before a week long, now down to a weekend
+                        if (isBC) {
+                            calendar.set(Calendar.ERA, GregorianCalendar.BC);
+                        } else {
+                            calendar.set(Calendar.ERA, GregorianCalendar.AD);
+                        }
+                        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
                         year1 = new SimpleDateFormat("yyyy").format(calendar.getTime());//in the case the week goes into the next year, update our year1
                         month1 = new SimpleDateFormat("MM").format(calendar.getTime());
                         day1 = new SimpleDateFormat("dd").format(calendar.getTime());
-                        //now for the end of the week
                         calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
                         month2 = new SimpleDateFormat("MM").format(calendar.getTime());
                         day2 = new SimpleDateFormat("dd").format(calendar.getTime());
                         year2 = new SimpleDateFormat("yyyy").format(calendar.getTime());
-                    } else if (onlySeasonPattern.matcher(dateInfo[i]).matches()) {//checking if its a season
-                        String season = dateInfo[i];
-                        Pair<String, String> seasonPair = seasonMap.get(season);//get the start and end month for the season
-                        if (seasonPair != null) {//year1 should be set previously
-                            month1 = seasonPair.first;
-                            month2 = seasonPair.second;
-                            day2 = "31";//set the second day as we are using a range
-                            if (seasonPair.first.equals("12")) {//move onto the next year, so year2 should be updated
-                                year2 = (getInt(year1) + 1) + "";
-                            } else {//we dont need to increment the year as the season is within the same year
-                                year2 = year1;
-                            }
-                        }
-                    }
-                } else if (i == 2) {//can be a day, or previously had week this could be weekend
-                    if (onlyDayPattern.matcher(dateInfo[i]).matches()) {//got the day
-                        day1 = dateInfo[i];
-                    } else if (onlyWeekendPattern.matcher(dateInfo[i]).matches()) {//previously should have had week number so its a range
-                        //checking its range has been set before
-                        if (day1 != null && day2 != null && month1 != null && month2 != null) {
-                            //then lets refine the dates that were just before a week long, now down to a weekend
-                            calendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
-                            year1 = new SimpleDateFormat("yyyy").format(calendar.getTime());//in the case the week goes into the next year, update our year1
-                            month1 = new SimpleDateFormat("MM").format(calendar.getTime());
-                            day1 = new SimpleDateFormat("dd").format(calendar.getTime());
-                            calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-                            month2 = new SimpleDateFormat("MM").format(calendar.getTime());
-                            day2 = new SimpleDateFormat("dd").format(calendar.getTime());
-                            year2 = new SimpleDateFormat("yyyy").format(calendar.getTime());
-                        }
                     }
                 }
             }
-            System.out.println("For: " + date);
-            System.out.println("For Date1 we have: " + year1 + "-" + month1 + "-" + day1);
-            System.out.println("For Date2 we have: " + year2 + "-" + month2 + "-" + day2);
-            //trying to form date objects
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            try {
-                Date date1 = simpleDateFormat.parse(returnDate(year1, month1, day1));
-                dates.add(date1);
-                System.out.println(date1);
-                if (year2 != null && month2 != null && day2 != null) {
-                    Date date2 = simpleDateFormat.parse(returnDate(year2, month2, day2));
-                    dates.add(date2);
-                    System.out.println(date2);
-                }
-            } catch (ParseException e) {
-                //could not add the dates
+        }
+        System.out.println("For: " + date);
+        System.out.println("For Date1 we have: " + year1 + "-" + month1 + "-" + day1);
+        System.out.println("For Date2 we have: " + year2 + "-" + month2 + "-" + day2);
+        //trying to form date objects
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd G");
+        try {
+            Date date1;
+            date1 = simpleDateFormat.parse(returnDate(year1, month1, day1, isBC));
+            dates.add(date1);
+            System.out.println(date1);
+            if (year2 != null && month2 != null && day2 != null) {
+                Date date2 = simpleDateFormat.parse(returnDate(year2, month2, day2, isBC));
+                dates.add(date2);
+                System.out.println(date2);
             }
+        } catch (ParseException e) {
+            //could not add the dates
         }
         System.out.println("\n");
-        return dates;
-    }
-
-    /**
-     * Gets passed in a date of the format -YYYY, and attempts to produce an exact range of dates (if needed).
-     * @param date a date of the form B.C. (i.e. -YYYY)
-     * @return a list of Date objects, 1 if there was just one exact negative date string (now date object), or two if a range was created.
-     */
-    private ArrayList<Date> getBCDates(String date){
-        //passed in a negative year
-        ArrayList<Date> dates = new ArrayList<>();
-        String removeSign = date.substring(1);//remove the starting -
-        //now make the dates
-        //and update X values appropriately, for start
-        String year = removeSign.replaceAll("X","9");
-        try {
-            Date date1 = simpleDateFormatBC.parse(year+"-"+month+"-"+day+" BC");
-            dates.add(date1);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        if(removeSign.contains("X")) {
-            year = removeSign.replaceAll("X", "0");
-            try {
-                Date date2 = simpleDateFormatBC.parse(year + "-12-31 BC");
-                dates.add(date2);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
         return dates;
     }
 
@@ -240,12 +235,12 @@ public class TimelineDate implements Comparable<TimelineDate> {
      * @param date     the string that produced these dates.
      */
     private void enforceRule(ArrayList<Date> newDates, String date) {
-        for(Date newDate: newDates){
-            if(this.date1 == null || this.date1.compareTo(newDate) > 0){//if we dont have a date1, or we have a smaller one
+        for (Date newDate : newDates) {
+            if (this.date1 == null || this.date1.compareTo(newDate) > 0) {//if we dont have a date1, or we have a smaller one
                 this.date1 = newDate;
                 dateStr = date;
                 //else, we found a newDate that we havent set that is bigger than date1, look at date2
-            }else if(this.date2 == null || this.date2.compareTo(newDate) < 0){//if we dont have date2, or we found a bigger date
+            } else if (this.date2 == null || this.date2.compareTo(newDate) < 0) {//if we dont have date2, or we found a bigger date
                 this.date2 = newDate;
                 dateStr = date;
             }
@@ -261,8 +256,11 @@ public class TimelineDate implements Comparable<TimelineDate> {
      * @param day   the day of the date
      * @return a String of the format yyyy-MM-dd
      */
-    private String returnDate(String year, String month, String day) {
-        return String.format("%s-%s-%s", year, month, day);
+    private String returnDate(String year, String month, String day, boolean isBC) {
+        if (isBC) {
+            return String.format("%s-%s-%s BC", year, month, day);
+        }
+        return String.format("%s-%s-%s AD", year, month, day);
     }
 
     /**
@@ -285,7 +283,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
     @Override
     public String toString() {
         String toReturn = "";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd G");
         if (date1 != null) {
             toReturn += simpleDateFormat.format(date1);
         }
