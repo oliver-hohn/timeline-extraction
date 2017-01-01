@@ -12,13 +12,14 @@ import java.util.regex.Pattern;
  * Holds the start and end date (appropriately) for each event in the timeline. It updates as new dates, relevant to the
  */
 //TODO: check of date values are possible before trying to create (eg checking if month has 31 days). If just year-month should create range?
-//TODO: range system
 public class TimelineDate implements Comparable<TimelineDate> {
     private static final String year = "0001";
     private static final String month = "01";
     private static final String day = "01";
     private static final Map<String, Pair<String, String>> seasonMap;
-    private static final SimpleDateFormat simpleDateFormatBC = new SimpleDateFormat("yyyy-MM-dd G");
+    private static final Map<Character, String> durationMap;
+    private static final Map<Character, String> timeMap;
+    private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd G");
 
     static {
         /*
@@ -28,12 +29,29 @@ public class TimelineDate implements Comparable<TimelineDate> {
                 Summer is June, July, August (6,7,8)
                 Autumn September, October, November (9,10,11)
          */
-        Map<String, Pair<String, String>> map = new HashMap<>();
-        map.put("WI", new Pair<>("12", "02"));
-        map.put("SP", new Pair<>("03", "05"));
-        map.put("SU", new Pair<>("06", "08"));
-        map.put("FA", new Pair<>("09", "11"));
-        seasonMap = map;
+        Map<String, Pair<String, String>> seasonM = new HashMap<>();
+        seasonM.put("WI", new Pair<>("12", "02"));
+        seasonM.put("SP", new Pair<>("03", "05"));
+        seasonM.put("SU", new Pair<>("06", "08"));
+        seasonM.put("FA", new Pair<>("09", "11"));
+        seasonMap = seasonM;
+
+        //durationMap
+        Map<Character, String> durationM = new HashMap<>();
+        durationM.put('P', "Period:");
+        durationM.put('Y', "Year(s)");
+        durationM.put('M', "Month(s)");
+        durationM.put('W', "Week(s)");
+        durationM.put('D', "Day(s)");
+        durationMap = durationM;
+
+        //timeMap
+        Map<Character, String> timeM = new HashMap<>();
+        timeM.put('T', "Time:");
+        timeM.put('H', "Hour(s)");
+        timeM.put('M', "Minute(s)");
+        timeM.put('S', "Second(s)");
+        timeMap = timeM;
     }
 
     private final static Pattern onlyYearPattern = Pattern.compile("(\\d{4})|(\\d{3}X)|(\\d{2}XX)|(\\dXXX)|(XXXX)");
@@ -50,6 +68,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
     private Date date2;//second (max, end) date
     private String dateStr;
     private String baseDate;
+    private String durationData;//holds the latest duration data (additional info to show with event)
 
     /**
      * Initialises the Calendar used to determine dates based on week number.
@@ -74,10 +93,77 @@ public class TimelineDate implements Comparable<TimelineDate> {
             for (String possibleDate : splitRange) {
                 dates.addAll(getDate(possibleDate));// from processing the individual date, add it to dates
             }
+            //process INTERSECT data
+            if (splitDate.length > 1) {
+                String trimmedDuration = splitDate[1].trim();
+                System.out.println("Processing: " + trimmedDuration);
+                //process trimmed part which contains the duration data
+                durationData = processINTERSECT(trimmedDuration);
+            }
         }
         //if we had INTERSECT then we should process it for additional info to show
         //if we have more than 2 dates in the list, then keep the minimum date and max date and remove all the others
         enforceRule(dates, date);
+    }
+
+    /**
+     * Processes the INTERSECT data (duration of an event) provided sometimes with Date normalized entity tags.
+     * Based on the ISO Standard 8601
+     *
+     * @param intersectData the data after "INTERSECT" in the normalized Date entity tags. Should start with 'P'.
+     * @return a technical String representation of that data based on the ISO Standard 8601, i.e. Period X Year(s) Y Day(s)...
+     */
+    private String processINTERSECT(String intersectData) {
+        String toReturn = "";
+        //input starts with P
+        char[] dataSplit = intersectData.toCharArray();
+        if (dataSplit.length > 0 && dataSplit[0] == 'P') {
+            System.out.println("Entered Period");
+            for (int i = 0; i < dataSplit.length; i++) {
+                char info = dataSplit[i];
+                System.out.println(info);
+                //when find T (go to time process method, once returned from that break)
+                if (info == 'T') {
+                    //go time method, and what it returns add toReturn
+                    //make string from here till end of data
+                    String hereToEnd = intersectData.substring(i, intersectData.length());
+                    System.out.println("End Data: " + hereToEnd);
+                    String toAdd = processTime(hereToEnd);
+                    System.out.println("Adding: " + toAdd);
+                    toReturn += toAdd;
+                    break;//not processing the rest of the array as its character data
+                }
+                String fullText = ((durationMap.get(info) != null) ? " " + durationMap.get(info) + " " : info + "");
+                System.out.println("Found: " + fullText);
+
+                toReturn += fullText;
+            }
+            System.out.println("Duration: " + toReturn.trim());
+        }
+        return toReturn.trim();
+    }
+
+    /**
+     * Processes the Time duration part of the INTERSECT data after a Data has been given a normalized entity tag.
+     * Based on the ISO Standard 8601.
+     *
+     * @param timeData time data that starts with 'T', based on ISO Standard 8601.
+     * @return a technical String representation of the data passed in, i.e. Time X Hour(s) Y Minute(s)...
+     */
+    private String processTime(String timeData) {
+        String toReturn = "";
+        char[] splitTimeData = timeData.toCharArray();
+        if (splitTimeData.length > 0 && splitTimeData[0] == 'T') {
+            System.out.println("Processing Time data");
+            for (char charTime : splitTimeData) {
+                System.out.println("Processing: " + charTime);
+                String fullText = ((timeMap.get(charTime) != null) ? " " + timeMap.get(charTime) + " " : charTime + "");
+                System.out.println("Found: " + fullText);
+                toReturn += fullText;
+            }
+            System.out.println(toReturn.trim());
+        }
+        return toReturn.trim();
     }
 
     /**
@@ -209,7 +295,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
         System.out.println("For Date1 we have: " + year1 + "-" + month1 + "-" + day1);
         System.out.println("For Date2 we have: " + year2 + "-" + month2 + "-" + day2);
         //trying to form date objects
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd G");
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd G");
         try {
             Date date1;
             date1 = simpleDateFormat.parse(returnDate(year1, month1, day1, isBC));
