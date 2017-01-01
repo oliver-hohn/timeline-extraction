@@ -100,7 +100,8 @@ public class ProcessFileTest {
         processFiles.processFiles(files, callbackResults);
         System.out.println("Actual Threads running" + Thread.activeCount());
         Assert.assertEquals(true, Thread.activeCount() >= 2);
-        Thread.sleep(5000);//give the backend.process.Engine time to finish running
+        Thread.sleep(10000);//give the backend.process.Engine time to finish running
+        Assert.assertEquals(true,true);//seems to be an error that if you finish with a thread sleep it will stop running the other operations on other threads (i.e. releasing semaphores and setting state to FINISHED).
     }
 
     /**
@@ -186,6 +187,7 @@ public class ProcessFileTest {
         ProcessFiles processFiles = new ProcessFiles();
         processFiles.processFiles(files, callbackResults);
         Thread.sleep(10000);
+        System.out.println(actualResults);
         compareExpectedToActual(actualResults, expectedResults);
     }
 

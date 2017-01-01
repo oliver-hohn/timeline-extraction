@@ -69,6 +69,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
     private String dateStr;
     private String baseDate;
     private String durationData;//holds the latest duration data (additional info to show with event)
+    //have a pair of list dates and duration string, if you use the dates pass in the string as additional info
 
     /**
      * Initialises the Calendar used to determine dates based on week number.
@@ -83,6 +84,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
      * @param date a date provided by the StanfordCoreNLP library: it is a normalized entity
      */
     public void parse(String date, String baseDate) {
+        System.out.println("Input: "+date);
         ArrayList<Date> dates = new ArrayList<>();
         this.baseDate = baseDate;
         //splitting INTERSECT
@@ -138,7 +140,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
 
                 toReturn += fullText;
             }
-            System.out.println("Duration: " + toReturn.trim());
+            System.out.println("Every: " + toReturn.trim());
         }
         return toReturn.trim();
     }
@@ -183,7 +185,6 @@ public class TimelineDate implements Comparable<TimelineDate> {
         String month2 = null;
         String day2 = null;
         boolean isBC = false;
-
         //can have a date that is PRESENT_REF (when the text has now)
         if (onlyPresentRefPattern.matcher(date).matches()) {
             //should be base date, as it means this current moment?
@@ -268,7 +269,9 @@ public class TimelineDate implements Comparable<TimelineDate> {
                     }
                 }
             } else if (i == 2) {//can be a day, or previously had week this could be weekend
+                System.out.println("Checking: "+dateInfo[i]);
                 if (onlyDayPattern.matcher(dateInfo[i]).matches()) {//got the day
+                    System.out.println("Got day: "+dateInfo[i]);
                     day1 = dateInfo[i];
                 } else if (onlyWeekendPattern.matcher(dateInfo[i]).matches()) {//previously should have had week number so its a range
                     //checking its range has been set before
@@ -454,5 +457,14 @@ public class TimelineDate implements Comparable<TimelineDate> {
      */
     public Date getDate2() {
         return date2;
+    }
+
+    /**
+     * Get the additional duration data for a date.
+     *
+     * @return String representing the duration an event occurred for (every when it repeated).
+     */
+    public String getDurationData() {
+        return durationData;
     }
 }

@@ -12,6 +12,7 @@ import java.util.Date;
  * Test for the parsing of Normalized Entity Tag in backend.process.TimelineDate.
  */
 public class TimelineDateTest {
+    private static final String PRESENT_REF = "PRESENT_REF";
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private String baseDate = "2016-12-30";//doesn't affect the output of most tests, but has to be still passed in.
     //TODO: for INTERSECT and now tags
@@ -143,5 +144,33 @@ public class TimelineDateTest {
         System.out.println(timelineDate);
 
         Assert.assertEquals(expectedStart, timelineDate.getDate1());
+    }
+
+    @Test
+    public void testTimelineDateProcessNow() throws ParseException {
+        //the base date passed in should be the date used when it processes REFERENCE_NOW
+        //base date being
+        Date expectedDate = simpleDateFormat.parse(baseDate);
+
+        TimelineDate timelineDate = new TimelineDate();
+        timelineDate.parse("PRESENT_REF", baseDate);
+
+        Assert.assertEquals(expectedDate, timelineDate.getDate1());
+        Assert.assertEquals(null, timelineDate.getDate2());//shouldnt have a second date
+    }
+
+    @Test
+    public void testTimelineDateProcessINTERSECT() throws ParseException {
+        String expectedResultDuration = "Period: 4 Year(s)";
+        Date expectedResultDate = simpleDateFormat.parse(baseDate);
+        String input = baseDate+" INTERSECT P4Y";
+
+        TimelineDate timelineDate = new TimelineDate();
+        timelineDate.parse(input, baseDate);
+
+        Assert.assertEquals(expectedResultDate, timelineDate.getDate1());
+        Assert.assertEquals(null, timelineDate.getDate2());
+        Assert.assertEquals(expectedResultDuration, timelineDate.getDurationData());
+
     }
 }
