@@ -93,7 +93,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
             String possibleDates = splitDate[0];//this date could also be a range, ie include /
             String[] splitRange = possibleDates.split("/");
             for (String possibleDate : splitRange) {
-                dates.addAll(getDate(possibleDate));// from processing the individual date, add it to dates
+                dates.addAll(getDate(possibleDate.trim()));// from processing the individual date, add it to dates
             }
             //process INTERSECT data
             if (splitDate.length > 1) {
@@ -269,7 +269,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
                     }
                 }
             } else if (i == 2) {//can be a day, or previously had week this could be weekend
-                System.out.println("Checking: "+dateInfo[i]);
+                System.out.println("Checking: "+dateInfo[i]+ "size: "+dateInfo[i].length());
                 if (onlyDayPattern.matcher(dateInfo[i]).matches()) {//got the day
                     System.out.println("Got day: "+dateInfo[i]);
                     day1 = dateInfo[i];

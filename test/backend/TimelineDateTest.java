@@ -15,7 +15,6 @@ public class TimelineDateTest {
     private static final String PRESENT_REF = "PRESENT_REF";
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private String baseDate = "2016-12-30";//doesn't affect the output of most tests, but has to be still passed in.
-    //TODO: for INTERSECT and now tags
 
     /**
      * Passes in a simple date of the format yyyy-MM-dd into backend.process.TimelineDate, and checks the output date.
@@ -146,6 +145,11 @@ public class TimelineDateTest {
         Assert.assertEquals(expectedStart, timelineDate.getDate1());
     }
 
+    /**
+     * Tests the resulting date produced when a normalized entity tag for now (PRESENT_REF) is passed into TimelineDate.
+     *
+     * @throws ParseException when creating the expected Date.
+     */
     @Test
     public void testTimelineDateProcessNow() throws ParseException {
         //the base date passed in should be the date used when it processes REFERENCE_NOW
@@ -159,11 +163,36 @@ public class TimelineDateTest {
         Assert.assertEquals(null, timelineDate.getDate2());//shouldnt have a second date
     }
 
+    /**
+     * Tests the processing of the INTERSECT data (duration) that can come with a normalized entity tag for Dates.
+     * Tests for a simple INTERSECT (4 Years).
+     *
+     * @throws ParseException when creating the expected Date.
+     */
     @Test
     public void testTimelineDateProcessINTERSECT() throws ParseException {
         String expectedResultDuration = "Period: 4 Year(s)";
         Date expectedResultDate = simpleDateFormat.parse(baseDate);
-        String input = baseDate+" INTERSECT P4Y";
+        String input = baseDate + " INTERSECT P4Y";
+
+        TimelineDate timelineDate = new TimelineDate();
+        timelineDate.parse(input, baseDate);
+
+        Assert.assertEquals(expectedResultDate, timelineDate.getDate1());
+        Assert.assertEquals(null, timelineDate.getDate2());
+        Assert.assertEquals(expectedResultDuration, timelineDate.getDurationData());
+    }
+
+    /**
+     * Tests the processing of a more complex INTERSECT data (duration), including time.
+     *
+     * @throws ParseException when creating the expected Date.
+     */
+    @Test
+    public void testTimelineDateProcessINTERSECTInclTime() throws ParseException {
+        String expectedResultDuration = "Period: 3 Year(s) 6 Month(s) 4 Day(s) Time: 12 Hour(s) 30 Minute(s) 5 Second(s)";
+        Date expectedResultDate = simpleDateFormat.parse(baseDate);
+        String input = baseDate + " INTERSECT P3Y6M4DT12H30M5S";
 
         TimelineDate timelineDate = new TimelineDate();
         timelineDate.parse(input, baseDate);
