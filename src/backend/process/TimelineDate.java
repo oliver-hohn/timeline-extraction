@@ -85,7 +85,9 @@ public class TimelineDate implements Comparable<TimelineDate> {
      */
     public void parse(String date, String baseDate) {
         System.out.println("Input: "+date);
+        Pair<ArrayList<Date>, String> dateDurationPair = null;
         ArrayList<Date> dates = new ArrayList<>();
+        String durationData = null;
         this.baseDate = baseDate;
         //splitting INTERSECT
         String[] splitDate = date.split("INTERSECT");
@@ -102,10 +104,13 @@ public class TimelineDate implements Comparable<TimelineDate> {
                 //process trimmed part which contains the duration data
                 durationData = processINTERSECT(trimmedDuration);
             }
+            //resulting list of dates and duration data should be put in a pair that is processed, where durationData
+            //is only set if one of our dates are set
+            dateDurationPair = new Pair<>(dates, durationData);
         }
         //if we had INTERSECT then we should process it for additional info to show
         //if we have more than 2 dates in the list, then keep the minimum date and max date and remove all the others
-        enforceRule(dates, date);
+        enforceRule(dateDurationPair, date);
     }
 
     /**
@@ -298,7 +303,6 @@ public class TimelineDate implements Comparable<TimelineDate> {
         System.out.println("For Date1 we have: " + year1 + "-" + month1 + "-" + day1);
         System.out.println("For Date2 we have: " + year2 + "-" + month2 + "-" + day2);
         //trying to form date objects
-//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd G");
         try {
             Date date1;
             date1 = simpleDateFormat.parse(returnDate(year1, month1, day1, isBC));
@@ -320,20 +324,25 @@ public class TimelineDate implements Comparable<TimelineDate> {
      * Used to find update the min/max dates held. Will update the dates held if a new min/max has been found.
      * MinMax Algorithm.
      *
-     * @param newDates a list of possible new min/max dates
+     * @param dateDurationPair a Pair that has a list of possible new min/max dates, and their corresponding duration data (which can be null).
      * @param date     the string that produced these dates.
      */
-    private void enforceRule(ArrayList<Date> newDates, String date) {
-        for (Date newDate : newDates) {
-            if (this.date1 == null || this.date1.compareTo(newDate) > 0) {//if we dont have a date1, or we have a smaller one
-                this.date1 = newDate;
-                dateStr = date;
-                //else, we found a newDate that we havent set that is bigger than date1, look at date2
-            } else if (this.date2 == null || this.date2.compareTo(newDate) < 0) {//if we dont have date2, or we found a bigger date
-                this.date2 = newDate;
-                dateStr = date;
-            }
+    private void enforceRule(Pair<ArrayList<Date>, String> dateDurationPair, String date) {
+        if(dateDurationPair != null) {
+            ArrayList<Date> newDates = dateDurationPair.first();
+            for (Date newDate : newDates) {
+                if (this.date1 == null || this.date1.compareTo(newDate) > 0) {//if we dont have a date1, or we have a smaller one
+                    this.date1 = newDate;
+                    dateStr = date;
+                    //else, we found a newDate that we havent set that is bigger than date1, look at date2
+                    durationData = dateDurationPair.second();
+                } else if (this.date2 == null || this.date2.compareTo(newDate) < 0) {//if we dont have date2, or we found a bigger date
+                    this.date2 = newDate;
+                    dateStr = date;
+                    durationData = dateDurationPair.second();
+                }
 
+            }
         }
     }
 
@@ -378,6 +387,9 @@ public class TimelineDate implements Comparable<TimelineDate> {
         }
         if (date2 != null) {
             toReturn += " -> " + simpleDateFormat.format(date2);
+        }
+        if(durationData != null){
+            toReturn += String.format(" (%s)",durationData);
         }
         return toReturn;
     }
