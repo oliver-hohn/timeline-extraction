@@ -52,7 +52,6 @@ public class TestClass {
 */
         System.out.println("\n\nProcessing through files");
         ProcessFiles processFiles = new ProcessFiles();
-        //TODO: give each file a unique text to see the changes in the timeline better
         File file1 = new File("D:"+File.separator+"FYP"+File.separator+"text1.txt");
         File file2 = new File("D:"+File.separator+"FYP"+File.separator+"text2.txt");
         File file3 = new File("D:"+File.separator+"FYP"+File.separator+"text3.txt");

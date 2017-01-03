@@ -341,7 +341,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
         try {
             toReturn = simpleDateFormat.parse(date);
         } catch (ParseException e) {
-            e.printStackTrace();
+            //e.printStackTrace();//could comment this out
             System.out.println("Couldnt create date, so trying for a lower value");
             //couldnt create date, so most likely day value is to high, so reduce it
             int dayUpdate = Integer.parseInt(day);

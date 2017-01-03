@@ -200,6 +200,77 @@ public class TimelineDateTest {
         Assert.assertEquals(expectedResultDate, timelineDate.getDate1());
         Assert.assertEquals(null, timelineDate.getDate2());
         Assert.assertEquals(expectedResultDuration, timelineDate.getDurationData());
+    }
 
+    @Test
+    public void testTimelineDateProcessAutoCorrectDates() throws ParseException {
+        String inputWrongDate = "2016-12-32";
+        String expectedDateStr = "2016-12-31";
+        Date expectedDate = simpleDateFormat.parse(expectedDateStr);
+
+        TimelineDate timelineDate = new TimelineDate();
+        timelineDate.parse(inputWrongDate, baseDate);
+
+        Assert.assertEquals(expectedDate, timelineDate.getDate1());
+        Assert.assertEquals(null, timelineDate.getDate2());
+    }
+
+    @Test
+    public void testTimelineDateBCFullDate() throws ParseException {
+        SimpleDateFormat simpleDateFormatBC = new SimpleDateFormat("yyyy-MM-dd G");
+        String input = "-0004-12-31";
+        String expectedDateStr = "0004-12-31 BC";
+        Date expectedDate = simpleDateFormatBC.parse(expectedDateStr);
+
+        TimelineDate timelineDate = new TimelineDate();
+        timelineDate.parse(input, baseDate);
+
+        Assert.assertEquals(expectedDate, timelineDate.getDate1());
+        Assert.assertNull(timelineDate.getDate2());
+    }
+
+    @Test
+    public void testTimelineDateBCYearDate() throws ParseException {
+        SimpleDateFormat simpleDateFormatBC = new SimpleDateFormat("yyyy-MM-dd G");
+        String input = "-0004";
+        String expectedDateStr = "0004-01-01 BC";
+        Date expectedDate = simpleDateFormatBC.parse(expectedDateStr);
+
+        TimelineDate timelineDate = new TimelineDate();
+        timelineDate.parse(input, baseDate);
+
+        Assert.assertEquals(expectedDate, timelineDate.getDate1());
+        Assert.assertNull(timelineDate.getDate2());
+    }
+
+    @Test
+    public void testTimelineDateBCWrongDate() throws ParseException {
+        SimpleDateFormat simpleDateFormatBC = new SimpleDateFormat("yyyy-MM-dd G");
+        String input = "-0004-12-32";
+        String expectedDateStr = "0004-12-31 BC";
+        Date expectedDate = simpleDateFormatBC.parse(expectedDateStr);
+
+        TimelineDate timelineDate = new TimelineDate();
+        timelineDate.parse(input, baseDate);
+
+        Assert.assertEquals(expectedDate, timelineDate.getDate1());
+        Assert.assertNull(timelineDate.getDate2());
+    }
+
+    @Test
+    public void testTimelineDateBCDateRange() throws ParseException {
+        SimpleDateFormat simpleDateFormatBC = new SimpleDateFormat("yyyy-MM-dd G");
+        String input = "-04XX-12-32";
+        String expectedDateStr1 = "0499-12-31 BC";
+        String expectedDateStr2 = "0400-12-31 BC";
+        Date expectedDate1 = simpleDateFormatBC.parse(expectedDateStr1);
+        Date expectedDate2 = simpleDateFormatBC.parse(expectedDateStr2);
+
+        TimelineDate timelineDate = new TimelineDate();
+        timelineDate.parse(input, baseDate);
+
+        Assert.assertEquals(expectedDate1, timelineDate.getDate1());
+        Assert.assertEquals(expectedDate2, timelineDate.getDate2())
+        ;
     }
 }
