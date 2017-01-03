@@ -203,7 +203,8 @@ public class TimelineDate implements Comparable<TimelineDate> {
                 day1 = splitDate[2];
             }
         }
-        if (date.length() > 5 && onlyBeforeYearPattern.matcher(date.substring(0, 5)).matches()) {//check if its BC
+        System.out.println("For: "+date+" length: "+date.length());
+        if (date.length() >= 5 && onlyBeforeYearPattern.matcher(date.substring(0, 5)).matches()) {//check if its BC
             System.out.println("Negative date");
             isBC = true;//if so flag it
             date = date.substring(1, date.length());//removed - sign infront of year
