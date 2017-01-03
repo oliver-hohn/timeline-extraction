@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Test for the parsing of Normalized Entity Tag in backend.process.TimelineDate.
+ * Test for the parsing of Normalized Entity Tag in backend.process.TimelineDate, and how they are processed.
  */
 public class TimelineDateTest {
     private static final String PRESENT_REF = "PRESENT_REF";
@@ -157,7 +157,7 @@ public class TimelineDateTest {
         Date expectedDate = simpleDateFormat.parse(baseDate);
 
         TimelineDate timelineDate = new TimelineDate();
-        timelineDate.parse("PRESENT_REF", baseDate);
+        timelineDate.parse(PRESENT_REF, baseDate);
 
         Assert.assertEquals(expectedDate, timelineDate.getDate1());
         Assert.assertEquals(null, timelineDate.getDate2());//shouldnt have a second date
@@ -202,6 +202,12 @@ public class TimelineDateTest {
         Assert.assertEquals(expectedResultDuration, timelineDate.getDurationData());
     }
 
+    /**
+     * Tests the auto correct for Dates, where the day value has been over-estimated (that day value for that month
+     * does not exist).
+     *
+     * @throws ParseException when creating the expected Date.
+     */
     @Test
     public void testTimelineDateProcessAutoCorrectDates() throws ParseException {
         String inputWrongDate = "2016-12-32";
@@ -215,6 +221,30 @@ public class TimelineDateTest {
         Assert.assertEquals(null, timelineDate.getDate2());
     }
 
+    /**
+     * Tests the auto correct for Dates, where the day value has been over-estimated, such that the month value has to
+     * also be updated.
+     *
+     * @throws ParseException when creating the expected Date.
+     */
+    @Test
+    public void testTimelineDateProcessAutoCorrectDatesAndMonths() throws ParseException {
+        String inputWrongDate = "2016-12-00";
+        String expectedDateStr = "2016-11-30";
+        Date expectedDate = simpleDateFormat.parse(expectedDateStr);
+
+        TimelineDate timelineDate = new TimelineDate();
+        timelineDate.parse(inputWrongDate, baseDate);
+
+        Assert.assertEquals(expectedDate, timelineDate.getDate1());
+        Assert.assertEquals(null, timelineDate.getDate2());
+    }
+
+    /**
+     * Tests the processing of a full BC normalized entity Date, of the format -yyyy-MM-dd.
+     *
+     * @throws ParseException when creating the expected Date.
+     */
     @Test
     public void testTimelineDateBCFullDate() throws ParseException {
         SimpleDateFormat simpleDateFormatBC = new SimpleDateFormat("yyyy-MM-dd G");
@@ -229,6 +259,12 @@ public class TimelineDateTest {
         Assert.assertNull(timelineDate.getDate2());
     }
 
+    /**
+     * Tests the processing of only a BC year normalized entity Date, of the format -yyyy, to see how TimelineDate gives
+     * it a Date value (i.e. assumes it means the start of the year, so month 01 and day 01)
+     *
+     * @throws ParseException when creating the expected Date.
+     */
     @Test
     public void testTimelineDateBCYearDate() throws ParseException {
         SimpleDateFormat simpleDateFormatBC = new SimpleDateFormat("yyyy-MM-dd G");
@@ -243,6 +279,12 @@ public class TimelineDateTest {
         Assert.assertNull(timelineDate.getDate2());
     }
 
+    /**
+     * Tests the processing of a BC Date, that has a day value that is wrong for that month. Looks at how this Date is
+     * reduced until it correct (assuming we over-estimated the day value).
+     *
+     * @throws ParseException when creating the expected Date.
+     */
     @Test
     public void testTimelineDateBCWrongDate() throws ParseException {
         SimpleDateFormat simpleDateFormatBC = new SimpleDateFormat("yyyy-MM-dd G");
@@ -257,6 +299,12 @@ public class TimelineDateTest {
         Assert.assertNull(timelineDate.getDate2());
     }
 
+    /**
+     * Tests the building of a range of Dates, for a BC date. Testing how the system infers the start and end Dates for
+     * BC dates. (Should be the same as AD dates, just that the year values to towards 0 as it is B.C.)
+     *
+     * @throws ParseException when creating the expected Date.
+     */
     @Test
     public void testTimelineDateBCDateRange() throws ParseException {
         SimpleDateFormat simpleDateFormatBC = new SimpleDateFormat("yyyy-MM-dd G");
@@ -270,7 +318,6 @@ public class TimelineDateTest {
         timelineDate.parse(input, baseDate);
 
         Assert.assertEquals(expectedDate1, timelineDate.getDate1());
-        Assert.assertEquals(expectedDate2, timelineDate.getDate2())
-        ;
+        Assert.assertEquals(expectedDate2, timelineDate.getDate2());
     }
 }

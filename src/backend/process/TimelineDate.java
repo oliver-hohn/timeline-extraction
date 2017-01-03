@@ -203,7 +203,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
                 day1 = splitDate[2];
             }
         }
-        System.out.println("For: "+date+" length: "+date.length());
+        System.out.println("For: " + date + " length: " + date.length());
         if (date.length() >= 5 && onlyBeforeYearPattern.matcher(date.substring(0, 5)).matches()) {//check if its BC
             System.out.println("Negative date");
             isBC = true;//if so flag it
@@ -345,10 +345,20 @@ public class TimelineDate implements Comparable<TimelineDate> {
             System.out.println("Couldnt create date, so trying for a lower value");
             //couldnt create date, so most likely day value is to high, so reduce it
             int dayUpdate = Integer.parseInt(day);
+            int monthUpdate;
             dayUpdate--;
             //should update month and year if fall below a certain threshold?
-            //update day value, so try again with this value
-            toReturn = createDates(year, month, Integer.toString(dayUpdate), isBC);
+            if (dayUpdate <= 0) {//should decrease month val and set dayUpdate to 31
+                dayUpdate = 31;
+                System.out.println("Our day value fell below threshold, so go to month before this");
+                monthUpdate = Integer.parseInt(month);
+                monthUpdate--;//assuming we will never produce a month  below 1
+                //which makes sense, as we only ever over estimate day values
+                toReturn = createDates(year, Integer.toString(monthUpdate), Integer.toString(dayUpdate), isBC);
+            } else {
+                //update day value, so try again with this value
+                toReturn = createDates(year, month, Integer.toString(dayUpdate), isBC);
+            }
         }
         System.out.println("Created date for: " + toReturn);
         return toReturn;
