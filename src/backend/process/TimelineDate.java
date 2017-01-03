@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
  * Attempts to generate an exact date for an event, to then order the events.
  * Holds the start and end date (appropriately) for each event in the timeline. It updates as new dates, relevant to the
  */
-//TODO: check of date values are possible before trying to create (eg checking if month has 31 days). If just year-month should create range?
+//If just year-month should create range?
 public class TimelineDate implements Comparable<TimelineDate> {
     private static final String year = "0001";
     private static final String month = "01";
@@ -76,6 +76,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
      */
     public TimelineDate() {
         calendar = Calendar.getInstance();
+        simpleDateFormat.setLenient(false);//can only create correct dates
     }
 
     /**
@@ -84,7 +85,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
      * @param date a date provided by the StanfordCoreNLP library: it is a normalized entity
      */
     public void parse(String date, String baseDate) {
-        System.out.println("Input: "+date);
+        System.out.println("Input: " + date);
         Pair<ArrayList<Date>, String> dateDurationPair = null;
         ArrayList<Date> dates = new ArrayList<>();
         String durationData = null;
@@ -205,7 +206,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
         if (date.length() > 5 && onlyBeforeYearPattern.matcher(date.substring(0, 5)).matches()) {//check if its BC
             System.out.println("Negative date");
             isBC = true;//if so flag it
-            date = date.substring(1, 5);//removed - sign infront of year
+            date = date.substring(1, date.length());//removed - sign infront of year
             System.out.println(date);
             //now we need to split it into its individual components like with AD dates.
         }
@@ -219,6 +220,10 @@ public class TimelineDate implements Comparable<TimelineDate> {
                         year1 = dateInfo[i].replace("X", "9");
                     } else {
                         year1 = dateInfo[i].replace("X", "0");
+                        //check if its all 0000, then its BC
+                        if (year1.equals("0000")) {
+                            year1 = "0001";//we will start from year 1 (AD)
+                        }
                     }
                     if (dateInfo[i].contains("X")) {//if we do have a range then we need to set the values for the second date
                         if (isBC) {
@@ -274,9 +279,9 @@ public class TimelineDate implements Comparable<TimelineDate> {
                     }
                 }
             } else if (i == 2) {//can be a day, or previously had week this could be weekend
-                System.out.println("Checking: "+dateInfo[i]+ "size: "+dateInfo[i].length());
+                System.out.println("Checking: " + dateInfo[i] + "size: " + dateInfo[i].length());
                 if (onlyDayPattern.matcher(dateInfo[i]).matches()) {//got the day
-                    System.out.println("Got day: "+dateInfo[i]);
+                    System.out.println("Got day: " + dateInfo[i]);
                     day1 = dateInfo[i];
                 } else if (onlyWeekendPattern.matcher(dateInfo[i]).matches()) {//previously should have had week number so its a range
                     //checking its range has been set before
@@ -299,25 +304,53 @@ public class TimelineDate implements Comparable<TimelineDate> {
                 }
             }
         }
-        System.out.println("For: " + date);
+        System.out.println("For: " + date + " we isBc: " + isBC);
         System.out.println("For Date1 we have: " + year1 + "-" + month1 + "-" + day1);
         System.out.println("For Date2 we have: " + year2 + "-" + month2 + "-" + day2);
         //trying to form date objects
-        try {
-            Date date1;
-            date1 = simpleDateFormat.parse(returnDate(year1, month1, day1, isBC));
-            dates.add(date1);
-            System.out.println(date1);
-            if (year2 != null && month2 != null && day2 != null) {
-                Date date2 = simpleDateFormat.parse(returnDate(year2, month2, day2, isBC));
-                dates.add(date2);
-                System.out.println(date2);
-            }
-        } catch (ParseException e) {
-            //could not add the dates
+        Date date1;
+        date1 = createDates(year1, month1, day1, isBC);
+        dates.add(date1);
+        System.out.println(date1);
+        if (year2 != null && month2 != null && day2 != null) {
+            Date date2 = createDates(year2, month2, day2, isBC);
+            dates.add(date2);
+            System.out.println(date2);
         }
         System.out.println("\n");
         return dates;
+    }
+
+    /**
+     * Creates a Data with the given input data. In the worst case we overestimated the day value (i.e. 31 when for
+     * that month it can be 30), so we check that it is a legal date. If it isn't, then we reduce the day value,until we
+     * get a correct day value. This is assuming that only the date values are wrong not month and years(these are given
+     * by normalized entity tags, which should be correct according to SUTime annotator)
+     *
+     * @param year  the year value for this Date
+     * @param month the month value for this Date
+     * @param day   the day value for this Date (which can be wrong, so we reduce it until its right, assuming we always overestimate.
+     * @param isBC  whether or not this is a BC or AD date; true if it is a BC Date.
+     * @return a correct Date object based on the data passed in.
+     */
+    private Date createDates(String year, String month, String day, boolean isBC) {
+        Date toReturn;
+        String date = returnDate(year, month, day, isBC);
+        System.out.println("Trying to create date for: " + date);
+        try {
+            toReturn = simpleDateFormat.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            System.out.println("Couldnt create date, so trying for a lower value");
+            //couldnt create date, so most likely day value is to high, so reduce it
+            int dayUpdate = Integer.parseInt(day);
+            dayUpdate--;
+            //should update month and year if fall below a certain threshold?
+            //update day value, so try again with this value
+            toReturn = createDates(year, month, Integer.toString(dayUpdate), isBC);
+        }
+        System.out.println("Created date for: " + toReturn);
+        return toReturn;
     }
 
     /**
@@ -325,10 +358,10 @@ public class TimelineDate implements Comparable<TimelineDate> {
      * MinMax Algorithm.
      *
      * @param dateDurationPair a Pair that has a list of possible new min/max dates, and their corresponding duration data (which can be null).
-     * @param date     the string that produced these dates.
+     * @param date             the string that produced these dates.
      */
     private void enforceRule(Pair<ArrayList<Date>, String> dateDurationPair, String date) {
-        if(dateDurationPair != null) {
+        if (dateDurationPair != null) {
             ArrayList<Date> newDates = dateDurationPair.first();
             for (Date newDate : newDates) {
                 if (this.date1 == null || this.date1.compareTo(newDate) > 0) {//if we dont have a date1, or we have a smaller one
@@ -388,8 +421,8 @@ public class TimelineDate implements Comparable<TimelineDate> {
         if (date2 != null) {
             toReturn += " -> " + simpleDateFormat.format(date2);
         }
-        if(durationData != null){
-            toReturn += String.format(" (%s)",durationData);
+        if (durationData != null) {
+            toReturn += String.format(" (%s)", durationData);
         }
         return toReturn;
     }
