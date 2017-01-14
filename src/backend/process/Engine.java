@@ -93,7 +93,7 @@ public class Engine {
     private void setDatesAndSubjectsNET(CoreMap sentence, Result result) {
         for (CoreMap mention : sentence.get(CoreAnnotations.MentionsAnnotation.class)) {
             String namedEntityTag = mention.get(CoreAnnotations.NamedEntityTagAnnotation.class);
-            System.out.println(namedEntityTag+": " +mention.get(CoreAnnotations.TextAnnotation.class));
+            System.out.println(namedEntityTag + ": " + mention.get(CoreAnnotations.TextAnnotation.class));
 
             if (namedEntityTag.equals("DATE")) {
                 //found a date for the result object

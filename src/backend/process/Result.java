@@ -132,18 +132,38 @@ public class Result implements Comparable<Result> {
         return o.timelineDate.compareTo(this.timelineDate);
     }
 
+    /**
+     * Get the TimelineDate for this Result.
+     *
+     * @return the date data used for this Result in the Timeline.
+     */
     public TimelineDate getTimelineDate() {
         return timelineDate;
     }
 
+    /**
+     * Set the TimelineDate for this Result.
+     *
+     * @param timelineDate the date data used for this Result in the Timeline.
+     */
     public void setTimelineDate(TimelineDate timelineDate) {
         this.timelineDate = timelineDate;
     }
 
+    /**
+     * Get the FileData for this Result.
+     *
+     * @return the File data of the File that produced this Result.
+     */
     public FileData getFileData() {
         return fileData;
     }
 
+    /**
+     * Set the FileData for this Result.
+     *
+     * @param fileData the File data of the File that produced this Result.
+     */
     public void setFileData(FileData fileData) {
         this.fileData = fileData;
     }

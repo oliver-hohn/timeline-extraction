@@ -1,8 +1,13 @@
 package frontend.observers;
 
 /**
- * Created by Oliver on 14/01/2017.
+ * Interface for the Observer of the StartUpController. It extends the MenuBarObserver as the StartUp scene has a menu
+ * bar.
  */
-public interface StartUpObserver extends MenuBarObserver{//menu options included
+public interface StartUpObserver extends MenuBarObserver {//menu options included
+
+    /**
+     * Called when the load files button is pressed.
+     */
     void loadFiles();
 }

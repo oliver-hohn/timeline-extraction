@@ -10,7 +10,6 @@ import frontend.observers.StartUpObserver;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -57,7 +56,7 @@ public class Main extends Application implements StartUpObserver, CallbackResult
         //prune list of files, checking extension
         //then processFile
         ProcessFiles processFiles = new ProcessFiles();
-        processFiles.processFiles(files, this);
+        processFiles.processFiles(files, this);//need to run on separate thread as this is running on ui thread
     }
 
     @Override
@@ -68,6 +67,7 @@ public class Main extends Application implements StartUpObserver, CallbackResult
     @Override
     public void close() {
         System.out.println(TAG+"close program");
+        primaryStage.close();
     }
 
     @Override
@@ -87,7 +87,7 @@ public class Main extends Application implements StartUpObserver, CallbackResult
         }
 
         this.fileDataList.addAll(fileDataList);//TODO: compare if the FileData is already there
-        this.currentResults = results;
+        this.currentResults.addAll(results);//add the results of processing these files to the list of current results
         //TODO: process the Files to produce the scene and swap (ie start another thread, show wait dialog here, when finish swap scene)
     }
 }
