@@ -8,6 +8,9 @@ import backend.system.BackEndSystem;
 import frontend.controllers.StartUpController;
 import frontend.observers.StartUpObserver;
 import javafx.application.Application;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.FileChooser;
@@ -25,13 +28,14 @@ public class Main extends Application implements StartUpObserver, CallbackResult
     private Stage primaryStage;
     private ArrayList<FileData> fileDataList = new ArrayList<>();//add/remove to this, holds the information of the Files for which we are showing results to
     private ArrayList<Result> currentResults = new ArrayList<>();//list of Results that it is currently showing
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         //need to start engine
         BackEndSystem.getInstance();//thread waits for this to be done
         System.out.println("Called getInstance");
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("res/startup.fxml"));
-        primaryStage.setScene(new Scene(fxmlLoader.load(), 600, 400));
+        primaryStage.setScene(new Scene(fxmlLoader.load(), 800, 600));
         primaryStage.setTitle("Automated Timeline Extractor - Oliver Philip Höhn");
         StartUpController startUpController = fxmlLoader.getController();
         startUpController.setObserver(this);
@@ -55,8 +59,33 @@ public class Main extends Application implements StartUpObserver, CallbackResult
 
         //prune list of files, checking extension
         //then processFile
-        ProcessFiles processFiles = new ProcessFiles();
-        processFiles.processFiles(files, this);//need to run on separate thread as this is running on ui thread
+        Task<Boolean> processFileTask = new Task<Boolean>() {//to run the processing of files on a separate thread, and show a loading dialog
+            @Override
+            protected Boolean call() throws Exception {
+                ProcessFiles processFiles = new ProcessFiles();
+                processFiles.processFiles(files, Main.this);
+                return null;
+            }
+        };
+
+        processFileTask.setOnRunning(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent event) {
+                //Show loading dialog
+                System.out.println(TAG+"Working");
+            }
+        });
+
+        processFileTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent event) {//hasn't finished, just finished starting to run the last thread
+                System.out.println(TAG+"Finished");
+            }
+        });
+
+        if(files != null) {
+            new Thread(processFileTask).start();
+        }
     }
 
     @Override
@@ -76,7 +105,8 @@ public class Main extends Application implements StartUpObserver, CallbackResult
     }
 
     @Override
-    public void gotResults(ArrayList<Result> results, ArrayList<FileData> fileDataList) {
+    public synchronized void gotResults(ArrayList<Result> results, ArrayList<FileData> fileDataList) {
+        //stop showing the loading dialog
         System.out.println(TAG+"Processed Files");
         for(Result result: results){
             System.out.println(result);
