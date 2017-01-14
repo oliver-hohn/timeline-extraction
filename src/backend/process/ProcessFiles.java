@@ -20,6 +20,7 @@ import java.nio.file.attribute.FileTime;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.Semaphore;
 
@@ -46,7 +47,7 @@ public class ProcessFiles implements ProcessFileCallback {
      * @param files           the list of File objects that contain text that needs to be processed (atm only processes .docx/.pdf/.txt files)
      * @param callbackResults used to inform the listener that called this method that it finished processing, and to return the results.
      */
-    public void processFiles(ArrayList<File> files, CallbackResults callbackResults) {
+    public void processFiles(List<File> files, CallbackResults callbackResults) {
         //should only run if we are not Processing
         //this will also set up the StanfordCoreNLP (when GUI is implemented, it will already by set up, as it will be the first thing ran)
         System.out.println("Will try to run");
@@ -176,7 +177,7 @@ public class ProcessFiles implements ProcessFileCallback {
                         return getTextTXT(file);
                     case ".docx":
                         return getTextDoc(file);
-                    default:
+                    default://could hold list of files that could not be processed
                         //get string from default process (open file and use buffered reader)
                         break;
                 }
