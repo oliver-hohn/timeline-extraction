@@ -32,6 +32,7 @@ public class ProcessFiles implements ProcessFileCallback {
     private static int maxNoOfThreads = 2;
     private Semaphore semaphore = new Semaphore(maxNoOfThreads);
     private ArrayList<Result> results = new ArrayList<>();
+    private ArrayList<FileData> fileDataList = new ArrayList<>();
     private int filesToGo;//to notify the listener when it is done
     private CallbackResults callbackResults;// who to inform when we are done
     private final static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -81,13 +82,16 @@ public class ProcessFiles implements ProcessFileCallback {
      * Will inform the CallbackResult object when it finishes processing all Files.
      *
      * @param results the backend.process.Result objects produced by Processing the given file in the Thread.
+     * @param fileData the data of the File that produced these Results
      */
-    public synchronized void callBack(ArrayList<Result> results) {
+    public synchronized void callBack(ArrayList<Result> results, FileData fileData) {
         //we finished processing a file
         filesToGo--;//one less to look at
         System.out.println("Files to go: " + filesToGo);
         //add the results to the list held
         this.results.addAll(results);
+        //add the data file to the list held
+        fileDataList.add(fileData);
         //release semaphore
         System.out.println("Released semaphore from Thread: " + Thread.currentThread().toString());
         semaphore.release();
@@ -95,7 +99,7 @@ public class ProcessFiles implements ProcessFileCallback {
         if (filesToGo == 0 && callbackResults != null) {
             //has processed
             BackEndSystem.getInstance().setSystemState(SystemState.PROCESSED);
-            callbackResults.gotResults(this.results);//return all the results obtained until now
+            callbackResults.gotResults(this.results, this.fileDataList);//return all the results obtained until now
             //has returned the results so we finished
             BackEndSystem.getInstance().setSystemState(SystemState.FINISHED);
         }
@@ -129,20 +133,34 @@ public class ProcessFiles implements ProcessFileCallback {
         public void run() {
             super.run();
             System.out.println("For: " + file + " in Thread: " + Thread.currentThread().toString());//for logging purposes
+            FileData fileData = null;
             ArrayList<Result> toReturnResults = new ArrayList<>();//initially no results
             //check file exists in system
             if (fileExists(file)) {
+                fileData = new FileData(file.getName(), file.getAbsolutePath());
                 //get the text for that file
                 String toProcess = getText(file);//will get the text for the file considering its extension
                 //run engine on this
                 if (!toProcess.equals("")) {//if we actually have text to process, don't waste time attempting to process else
                     String baseDate = getFileCreationDate(file);//since we will need to process, get a base date to use
                     System.out.println("Base Date for " + file.getName() + " is: " + baseDate);
-                    toReturnResults = new Engine().getResults(toProcess, baseDate);
+                    toReturnResults = new Engine().getResults(toProcess, baseDate);//pass in file data, so each result holds it
+                    addFileData(fileData, toReturnResults);
                 }
             }
             //call the backend.process.ProcessFileCallback that we finished processing and return the results of processing that one File.
-            processFileCallback.callBack(toReturnResults);
+            processFileCallback.callBack(toReturnResults, fileData);
+        }
+
+        /**
+         * For the list passed in, set for all of them the given FileData.
+         * @param fileData the FileData to be set to all the Results passed in.
+         * @param results the Results for which the FileData needs to be set.
+         */
+        private void addFileData(FileData fileData, ArrayList<Result> results){
+            for(Result result: results){
+                result.setFileData(fileData);
+            }
         }
 
         /**

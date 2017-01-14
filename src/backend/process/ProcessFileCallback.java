@@ -11,6 +11,7 @@ public interface ProcessFileCallback {
      * the given File.
      *
      * @param results the Results from processing the given File passed into the ProcessFile Thread.
+     * @param fileData the File Data of the File that produced these Results.
      */
-    void callBack(ArrayList<Result> results);
+    void callBack(ArrayList<Result> results, FileData fileData);
 }

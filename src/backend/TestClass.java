@@ -66,7 +66,7 @@ public class TestClass {
         //files.add(file6);
         processFiles.processFiles(files, new CallbackResults() {
             @Override
-            public void gotResults(ArrayList<Result> results) {
+            public void gotResults(ArrayList<Result> results, ArrayList<FileData> fileDataList) {
                 System.out.println("Finished running, got: "+results.size()+" results");
                 //would have to sort it
                 Collections.sort(results);

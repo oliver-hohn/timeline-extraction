@@ -1,6 +1,7 @@
 package frontend;
 
 import backend.process.CallbackResults;
+import backend.process.FileData;
 import backend.process.ProcessFiles;
 import backend.process.Result;
 import backend.system.BackEndSystem;
@@ -23,14 +24,15 @@ import java.util.List;
 public class Main extends Application implements StartUpObserver, CallbackResults {
     private final static String TAG = "MAIN: ";
     private Stage primaryStage;
-
+    private ArrayList<FileData> fileDataList = new ArrayList<>();//add/remove to this, holds the information of the Files for which we are showing results to
+    private ArrayList<Result> currentResults = new ArrayList<>();//list of Results that it is currently showing
     @Override
     public void start(Stage primaryStage) throws Exception {
         //need to start engine
         BackEndSystem.getInstance();//thread waits for this to be done
         System.out.println("Called getInstance");
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("res/startup.fxml"));
-        primaryStage.setScene(new Scene((Pane) fxmlLoader.load(), 600, 400));
+        primaryStage.setScene(new Scene(fxmlLoader.load(), 600, 400));
         primaryStage.setTitle("Automated Timeline Extractor - Oliver Philip Höhn");
         StartUpController startUpController = fxmlLoader.getController();
         startUpController.setObserver(this);
@@ -74,10 +76,18 @@ public class Main extends Application implements StartUpObserver, CallbackResult
     }
 
     @Override
-    public void gotResults(ArrayList<Result> results) {
+    public void gotResults(ArrayList<Result> results, ArrayList<FileData> fileDataList) {
         System.out.println(TAG+"Processed Files");
         for(Result result: results){
             System.out.println(result);
         }
+        System.out.println(TAG+"List of data of Files");
+        for (FileData fileData: fileDataList){
+            System.out.println(fileData);
+        }
+
+        this.fileDataList.addAll(fileDataList);//TODO: compare if the FileData is already there
+        this.currentResults = results;
+        //TODO: process the Files to produce the scene and swap (ie start another thread, show wait dialog here, when finish swap scene)
     }
 }

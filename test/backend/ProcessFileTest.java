@@ -1,9 +1,6 @@
 package backend;
 
-import backend.process.CallbackResults;
-import backend.process.ProcessFiles;
-import backend.process.Result;
-import backend.process.TimelineDate;
+import backend.process.*;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -22,7 +19,7 @@ public class ProcessFileTest {
     private ArrayList<Result> actualResults;
     private CallbackResults callbackResults = new CallbackResults() {
         @Override
-        public void gotResults(ArrayList<Result> results) {
+        public void gotResults(ArrayList<Result> results, ArrayList<FileData> fileDataList) {
             System.out.println("Got results");
             actualResults = results;
         }

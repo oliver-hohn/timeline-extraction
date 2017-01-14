@@ -11,6 +11,7 @@ public interface CallbackResults {
      * Inform the Listener that all Files have been processed, and return the result of processing the Files.
      *
      * @param results the backend.process.Result objects obtained from processing all Files.
+     * @param fileDataList the Data of the Files that Produced these results.
      */
-    void gotResults(ArrayList<Result> results);
+    void gotResults(ArrayList<Result> results, ArrayList<FileData> fileDataList);
 }

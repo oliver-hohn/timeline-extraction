@@ -12,6 +12,7 @@ public class Result implements Comparable<Result> {
     private String event;
     private Set<String> subjects;
     private TimelineDate timelineDate;
+    private FileData fileData;
 
     /**
      * Initialises variables.
@@ -137,5 +138,13 @@ public class Result implements Comparable<Result> {
 
     public void setTimelineDate(TimelineDate timelineDate) {
         this.timelineDate = timelineDate;
+    }
+
+    public FileData getFileData() {
+        return fileData;
+    }
+
+    public void setFileData(FileData fileData) {
+        this.fileData = fileData;
     }
 }

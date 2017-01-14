@@ -1,6 +1,7 @@
 package backend;
 
 import backend.process.CallbackResults;
+import backend.process.FileData;
 import backend.process.ProcessFiles;
 import backend.process.Result;
 import backend.system.BackEndSystem;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 public class SystemStateTest {
     private CallbackResults callbackResults = new CallbackResults() {
         @Override
-        public void gotResults(ArrayList<Result> results) {
+        public void gotResults(ArrayList<Result> results, ArrayList<FileData> fileDataList) {
             //we just finished processing a File, so our backend.system.SystemState should be PROCESSED (FINISHED set after it passes the Results).
             System.out.println("Checking if backend.system.SystemState is PROCESSED");
             Assert.assertEquals(BackEndSystem.getInstance().getSystemState(), SystemState.PROCESSED);
