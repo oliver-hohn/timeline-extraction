@@ -5,9 +5,11 @@ import backend.process.FileData;
 import backend.process.ProcessFiles;
 import backend.process.Result;
 import backend.system.BackEndSystem;
+import frontend.controllers.ListViewController;
 import frontend.controllers.StartUpController;
 import frontend.observers.StartUpObserver;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
@@ -17,6 +19,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,5 +122,26 @@ public class Main extends Application implements StartUpObserver, CallbackResult
         this.fileDataList.addAll(fileDataList);//TODO: compare if the FileData is already there
         this.currentResults.addAll(results);//add the results of processing these files to the list of current results
         //TODO: process the Files to produce the scene and swap (ie start another thread, show wait dialog here, when finish swap scene)
+        //needs to be done on ui thread
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("About to show list");
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("res/listView.fxml"));
+                try {
+                    primaryStage.setScene(new Scene(fxmlLoader.load(), 800, 600));
+                    primaryStage.setTitle("Automated Timeline Extractor - Oliver Philip Höhn");
+                    ListViewController listViewController = fxmlLoader.getController();
+                    listViewController.setListView(results);
+                    primaryStage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
+
+
+
 }
