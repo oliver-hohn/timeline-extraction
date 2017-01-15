@@ -1,15 +1,14 @@
 package frontend;
 
-import backend.process.CallbackResults;
 import backend.process.FileData;
 import backend.process.ProcessFiles;
 import backend.process.Result;
 import backend.system.BackEndSystem;
+import edu.stanford.nlp.util.Pair;
 import frontend.controllers.ListViewController;
 import frontend.controllers.StartUpController;
 import frontend.observers.StartUpObserver;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
@@ -26,7 +25,7 @@ import java.util.List;
 /**
  * Main class that is used to run the program (i.e. show the UI that uses the backend).
  */
-public class Main extends Application implements StartUpObserver, CallbackResults {
+public class Main extends Application implements StartUpObserver {
     private final static String TAG = "MAIN: ";
     private Stage primaryStage;
     private ArrayList<FileData> fileDataList = new ArrayList<>();//add/remove to this, holds the information of the Files for which we are showing results to
@@ -59,15 +58,13 @@ public class Main extends Application implements StartUpObserver, CallbackResult
         fileChooser.setTitle("Open Document Files");
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text Files", "*.txt", "*.pdf", "*.docx"));
         List<File> files = fileChooser.showOpenMultipleDialog(primaryStage);
-
         //prune list of files, checking extension
         //then processFile
-        Task<Boolean> processFileTask = new Task<Boolean>() {//to run the processing of files on a separate thread, and show a loading dialog
+        Task<Pair<ArrayList<Result>, ArrayList<FileData>>> processFileTask = new Task<Pair<ArrayList<Result>, ArrayList<FileData>>>() {//to run the processing of files on a separate thread, and show a loading dialog
             @Override
-            protected Boolean call() throws Exception {
+            protected Pair<ArrayList<Result>, ArrayList<FileData>> call() throws Exception {
                 ProcessFiles processFiles = new ProcessFiles();
-                processFiles.processFiles(files, Main.this);
-                return null;
+                return processFiles.processFiles(files);
             }
         };
 
@@ -83,6 +80,20 @@ public class Main extends Application implements StartUpObserver, CallbackResult
             @Override
             public void handle(WorkerStateEvent event) {//hasn't finished, just finished starting to run the last thread
                 System.out.println(TAG+"Finished");
+                Pair<ArrayList<Result>, ArrayList<FileData>> result = processFileTask.getValue();
+                System.out.println("Got results of backend: "+ result);
+                fileDataList.addAll(result.second());
+                currentResults.addAll(result.first());
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("res/listView.fxml"));
+                try {
+                    primaryStage.setScene(new Scene(fxmlLoader.load(), 800, 600));
+                    primaryStage.setTitle("Automated Timeline Extractor - Oliver Philip Höhn");
+                    ListViewController listViewController = fxmlLoader.getController();
+                    listViewController.setListView(currentResults);
+                    primaryStage.show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -106,42 +117,6 @@ public class Main extends Application implements StartUpObserver, CallbackResult
     public void timeline() {
         System.out.println(TAG+"timeline options");
     }
-
-    @Override
-    public synchronized void gotResults(ArrayList<Result> results, ArrayList<FileData> fileDataList) {
-        //stop showing the loading dialog
-        System.out.println(TAG+"Processed Files");
-        for(Result result: results){
-            System.out.println(result);
-        }
-        System.out.println(TAG+"List of data of Files");
-        for (FileData fileData: fileDataList){
-            System.out.println(fileData);
-        }
-
-        this.fileDataList.addAll(fileDataList);//TODO: compare if the FileData is already there
-        this.currentResults.addAll(results);//add the results of processing these files to the list of current results
-        //TODO: process the Files to produce the scene and swap (ie start another thread, show wait dialog here, when finish swap scene)
-        //needs to be done on ui thread
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println("About to show list");
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("res/listView.fxml"));
-                try {
-                    primaryStage.setScene(new Scene(fxmlLoader.load(), 800, 600));
-                    primaryStage.setTitle("Automated Timeline Extractor - Oliver Philip Höhn");
-                    ListViewController listViewController = fxmlLoader.getController();
-                    listViewController.setListView(results);
-                    primaryStage.show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-    }
-
 
 
 }

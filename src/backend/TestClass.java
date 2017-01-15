@@ -64,17 +64,14 @@ public class TestClass {
         files.add(file4);
         files.add(file5);
         //files.add(file6);
-        processFiles.processFiles(files, new CallbackResults() {
-            @Override
-            public void gotResults(ArrayList<Result> results, ArrayList<FileData> fileDataList) {
-                System.out.println("Finished running, got: "+results.size()+" results");
-                //would have to sort it
-                Collections.sort(results);
-                for(Result result: results){
-                    System.out.println(result);
-                }
-            }
-        });
+        ArrayList<Result> results = processFiles.processFiles(files).first();
+        System.out.println("Finished running, got: "+results.size()+" results");
+        //would have to sort it
+        Collections.sort(results);
+        for(Result result: results){
+            System.out.println(result);
+        }
+
 /*        TimelineDate timelineDate = new TimelineDate();
         timelineDate.parse("XXXX-01", "2016-12-31");*/
 /*        processFiles.processFiles(files, new backend.process.CallbackResults() {

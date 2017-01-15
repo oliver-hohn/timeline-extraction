@@ -1,6 +1,7 @@
 package backend;
 
 import backend.process.*;
+import javafx.concurrent.Task;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -69,8 +70,7 @@ public class ProcessFileTest {
         files.add(testFile);
 
         ProcessFiles processFiles = new ProcessFiles();
-        processFiles.processFiles(files, callbackResults);
-        Thread.sleep(10000);
+        actualResults = processFiles.processFiles(files).first();
         compareExpectedToActual(actualResults, expectedResults);
     }
 
@@ -94,7 +94,14 @@ public class ProcessFileTest {
         files.add(testFile3);
 
         ProcessFiles processFiles = new ProcessFiles();
-        processFiles.processFiles(files, callbackResults);
+        Task<Boolean> task = new Task<Boolean>() {
+            @Override
+            protected Boolean call() throws Exception {
+                processFiles.processFiles(files).first();
+                return null;
+            }
+        };
+        new Thread(task).start();
         System.out.println("Actual Threads running" + Thread.activeCount());
         Assert.assertEquals(true, Thread.activeCount() >= 2);
         Thread.sleep(10000);//give the backend.process.Engine time to finish running
@@ -145,8 +152,7 @@ public class ProcessFileTest {
         files.add(testFile);
 
         ProcessFiles processFiles = new ProcessFiles();
-        processFiles.processFiles(files, callbackResults);
-        Thread.sleep(10000);
+        actualResults = processFiles.processFiles(files).first();
         compareExpectedToActual(actualResults, expectedResults);
     }
 
@@ -182,8 +188,7 @@ public class ProcessFileTest {
         files.add(testFile);
 
         ProcessFiles processFiles = new ProcessFiles();
-        processFiles.processFiles(files, callbackResults);
-        Thread.sleep(10000);
+        actualResults = processFiles.processFiles(files).first();
         System.out.println(actualResults);
         compareExpectedToActual(actualResults, expectedResults);
     }

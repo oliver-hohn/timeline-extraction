@@ -23,6 +23,7 @@ public class ListViewController implements Initializable{
     private ListView listView;
     private ArrayList<Result> results;
     private ObservableList observableList = FXCollections.observableArrayList();
+    private int x=0;
 
 
     @Override
@@ -37,6 +38,8 @@ public class ListViewController implements Initializable{
         listView.setCellFactory(new Callback<ListView, ListCell>() {
             @Override
             public ListCell call(ListView param) {
+                System.out.println("List View Cell called: "+x);
+                x++;
                 return new ListViewCell();
             }
         });

@@ -6,6 +6,7 @@ import backend.process.ProcessFiles;
 import backend.process.Result;
 import backend.system.BackEndSystem;
 import backend.system.SystemState;
+import javafx.concurrent.Task;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -48,8 +49,17 @@ public class SystemStateTest {
         files.add(testFile2);
         files.add(testFile3);
 
-        processFiles.processFiles(files, callbackResults);
+        Task<Boolean> task = new Task<Boolean>() {
+            @Override
+            protected Boolean call() throws Exception {
+                System.out.println("Processing Files");
+                processFiles.processFiles(files).first();
+                return null;
+            }
+        };
+        new Thread(task).start();
         //its processing Files, so its status should be: PROCESSING
+        Thread.sleep(10000);
         System.out.println("Checking if backend.system.SystemState is PROCESSING");
         Assert.assertEquals(BackEndSystem.getInstance().getSystemState(), SystemState.PROCESSING);
         Thread.sleep(5000);//wait for the ProcessFile to be completed

@@ -13,10 +13,13 @@ public class ListViewCell extends ListCell {
         if(item != null){
             Result result = (Result) item;
             System.out.println("Got Item: "+result);
-            Cell cell = new Cell();
+            TimelineRowController timelineRowController = new TimelineRowController();
+            timelineRowController.setData(result);
+            setGraphic(timelineRowController.getGroup());
+/*            Cell cell = new Cell();
             //set the info for the cell
             cell.setInfo(result);
-            setGraphic(cell.getvBox());
+            setGraphic(cell.getvBox());*/
         }
     }
 }

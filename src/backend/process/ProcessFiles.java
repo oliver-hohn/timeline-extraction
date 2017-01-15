@@ -2,6 +2,7 @@ package backend.process;
 
 import backend.system.BackEndSystem;
 import backend.system.SystemState;
+import edu.stanford.nlp.util.Pair;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
@@ -31,10 +32,10 @@ import java.util.concurrent.Semaphore;
 public class ProcessFiles implements ProcessFileCallback {
     private static int maxNoOfThreads = 2;
     private Semaphore semaphore = new Semaphore(maxNoOfThreads);
+    private Semaphore semaphoreFinished = new Semaphore(0);//so that we wait until all threads finish
     private ArrayList<Result> results = new ArrayList<>();
     private ArrayList<FileData> fileDataList = new ArrayList<>();
     private int filesToGo;//to notify the listener when it is done
-    private CallbackResults callbackResults;// who to inform when we are done
     private final static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private final static String epochDateFormatted = "1970-01-01";
 
@@ -46,15 +47,13 @@ public class ProcessFiles implements ProcessFileCallback {
      * been produced.
      *
      * @param files           the list of File objects that contain text that needs to be processed (atm only processes .docx/.pdf/.txt files)
-     * @param callbackResults used to inform the listener that called this method that it finished processing, and to return the results.
      */
-    public void processFiles(List<File> files, CallbackResults callbackResults) {
+    public Pair<ArrayList<Result>, ArrayList<FileData>> processFiles(List<File> files) {
         //should only run if we are not Processing
         //this will also set up the StanfordCoreNLP (when GUI is implemented, it will already by set up, as it will be the first thing ran)
         System.out.println("Will try to run");
         if(BackEndSystem.getInstance().getSystemState() != SystemState.PROCESSING) {//if we arent processing, then we can begin to do that
             System.out.println("Is running");
-            this.callbackResults = callbackResults;//set up who we need to call
             filesToGo = files.size();//and when we need to call
             BackEndSystem.getInstance().setSystemState(SystemState.PROCESSING);
             System.out.println("In Thread: " + Thread.currentThread().toString());
@@ -72,7 +71,16 @@ public class ProcessFiles implements ProcessFileCallback {
                     //should release semaphore and reduce filesToGo count if the Thread is interrupted
                 }
             }
+            try {
+                System.out.println("Going to wait until the last files are processed.");
+                semaphoreFinished.acquire();
+                System.out.println("The last files have been processed.");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return new Pair<>(results, fileDataList);
         }
+        return null;
     }
 
     /**
@@ -96,12 +104,13 @@ public class ProcessFiles implements ProcessFileCallback {
         System.out.println("Released semaphore from Thread: " + Thread.currentThread().toString());
         semaphore.release();
         //check if we have processed everything, if so inform listener
-        if (filesToGo == 0 && callbackResults != null) {
+        if (filesToGo == 0 /*&& callbackResults != null*/) {
             //has processed
             BackEndSystem.getInstance().setSystemState(SystemState.PROCESSED);
-            callbackResults.gotResults(this.results, this.fileDataList);//return all the results obtained until now
+            //callbackResults.gotResults(this.results, this.fileDataList);//return all the results obtained until now
             //has returned the results so we finished
             BackEndSystem.getInstance().setSystemState(SystemState.FINISHED);
+            semaphoreFinished.release();
         }
     }
 
