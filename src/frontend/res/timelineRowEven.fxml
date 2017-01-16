@@ -19,9 +19,9 @@
                </padding>
                <children>
                   <Label fx:id="eventNumberLabel" text="Event ##" />
-                  <Label fx:id="dateLabel" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="350.0" text="Date: dd-MM-yyy -&gt; dd-MM-yyyy" wrapText="true" />
-                  <Label fx:id="subjectsLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="350.0" text="Subjects: Football, Gifts, London" wrapText="true" />
-                  <Label fx:id="eventLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="350.0" text="Event: played football with friends" wrapText="true" />
+                  <Label fx:id="dateLabel" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="370.0" text="Date: dd-MM-yyy -&gt; dd-MM-yyyy" wrapText="true" />
+                  <Label fx:id="subjectsLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="370.0" text="Subjects: Football, Gifts, London" wrapText="true" />
+                  <Label fx:id="eventLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="370.0" text="Event: played football with friends" wrapText="true" />
                </children>
             </VBox>
             <Line startX="-100.0" strokeWidth="3.0" />

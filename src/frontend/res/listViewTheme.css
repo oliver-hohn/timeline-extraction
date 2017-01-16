@@ -11,6 +11,10 @@
 }
 
 .list-cell:filled:selected:focused, .list-cell:filled:selected {
-    -fx-background-color: linear-gradient(#328BDB 100%, #207BCF 75%, #1973C9 75%, #0A65BF 100%);
-    -fx-text-fill: white;
+    -fx-focus-color: transparent;
+
+}
+
+.label{
+    -fx-text-fill:black;
 }
