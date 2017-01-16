@@ -12,8 +12,10 @@ public class ListViewCell extends ListCell {
         super.updateItem(item, empty);
         if(item != null){
             Result result = (Result) item;
+
             System.out.println("Got Item: "+result);
-            TimelineRowController timelineRowController = new TimelineRowController();
+            System.out.println("Position: "+getIndex());
+            TimelineRowController timelineRowController = new TimelineRowController(getIndex());
             timelineRowController.setData(result);
             setGraphic(timelineRowController.getGroup());
 /*            Cell cell = new Cell();

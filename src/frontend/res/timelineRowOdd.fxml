@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Line?>
+
+<Group fx:id="group" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
+            <children>
+            <Region maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="203.0" prefWidth="513.0" />
+                <Line endY="200.0" nodeOrientation="LEFT_TO_RIGHT" strokeWidth="3.0" />
+                <Line startX="-100.0" strokeWidth="3.0" />
+                <Group>
+               <children>
+                        <VBox fx:id="timelineVBox" fillWidth="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="400.0">
+                            <padding>
+                                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                            </padding>
+                            <children>
+                                <Label fx:id="eventNumberLabel" text="Event ##" />
+                                <Label fx:id="dateLabel" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="350.0" text="Date: dd-MM-yyy -&gt; dd-MM-yyyy" wrapText="true" />
+                                <Label fx:id="subjectsLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="350.0" text="Subjects: Football, Gifts, London" wrapText="true" />
+                                <Label fx:id="eventLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="350.0" text="Event: played football with friends" wrapText="true" />
+                            </children>
+                        </VBox>
+               </children>
+                </Group>
+            </children>
+            <padding>
+                <Insets right="10.0" />
+            </padding>
+        </HBox>
+    </children>
+</Group>

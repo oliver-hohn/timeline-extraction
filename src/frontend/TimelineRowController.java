@@ -6,7 +6,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 
 import java.io.IOException;
 
@@ -26,10 +25,17 @@ public class TimelineRowController {
     private Label subjectsLabel;
     @FXML
     private Label eventLabel;
+    private int position;
 
-
-    public TimelineRowController(){
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("res/timelinerow.fxml"));
+    public TimelineRowController(int position){
+        this.position = position;
+        FXMLLoader fxmlLoader;
+        boolean isEven = (position%2) == 0;
+        if(isEven) {
+            fxmlLoader = new FXMLLoader(getClass().getResource("res/timelineRowEven.fxml"));
+        }else{
+            fxmlLoader = new FXMLLoader(getClass().getResource("res/timelineRowOdd.fxml"));
+        }
         fxmlLoader.setController(this);
         try {
             fxmlLoader.load();
@@ -40,9 +46,10 @@ public class TimelineRowController {
     }
 
     public void setData(Result result){
-        dateLabel.setText(result.getTimelineDate().toString());
-        subjectsLabel.setText(result.getSubjects().toString());
-        eventLabel.setText(result.getEvent());
+        eventNumberLabel.setText("Event #"+(position+1));
+        dateLabel.setText("Date: "+result.getTimelineDate().toString());
+        subjectsLabel.setText("Subjects: "+result.getSubjects().toString());
+        eventLabel.setText("Event: "+result.getEvent());
         timelineVBox.setStyle("-fx-border-color: black;" +
                 "-fx-border-width: 4;" +
                 "-fx-border-style: solid inside;");
