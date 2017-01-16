@@ -1,12 +1,8 @@
 package backend;
 
-import backend.process.CallbackResults;
-import backend.process.FileData;
 import backend.process.ProcessFiles;
-import backend.process.Result;
 import backend.system.BackEndSystem;
 import backend.system.SystemState;
-import javafx.concurrent.Task;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -18,14 +14,6 @@ import java.util.ArrayList;
  * System States, as these are the three main different states.
  */
 public class SystemStateTest {
-    private CallbackResults callbackResults = new CallbackResults() {
-        @Override
-        public void gotResults(ArrayList<Result> results, ArrayList<FileData> fileDataList) {
-            //we just finished processing a File, so our backend.system.SystemState should be PROCESSED (FINISHED set after it passes the Results).
-            System.out.println("Checking if backend.system.SystemState is PROCESSED");
-            Assert.assertEquals(BackEndSystem.getInstance().getSystemState(), SystemState.PROCESSED);
-        }
-    };
 
     /**
      * Checks the initial state, then when processing, and then when it should be finished.
@@ -33,35 +21,49 @@ public class SystemStateTest {
      * @throws InterruptedException as we make the Test thread wait for ProcessFile to finish processing the Files.
      */
     @Test
-    public void testSystemState() throws InterruptedException {
-        BackEndSystem.getInstance().setSystemState(SystemState.STARTED);//will start the system if it hasnt started before, if it has reset the backend.system.SystemState
-        System.out.println("Checking if backend.system.SystemState is STARTED");
-        Assert.assertEquals(BackEndSystem.getInstance().getSystemState(), SystemState.STARTED);//check the system is started
+    public void testSystemStatePROCESSING() throws InterruptedException {
+        BackEndSystem.getInstance().setSystemState(SystemState.STARTED);
+        Assert.assertEquals(SystemState.STARTED, BackEndSystem.getInstance().getSystemState());
 
         ProcessFiles processFiles = new ProcessFiles();
-
-        File testFile1 = new File("test/resources/testfile1.txt");
-        File testFile2 = new File("test/resources/testfile2.txt");
-        File testFile3 = new File("test/resources/testfile3.txt");
-
+        File testFile = new File("test/resources/testfile1.txt");
         ArrayList<File> files = new ArrayList<>();
-        files.add(testFile1);
-        files.add(testFile2);
-        files.add(testFile3);
+        files.add(testFile);
 
-        Task<Boolean> task = new Task<Boolean>() {
+        Runnable newRunnable = new Runnable() {
             @Override
-            protected Boolean call() throws Exception {
-                System.out.println("Processing Files");
-                processFiles.processFiles(files).first();
-                return null;
+            public void run() {
+                processFiles.processFiles(files);
             }
         };
-        new Thread(task).start();
-        //its processing Files, so its status should be: PROCESSING
-        Thread.sleep(10000);
-        System.out.println("Checking if backend.system.SystemState is PROCESSING");
-        Assert.assertEquals(BackEndSystem.getInstance().getSystemState(), SystemState.PROCESSING);
-        Thread.sleep(5000);//wait for the ProcessFile to be completed
+
+        Thread thread = new Thread(newRunnable);
+        thread.start();
+        Thread.sleep(100);
+        System.out.println("System state: " + BackEndSystem.getInstance().getSystemState());
+        Assert.assertEquals(SystemState.PROCESSING, BackEndSystem.getInstance().getSystemState());
+
+        Thread.sleep(5000);
+
+    }
+
+
+    /**
+     * Checks that the state is set to FINISHED when files have been processed, and the result has been returned.
+     */
+    @Test
+    public void testSystemStateFINISHED() {
+        BackEndSystem.getInstance().setSystemState(SystemState.STARTED);
+        Assert.assertEquals(SystemState.STARTED, BackEndSystem.getInstance().getSystemState());
+
+        ProcessFiles processFiles = new ProcessFiles();
+        File testFile = new File("test/resources/testfile1.txt");
+        ArrayList<File> files = new ArrayList<>();
+        files.add(testFile);
+
+        processFiles.processFiles(files);
+
+        Assert.assertEquals(SystemState.FINISHED, BackEndSystem.getInstance().getSystemState());
+
     }
 }
