@@ -21,10 +21,10 @@
                <bottom>
                   <BorderPane>
                      <left>
-                        <Button mnemonicParsing="false" text="Edit Event" BorderPane.alignment="CENTER" />
+                        <Button mnemonicParsing="false" text="Edit Event" BorderPane.alignment="CENTER" fx:id="editButton"/>
                      </left>
                      <right>
-                        <Button mnemonicParsing="false" text="Go to Document" BorderPane.alignment="CENTER" />
+                        <Button mnemonicParsing="false" text="Go to Document" BorderPane.alignment="CENTER" fx:id="viewButton"/>
                      </right>
                      <padding>
                         <Insets bottom="5.0" top="5.0" />
