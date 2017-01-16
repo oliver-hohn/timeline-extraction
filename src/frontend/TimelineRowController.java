@@ -9,12 +9,11 @@ import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 
 /**
- * Created by Oliver on 15/01/2017.
+ * Controller class for each row in the timline listview.
  */
 public class TimelineRowController {
     @FXML
@@ -36,13 +35,18 @@ public class TimelineRowController {
     private int position;
     private Result result;
 
-    public TimelineRowController(int position){
+    /**
+     * Loads the layout for the row (appropriate layout picked depending on whether row is even or not).
+     *
+     * @param position the position this row is in the timeline (to determine if its odd or even and to display its index).
+     */
+    public TimelineRowController(int position) {
         this.position = position;
         FXMLLoader fxmlLoader;
-        boolean isEven = (position%2) == 0;
-        if(isEven) {
+        boolean isEven = (position % 2) == 0;
+        if (isEven) {
             fxmlLoader = new FXMLLoader(getClass().getResource("res/timelineRowEven.fxml"));
-        }else{
+        } else {
             fxmlLoader = new FXMLLoader(getClass().getResource("res/timelineRowOdd.fxml"));
         }
         fxmlLoader.setController(this);
@@ -51,35 +55,44 @@ public class TimelineRowController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        System.out.println("Edit: "+editButton);
-        System.out.println("View: "+viewButton);
     }
 
-    public void setData(Result result){
+    /**
+     * For the row, where the layout has already been loaded, set the values at the labels, and the event handlers for
+     * the buttons.
+     *
+     * @param result the Result object with wich the values of the labels will be populated (e.g. date, subjects, event,
+     *               etc.).
+     */
+    public void setData(Result result) {
         this.result = result;
-        eventNumberLabel.setText("Event #"+(position+1));
-        dateLabel.setText("Date: "+result.getTimelineDate().toString());
-        subjectsLabel.setText("Subjects: "+result.getSubjects().toString());
-        eventLabel.setText("Event: "+result.getEvent());
+        eventNumberLabel.setText("Event #" + (position + 1));
+        dateLabel.setText("Date: " + result.getTimelineDate().toString());
+        subjectsLabel.setText("Subjects: " + result.getSubjects().toString());
+        eventLabel.setText("Event: " + result.getEvent());
         borderPane.setStyle("-fx-border-color: black; -fx-border-width: 4; -fx-border-style: solid inside;");
         editButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Edit button for timeline event: "+result.getTimelineDate()+" has been pressed");
+                System.out.println("Edit button for timeline event: " + result.getTimelineDate() + " has been pressed");
                 //TODO: edit button implementation (edit dialog screen)
             }
         });
         viewButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Go to Document button for timeline event: "+result.getTimelineDate()+" has been pressed");
+                System.out.println("Go to Document button for timeline event: " + result.getTimelineDate() + " has been pressed");
                 //TODO: go to document implementation (file reader with related sentence highlighted).
             }
         });
     }
 
-    public Group getGroup(){
+    /**
+     * After the layout has been loaded (and the data has been populated), return the layout to use it in the timeline.
+     *
+     * @return the parent layout of the row in the timeline.
+     */
+    public Group getGroup() {
         return group;
     }
 }
