@@ -18,10 +18,6 @@ public class ListViewCell extends ListCell {
             TimelineRowController timelineRowController = new TimelineRowController(getIndex());
             timelineRowController.setData(result);
             setGraphic(timelineRowController.getGroup());
-/*            Cell cell = new Cell();
-            //set the info for the cell
-            cell.setInfo(result);
-            setGraphic(cell.getvBox());*/
         }
     }
 }

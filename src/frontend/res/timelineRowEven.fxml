@@ -2,7 +2,9 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Group?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
@@ -12,21 +14,44 @@
    <children>
       <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
          <children>
-            <Group />
-            <VBox fx:id="timelineVBox" fillWidth="false" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="400.0">
+            <BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="370.0">
                <padding>
                   <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                </padding>
-               <children>
-                  <Label fx:id="eventNumberLabel" text="Event ##" />
-                  <Label fx:id="dateLabel" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="370.0" text="Date: dd-MM-yyy -&gt; dd-MM-yyyy" wrapText="true" />
-                  <Label fx:id="subjectsLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="370.0" text="Subjects: Football, Gifts, London" wrapText="true" />
-                  <Label fx:id="eventLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="370.0" text="Event: played football with friends" wrapText="true" />
-               </children>
-            </VBox>
+               <bottom>
+                  <BorderPane>
+                     <left>
+                        <Button mnemonicParsing="false" text="Edit Event" BorderPane.alignment="CENTER" />
+                     </left>
+                     <right>
+                        <Button mnemonicParsing="false" text="Go to Document" BorderPane.alignment="CENTER" />
+                     </right>
+                     <padding>
+                        <Insets bottom="5.0" top="5.0" />
+                     </padding>
+                  </BorderPane>
+               </bottom>
+               <left>
+                  <Group BorderPane.alignment="CENTER">
+                     <children>
+                        <VBox prefHeight="84.0" prefWidth="370.0">
+                           <children>
+                              <Label fx:id="eventNumberLabel" text="Event ##" />
+                              <Label fx:id="dateLabel" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="340.0" text="Date: dd-MM-yyy -&gt; dd-MM-yyyy" wrapText="true" />
+                              <Label fx:id="subjectsLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="340.0" text="Subjects: Football, Gifts, London" wrapText="true" />
+                              <Label fx:id="eventLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="340.0" text="Event: played football with friends" wrapText="true" />
+                           </children>
+                           <padding>
+                              <Insets bottom="5.0" top="5.0" />
+                           </padding>
+                        </VBox>
+                     </children>
+                  </Group>
+               </left>
+            </BorderPane>
             <Line startX="-100.0" strokeWidth="3.0" />
             <Line endY="200.0" nodeOrientation="LEFT_TO_RIGHT" strokeWidth="3.0" />
-            <Region maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="203.0" prefWidth="516.0" />
+            <Region maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="483.0" />
          </children>
          <padding>
             <Insets right="10.0" />

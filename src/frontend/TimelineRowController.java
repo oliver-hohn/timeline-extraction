@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
@@ -16,8 +17,6 @@ public class TimelineRowController {
     @FXML
     private Group group;
     @FXML
-    private VBox timelineVBox;
-    @FXML
     private Label eventNumberLabel;
     @FXML
     private Label dateLabel;
@@ -25,6 +24,8 @@ public class TimelineRowController {
     private Label subjectsLabel;
     @FXML
     private Label eventLabel;
+    @FXML
+    private BorderPane borderPane;
     private int position;
 
     public TimelineRowController(int position){
@@ -42,7 +43,6 @@ public class TimelineRowController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //setData(result);
     }
 
     public void setData(Result result){
@@ -50,9 +50,7 @@ public class TimelineRowController {
         dateLabel.setText("Date: "+result.getTimelineDate().toString());
         subjectsLabel.setText("Subjects: "+result.getSubjects().toString());
         eventLabel.setText("Event: "+result.getEvent());
-        timelineVBox.setStyle("-fx-border-color: black;" +
-                "-fx-border-width: 4;" +
-                "-fx-border-style: solid inside;");
+        borderPane.setStyle("-fx-border-color: black; -fx-border-width: 4; -fx-border-style: solid inside;");
     }
 
     public Group getGroup(){
