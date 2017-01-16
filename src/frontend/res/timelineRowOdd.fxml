@@ -24,10 +24,10 @@
                <bottom>
                   <BorderPane>
                      <left>
-                        <Button mnemonicParsing="false" text="Edit Event" BorderPane.alignment="CENTER" fx:id="editButton"/>
+                        <Button fx:id="editButton" mnemonicParsing="false" text="Edit Event" BorderPane.alignment="CENTER" />
                      </left>
                      <right>
-                        <Button mnemonicParsing="false" text="Go to Document" BorderPane.alignment="CENTER" fx:id="viewButton" />
+                        <Button fx:id="viewButton" mnemonicParsing="false" text="Go to Document" BorderPane.alignment="CENTER" />
                      </right>
                      <padding>
                         <Insets bottom="5.0" top="5.0" />
@@ -37,10 +37,10 @@
                <left>
                   <Group BorderPane.alignment="CENTER">
                      <children>
-                        <VBox prefHeight="84.0" prefWidth="370.0">
+                        <VBox prefWidth="370.0">
                            <children>
                               <Label fx:id="eventNumberLabel" text="Event ##" />
-                              <Label fx:id="dateLabel" maxWidth="-Infinity" minWidth="-Infinity" prefWidth="340.0" text="Date: dd-MM-yyy -&gt; dd-MM-yyyy" wrapText="true" />
+                              <Label fx:id="dateLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="340.0" text="Date: dd-MM-yyy -&gt; dd-MM-yyyy" wrapText="true" />
                               <Label fx:id="subjectsLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="340.0" text="Subjects: Football, Gifts, London" wrapText="true" />
                               <Label fx:id="eventLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="340.0" text="Event: played football with friends" wrapText="true" />
                            </children>
