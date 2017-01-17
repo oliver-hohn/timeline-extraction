@@ -1,6 +1,7 @@
 package frontend;
 
 import backend.process.FileData;
+import frontend.observers.DocumentsLoadedObserver;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,7 +26,9 @@ public class DocumentLoadedRowController {
     private Label documentLabel;
     @FXML
     private GridPane gridPane;
-    public DocumentLoadedRowController(FileData fileData){
+    private DocumentsLoadedObserver documentsLoadedObserver;
+    public DocumentLoadedRowController(FileData fileData, DocumentsLoadedObserver documentsLoadedObserver){
+        this.documentsLoadedObserver = documentsLoadedObserver;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("res/documentLoadedRow.fxml"));
         fxmlLoader.setController(this);
         try {
@@ -38,12 +41,13 @@ public class DocumentLoadedRowController {
             @Override
             public void handle(MouseEvent event) {
                 System.out.println("Remove this Document: "+fileData);
+                documentsLoadedObserver.remove(fileData);
             }
         });
     }
 
     private void setData(FileData fileData){
-        documentLabel.setText("· "+fileData.getFileName());
+        documentLabel.setText(fileData.getFileName());
     }
 
     public GridPane getGridPane(){

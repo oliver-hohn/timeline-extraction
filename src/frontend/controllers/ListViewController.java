@@ -4,6 +4,7 @@ import backend.process.FileData;
 import backend.process.Result;
 import frontend.DocumentLoadedRowController;
 import frontend.ListViewCell;
+import frontend.observers.DocumentsLoadedObserver;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -18,12 +19,13 @@ import javafx.util.Callback;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 
 /**
  * Controller for the layout where the ListView is shown. Allows the listview to be populated with Result data.
  */
-public class ListViewController implements Initializable {
+public class ListViewController implements Initializable, MenuBarControllerInter, DocumentsLoadedObserver {
     @FXML
     private ListView timelineListView;
     @FXML
@@ -33,6 +35,7 @@ public class ListViewController implements Initializable {
     @FXML
     private ListView documentListView;
     private ArrayList<Result> results;
+    private ArrayList<FileData> fileDatas;
     private ObservableList<Result> timelineObservableList = FXCollections.observableArrayList();
     private ObservableList<FileData> documentsLoadedObservableList = FXCollections.observableArrayList();
 
@@ -70,6 +73,7 @@ public class ListViewController implements Initializable {
         //TODO:
         //pass the load documents and save to pdf callbacks to observer
         this.results = results;
+        timelineObservableList.clear();
         timelineObservableList.addAll(results);
         timelineListView.setItems(timelineObservableList);
         timelineListView.setCellFactory(new Callback<ListView, ListCell>() {
@@ -80,6 +84,8 @@ public class ListViewController implements Initializable {
         });
 
         //custom documents loaded listview
+        this.fileDatas = fileDatas;
+        documentsLoadedObservableList.clear();
         documentsLoadedObservableList.addAll(fileDatas);
         documentListView.setItems(documentsLoadedObservableList);
         documentListView.setCellFactory(new Callback<ListView, ListCell>() {
@@ -92,7 +98,7 @@ public class ListViewController implements Initializable {
                         if(item != null){
                             System.out.println("Got Item: " + item);
                             System.out.println("Position: " + getIndex());
-                            DocumentLoadedRowController documentLoadedRowController = new DocumentLoadedRowController(item);
+                            DocumentLoadedRowController documentLoadedRowController = new DocumentLoadedRowController(item, ListViewController.this);
                             setGraphic(documentLoadedRowController.getGridPane());
                         }
                     }
@@ -100,5 +106,40 @@ public class ListViewController implements Initializable {
             }
         });
 
+    }
+
+    @Override
+    public void close() {
+        System.out.println("Close pressed");
+    }
+
+    @Override
+    public void about() {
+        System.out.println("About pressed");
+    }
+
+    @Override
+    public void timeline() {
+        System.out.println("Timeline pressed");
+    }
+
+    @Override
+    public void remove(FileData fileData) {
+        System.out.println("Need to remove: "+fileData);
+        fileDatas.remove(fileData);
+        removeResults(results, fileData);
+        //remove from the Results the ones linked to this FileData
+        setTimelineListView(results, fileDatas);
+    }
+
+    private void removeResults(ArrayList<Result> results, FileData fileData){
+        Iterator<Result> resultIterator = results.iterator();
+        while(resultIterator.hasNext()){
+            Result result = resultIterator.next();
+            if(result.getFileData().equals(fileData)){
+                System.out.println("Need to remove: "+result);
+                resultIterator.remove();
+            }
+        }
     }
 }

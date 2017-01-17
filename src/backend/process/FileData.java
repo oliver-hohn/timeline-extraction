@@ -59,4 +59,14 @@ public class FileData {
     public String toString() {
         return String.format("Name: %s, Path: %s", fileName, filePath);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        try {
+            FileData otherFileData = (FileData) obj;
+            return fileName.equals(otherFileData.fileName) && filePath.equals(otherFileData.filePath);
+        }catch (Exception e){
+            return false;
+        }
+    }
 }
