@@ -8,6 +8,7 @@ import edu.stanford.nlp.util.Pair;
 import frontend.controllers.ListViewController;
 import frontend.controllers.StartUpController;
 import frontend.observers.StartUpObserver;
+import frontend.observers.TimelineObserver;
 import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -25,7 +26,7 @@ import java.util.List;
 /**
  * Main class that is used to run the program (i.e. show the UI that uses the backend).
  */
-public class Main extends Application implements StartUpObserver {
+public class Main extends Application implements StartUpObserver, TimelineObserver {
     private final static String TAG = "MAIN: ";
     private Stage primaryStage;
     private ArrayList<FileData> fileDataList = new ArrayList<>();//add/remove to this, holds the information of the Files for which we are showing results to
@@ -36,7 +37,7 @@ public class Main extends Application implements StartUpObserver {
         //need to start engine
         BackEndSystem.getInstance();//thread waits for this to be done
         System.out.println("Called getInstance");
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("res/startup.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("controllers/res/startup.fxml"));
         primaryStage.setScene(new Scene(fxmlLoader.load(), 1024, 800));
         primaryStage.setTitle("Automated Timeline Extractor - Oliver Philip Höhn");
         StartUpController startUpController = fxmlLoader.getController();
@@ -84,11 +85,12 @@ public class Main extends Application implements StartUpObserver {
                 System.out.println("Got results of backend: "+ result);
                 fileDataList.addAll(result.second());
                 currentResults.addAll(result.first());
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("res/listView.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("controllers/res/listView.fxml"));
                 try {
                     primaryStage.setScene(new Scene(fxmlLoader.load(), primaryStage.getWidth(), primaryStage.getHeight()));
                     primaryStage.setTitle("Automated Timeline Extractor - Oliver Philip Höhn");
                     ListViewController listViewController = fxmlLoader.getController();
+                    listViewController.setTimelineObserver(Main.this);
                     listViewController.setTimelineListView(currentResults, fileDataList);
                     primaryStage.show();
                 } catch (IOException e) {
@@ -119,4 +121,13 @@ public class Main extends Application implements StartUpObserver {
     }
 
 
+    @Override
+    public void loadDocumets() {
+        System.out.println(TAG+"Load Documents pressed");
+    }
+
+    @Override
+    public void saveToPDF() {
+        System.out.println(TAG+"Save To PDF pressed");
+    }
 }

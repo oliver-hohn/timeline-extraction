@@ -1,4 +1,4 @@
-package frontend;
+package frontend.controllers;
 
 import backend.process.Result;
 import javafx.event.ActionEvent;

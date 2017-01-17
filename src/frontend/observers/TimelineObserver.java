@@ -1,9 +1,16 @@
 package frontend.observers;
 
 /**
- * Created by Oliver on 17/01/2017.
+ * Interface for the Observer of the Timeline scene.
  */
-public interface TimelineObserver {
+public interface TimelineObserver extends MenuBarObserver {
+    /**
+     * Called when the "Load Documents" button is pressed.
+     */
     void loadDocumets();
+
+    /**
+     * Called when the "Save to PDF" button is pressed.
+     */
     void saveToPDF();
 }

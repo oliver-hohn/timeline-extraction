@@ -1,23 +1,19 @@
-package frontend;
+package frontend.controllers;
 
 import backend.process.FileData;
 import frontend.observers.DocumentsLoadedObserver;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Bounds;
 import javafx.scene.control.Label;
-import javafx.scene.effect.ColorInput;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 
 import java.io.IOException;
 
 /**
- * Created by Oliver on 17/01/2017.
+ * Controller for each row in the Documents Loaded listview.
  */
 public class DocumentLoadedRowController {
     @FXML
@@ -27,7 +23,15 @@ public class DocumentLoadedRowController {
     @FXML
     private GridPane gridPane;
     private DocumentsLoadedObserver documentsLoadedObserver;
-    public DocumentLoadedRowController(FileData fileData, DocumentsLoadedObserver documentsLoadedObserver){
+
+    /**
+     * Creates a Controller and loads the layout for a row in the Loaded Documents listview. Observer is informed when
+     * that file needs to be removed.
+     *
+     * @param fileData                FileData for which this row is made for.
+     * @param documentsLoadedObserver observer that gets notified when the Results for the given FileData need to be removed.
+     */
+    public DocumentLoadedRowController(FileData fileData, DocumentsLoadedObserver documentsLoadedObserver) {
         this.documentsLoadedObserver = documentsLoadedObserver;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("res/documentLoadedRow.fxml"));
         fxmlLoader.setController(this);
@@ -40,17 +44,27 @@ public class DocumentLoadedRowController {
         removingImageView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                System.out.println("Remove this Document: "+fileData);
+                System.out.println("Remove this Document: " + fileData);
                 documentsLoadedObserver.remove(fileData);
             }
         });
     }
 
-    private void setData(FileData fileData){
+    /**
+     * For the label that is supposed to show the File name, set it.
+     *
+     * @param fileData label for which we set the File name.
+     */
+    private void setData(FileData fileData) {
         documentLabel.setText(fileData.getFileName());
     }
 
-    public GridPane getGridPane(){
+    /**
+     * Get the root layout for this row (i.e. its GridPane, under which everything is set).
+     *
+     * @return the root GridPane layout for this row.
+     */
+    public GridPane getGridPane() {
         return gridPane;
     }
 }
