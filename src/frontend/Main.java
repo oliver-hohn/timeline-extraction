@@ -89,7 +89,7 @@ public class Main extends Application implements StartUpObserver {
                     primaryStage.setScene(new Scene(fxmlLoader.load(), primaryStage.getWidth(), primaryStage.getHeight()));
                     primaryStage.setTitle("Automated Timeline Extractor - Oliver Philip Höhn");
                     ListViewController listViewController = fxmlLoader.getController();
-                    listViewController.setTimelineListView(currentResults);
+                    listViewController.setTimelineListView(currentResults, fileDataList);
                     primaryStage.show();
                 } catch (IOException e) {
                     e.printStackTrace();

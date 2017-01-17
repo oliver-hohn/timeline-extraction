@@ -1,6 +1,8 @@
 package frontend.controllers;
 
+import backend.process.FileData;
 import backend.process.Result;
+import frontend.DocumentLoadedRowController;
 import frontend.ListViewCell;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,7 +33,8 @@ public class ListViewController implements Initializable {
     @FXML
     private ListView documentListView;
     private ArrayList<Result> results;
-    private ObservableList<Result> observableList = FXCollections.observableArrayList();
+    private ObservableList<Result> timelineObservableList = FXCollections.observableArrayList();
+    private ObservableList<FileData> documentsLoadedObservableList = FXCollections.observableArrayList();
 
     /**
      * Called when the layout is created.
@@ -50,15 +53,40 @@ public class ListViewController implements Initializable {
      *
      * @param results a list of Result objects which contain data to populate the rows of the timelineListView with.
      */
-    public void setTimelineListView(ArrayList<Result> results) {
+    public void setTimelineListView(ArrayList<Result> results, ArrayList<FileData> fileDatas) {
+        //TODO:
+        //pass the load documents and save to pdf callbacks to observer
         this.results = results;
-        observableList.addAll(results);
-        timelineListView.setItems(observableList);
+        timelineObservableList.addAll(results);
+        timelineListView.setItems(timelineObservableList);
         timelineListView.setCellFactory(new Callback<ListView, ListCell>() {
             @Override
             public ListCell call(ListView param) {
                 return new ListViewCell();
             }
         });
+
+        //custom documents loaded listview
+        documentsLoadedObservableList.addAll(fileDatas);
+        documentListView.setItems(documentsLoadedObservableList);
+        documentListView.setCellFactory(new Callback<ListView, ListCell>() {
+            @Override
+            public ListCell call(ListView param) {
+                return new ListCell<FileData>(){
+                    @Override
+                    protected void updateItem(FileData item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if(item != null){
+                            System.out.println("Got Item: " + item);
+                            System.out.println("Position: " + getIndex());
+                            DocumentLoadedRowController documentLoadedRowController = new DocumentLoadedRowController();
+                            documentLoadedRowController.setData(item);
+                            setGraphic(documentLoadedRowController.getGridPane());
+                        }
+                    }
+                };
+            }
+        });
+
     }
 }

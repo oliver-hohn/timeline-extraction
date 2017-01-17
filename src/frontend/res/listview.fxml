@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="frontend.controllers.ListViewController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="frontend.controllers.ListViewController">
    <children>
       <MenuBar>
         <menus>
@@ -48,16 +48,16 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <BorderPane maxWidth="475.0" GridPane.rowSpan="2147483647">
+            <BorderPane maxWidth="500.0" GridPane.rowSpan="2147483647">
                <top>
-                  <VBox fx:id="documentsLoadedVBox" prefWidth="100.0" BorderPane.alignment="CENTER">
+                  <VBox prefWidth="100.0" BorderPane.alignment="CENTER">
                      <children>
                         <Label text="Documents Loaded:">
                            <padding>
                               <Insets bottom="5.0" right="5.0" top="5.0" />
                            </padding>
                         </Label>
-                        <ListView prefHeight="200.0" prefWidth="180.0" fx:id="documentListView" />
+                        <ListView fx:id="documentListView" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="280.0" prefWidth="310.0" stylesheets="@documentListViewTheme.css" />
                      </children>
                      <padding>
                         <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
