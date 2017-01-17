@@ -50,14 +50,14 @@
          <children>
             <BorderPane maxWidth="475.0" GridPane.rowSpan="2147483647">
                <top>
-                  <VBox prefWidth="100.0" BorderPane.alignment="CENTER">
+                  <VBox fx:id="documentsLoadedVBox" prefWidth="100.0" BorderPane.alignment="CENTER">
                      <children>
                         <Label text="Documents Loaded:">
                            <padding>
                               <Insets bottom="5.0" right="5.0" top="5.0" />
                            </padding>
                         </Label>
-                        <ListView prefHeight="200.0" prefWidth="180.0" />
+                        <ListView prefHeight="200.0" prefWidth="180.0" fx:id="documentListView" />
                      </children>
                      <padding>
                         <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
@@ -69,14 +69,14 @@
                      <children>
                         <BorderPane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                            <left>
-                              <Button maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="120.0" text="Load Documents" textAlignment="CENTER" wrapText="true" BorderPane.alignment="CENTER">
+                              <Button fx:id="loadDocumentsButton" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="120.0" text="Load Documents" textAlignment="CENTER" wrapText="true" BorderPane.alignment="CENTER">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
                               </Button>
                            </left>
                            <right>
-                              <Button maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="120.0" text="Save to  PDF" textAlignment="CENTER" wrapText="true" BorderPane.alignment="CENTER">
+                              <Button fx:id="saveToPDFButton" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="120.0" text="Save to  PDF" textAlignment="CENTER" wrapText="true" BorderPane.alignment="CENTER">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -90,7 +90,7 @@
                   </HBox>
                </bottom>
             </BorderPane>
-            <ListView fx:id="listView" stylesheets="@listViewTheme.css" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.halignment="RIGHT" GridPane.hgrow="ALWAYS" GridPane.rowSpan="2147483647">
+            <ListView fx:id="timelineListView" stylesheets="@listViewTheme.css" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.halignment="RIGHT" GridPane.hgrow="ALWAYS" GridPane.rowSpan="2147483647">
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
