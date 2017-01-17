@@ -86,7 +86,7 @@ public class Main extends Application implements StartUpObserver {
                 currentResults.addAll(result.first());
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("res/listView.fxml"));
                 try {
-                    primaryStage.setScene(new Scene(fxmlLoader.load(), 800, 600));
+                    primaryStage.setScene(new Scene(fxmlLoader.load(), primaryStage.getWidth(), primaryStage.getHeight()));
                     primaryStage.setTitle("Automated Timeline Extractor - Oliver Philip Höhn");
                     ListViewController listViewController = fxmlLoader.getController();
                     listViewController.setListView(currentResults);
