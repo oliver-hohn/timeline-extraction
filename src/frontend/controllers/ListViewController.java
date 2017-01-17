@@ -6,6 +6,8 @@ import frontend.DocumentLoadedRowController;
 import frontend.ListViewCell;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -25,8 +27,6 @@ public class ListViewController implements Initializable {
     @FXML
     private ListView timelineListView;
     @FXML
-    private VBox documentsLoadedVBox;
-    @FXML
     private Button loadDocumentsButton;
     @FXML
     private Button saveToPDFButton;
@@ -45,7 +45,20 @@ public class ListViewController implements Initializable {
         System.out.println("documentListView: "+documentListView);
         System.out.println("loadDocumentsButton: "+loadDocumentsButton);
         System.out.println("saveToPDFButton: "+saveToPDFButton);
-        System.out.println("documentsLoadedVBox: "+documentsLoadedVBox);
+
+        loadDocumentsButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Load in Documents");
+            }
+        });
+
+        saveToPDFButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Save to PDF");
+            }
+        });
     }
 
     /**
@@ -79,8 +92,7 @@ public class ListViewController implements Initializable {
                         if(item != null){
                             System.out.println("Got Item: " + item);
                             System.out.println("Position: " + getIndex());
-                            DocumentLoadedRowController documentLoadedRowController = new DocumentLoadedRowController();
-                            documentLoadedRowController.setData(item);
+                            DocumentLoadedRowController documentLoadedRowController = new DocumentLoadedRowController(item);
                             setGraphic(documentLoadedRowController.getGridPane());
                         }
                     }
