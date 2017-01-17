@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="frontend.controllers.ListViewController">
    <children>
@@ -28,10 +36,66 @@
           </Menu>
         </menus>
       </MenuBar>
-      <StackPane prefHeight="150.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+      <GridPane VBox.vgrow="ALWAYS">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
          <children>
-            <ListView fx:id="listView" prefHeight="200.0" prefWidth="200.0" stylesheets="@listViewTheme.css" />
+            <BorderPane maxWidth="475.0" GridPane.rowSpan="2147483647">
+               <top>
+                  <VBox prefWidth="100.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <Label text="Documents Loaded:">
+                           <padding>
+                              <Insets bottom="5.0" right="5.0" top="5.0" />
+                           </padding>
+                        </Label>
+                        <ListView prefHeight="200.0" prefWidth="180.0" />
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                     </padding>
+                  </VBox>
+               </top>
+               <bottom>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <BorderPane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+                           <left>
+                              <Button maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="120.0" text="Load Documents" textAlignment="CENTER" wrapText="true" BorderPane.alignment="CENTER">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Button>
+                           </left>
+                           <right>
+                              <Button maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="120.0" text="Save to  PDF" textAlignment="CENTER" wrapText="true" BorderPane.alignment="CENTER">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Button>
+                           </right>
+                           <padding>
+                              <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                           </padding>
+                        </BorderPane>
+                     </children>
+                  </HBox>
+               </bottom>
+            </BorderPane>
+            <ListView fx:id="listView" stylesheets="@listViewTheme.css" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.halignment="RIGHT" GridPane.hgrow="ALWAYS" GridPane.rowSpan="2147483647">
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </ListView>
          </children>
-      </StackPane>
+      </GridPane>
    </children>
 </VBox>
