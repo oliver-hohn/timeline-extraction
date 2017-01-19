@@ -1,0 +1,70 @@
+package frontend;
+
+import backend.process.FileData;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+
+import java.util.ArrayList;
+
+/**
+ * Used to create and the confirmation dialog that will contain the filenames, and editable base dates for the File.
+ */
+public class FileConfirmationDialog {
+    /**
+     * For the List of FileData, produce an Alert Confirmation Dialog, where the filename and file creation date are
+     * shown, so that the user can determine whether or not to use it as a base date.
+     *
+     * @param fileDatas the List of FileData for which we need to create the list of labels and text fields in the dialog.
+     * @return an Alert object that can be shown for the user to confirm to use these dates for the given files.
+     */
+    public static Alert getConfirmationFileDialog(ArrayList<FileData> fileDatas) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm the Base Dates");
+        alert.setContentText("The following Base Dates will be used for the given Files. Change them appropriately");
+
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setPadding(new Insets(10));
+        scrollPane.setFitToWidth(true);//its content should resize to fit the width of the scroll pane (if it gets resized)
+        GridPane fileDateGridPane = new GridPane();
+        fileDateGridPane.setMaxWidth(Double.MAX_VALUE);
+        fileDateGridPane.setPadding(new Insets(10));
+        fileDateGridPane.setHgap(10);//add spacing between the cells in the gridpane
+        fileDateGridPane.setVgap(10);
+        scrollPane.setContent(fileDateGridPane);
+
+        for (int i = 0; i < fileDatas.size(); i++) {
+            FileData fileData = fileDatas.get(i);
+            Label fileNameLabel = new Label(fileData.getFileName());
+            TextField dateTextField = new TextField(fileData.getCreationDate());
+            dateTextField.setMinWidth(150);//150 pixels is enough for 12 characters
+            dateTextField.setMaxHeight(35);//enough for one line, if text size is 15
+            dateTextField.setAlignment(Pos.CENTER);
+            GridPane.setVgrow(dateTextField, Priority.NEVER);//1 line always
+            GridPane.setHgrow(dateTextField, Priority.ALWAYS);
+            dateTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+                @Override
+                public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                    if (!newValue) {
+                        //check validate text field input
+                        System.out.println("Inputted: " + dateTextField.getText());
+                    }
+                }
+            });
+
+            fileDateGridPane.add(fileNameLabel, 0, i);
+            fileDateGridPane.add(dateTextField, 1, i);
+        }
+
+        alert.getDialogPane().setExpandableContent(scrollPane);
+
+        return alert;
+    }
+}

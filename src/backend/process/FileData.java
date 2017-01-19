@@ -1,11 +1,24 @@
 package backend.process;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+
 /**
  * Class that holds the relevant data (for this project) of a File. In this case, the File's name and path in the System.
  */
 public class FileData {
+    private final static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+    private final static String epochDateFormatted = "1970-01-01";
     private String fileName;
     private String filePath;
+    private String creationDate;
 
     /**
      * Used to create a FileData object, by providing its name and path.
@@ -16,6 +29,14 @@ public class FileData {
     public FileData(String fileName, String filePath) {
         this.fileName = fileName;
         this.filePath = filePath;
+    }
+
+    public FileData(File file){
+        if(file.exists() && file.isFile()){
+            this.fileName = file.getName();
+            this.filePath = file.getAbsolutePath();
+            this.creationDate = getCreationDate(file);//set the creation date for this file
+        }
     }
 
     /**
@@ -68,5 +89,30 @@ public class FileData {
         }catch (Exception e){
             return false;
         }
+    }
+
+    public String getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(String creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public static String getCreationDate(File file){
+        String creationDate = LocalDate.now().toString();//LocalDate.now gives you the Date for the current moment (default), in the format yyyy-MM-dd
+        //try and get file creation date
+        Path filePath = Paths.get(file.getAbsolutePath());//only way to use BasicFileAttributes is to pass in a Path,
+        try {//so get the Path for the passed in File
+            BasicFileAttributes basicFileAttributes = Files.readAttributes(filePath, BasicFileAttributes.class);//creation date of a File is a basic file attribute
+            FileTime creationTime = basicFileAttributes.creationTime();//can be epoch time if it does not exist, don't set it in that case
+            String possibleDate = simpleDateFormat.format(creationTime.toMillis());//need to check its not epoch time, as else the creation is not valid for this file
+            if (!possibleDate.equals(epochDateFormatted)) {//epoch time date is given if it cant find a creation date
+                creationDate = possibleDate;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return creationDate;
     }
 }

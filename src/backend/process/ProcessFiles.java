@@ -119,6 +119,7 @@ public class ProcessFiles implements ProcessFileCallback {
      */
     private static class ProcessFile extends Thread {
         //Need to release even if it messes up
+        //TODO: change to use FileData constructor of passing in File to get its data
         File file;
         ProcessFileCallback processFileCallback;
 
