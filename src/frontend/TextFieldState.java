@@ -1,7 +1,8 @@
 package frontend;
 
 /**
- * Created by Oliver on 21/01/2017.
+ * Enum class that represents the state of a TextField in the FileConfirmationDialog in terms of its input being correct
+ * or wrong
  */
 public enum TextFieldState {
     CORRECT,

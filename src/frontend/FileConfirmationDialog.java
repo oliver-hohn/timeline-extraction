@@ -21,6 +21,7 @@ public class FileConfirmationDialog {
     private final PseudoClass errorClass = PseudoClass.getPseudoClass("error");
     private final SimpleDateFormat validInputFormat = new SimpleDateFormat("dd-MM-yyyy");
     private ArrayList<TextFieldState> textFieldStates;
+
     /**
      * For the List of FileData, produce an Alert Confirmation Dialog, where the filename and file creation date are
      * shown, so that the user can determine whether or not to use it as a base date.
@@ -54,21 +55,21 @@ public class FileConfirmationDialog {
             textFieldStates.add(i, TextFieldState.CORRECT);
             GridPane.setVgrow(dateTextField, Priority.NEVER);//1 line always
             GridPane.setHgrow(dateTextField, Priority.ALWAYS);
-            int finalI = i;
+            int finalI = i;//to input in the array list at this index
             dateTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
                 @Override
                 public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                     if (!newValue) {
                         //check validate text field input
                         System.out.println("Inputted: " + dateTextField.getText());
-                        if(isValidDateInput(dateTextField.getText())){
+                        if (isValidDateInput(dateTextField.getText())) {
                             dateTextField.pseudoClassStateChanged(errorClass, false);
                             fileData.setCreationDate(dateTextField.getText());
                             textFieldStates.set(finalI, TextFieldState.CORRECT);
-                            if(isAllCorrect(textFieldStates)) {
+                            if (isAllCorrect(textFieldStates)) {
                                 alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
                             }
-                        }else{
+                        } else {
                             dateTextField.pseudoClassStateChanged(errorClass, true);
                             textFieldStates.set(finalI, TextFieldState.WRONG);
                             alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
@@ -80,25 +81,35 @@ public class FileConfirmationDialog {
             fileDateGridPane.add(fileNameLabel, 0, i);
             fileDateGridPane.add(dateTextField, 1, i);
         }
-
         alert.getDialogPane().setExpandableContent(scrollPane);
-
         return alert;
     }
 
-    private boolean isAllCorrect(ArrayList<TextFieldState> textFieldStates){
+    /**
+     * Whether or not all the states in the given list of TextFieldStates are CORRECT (true) or not (false).
+     *
+     * @param textFieldStates a list of TextFieldStates to check
+     * @return true if all TextFieldStates in the given input are CORRECT, false otherwise.
+     */
+    private boolean isAllCorrect(ArrayList<TextFieldState> textFieldStates) {
         boolean toReturn = true;
-        for(TextFieldState textFieldState: textFieldStates){
-            if(textFieldState == TextFieldState.WRONG){
+        for (TextFieldState textFieldState : textFieldStates) {
+            if (textFieldState == TextFieldState.WRONG) {
                 toReturn = false;
                 break;
             }
         }
-        System.out.println("Checked: "+textFieldStates+" returned: "+toReturn);
+        System.out.println("Checked: " + textFieldStates + " returned: " + toReturn);
         return toReturn;
     }
 
-    private boolean isValidDateInput(String input){
+    /**
+     * Checks whether the given input is of the valid format (dd-MM-yyyy).
+     *
+     * @param input a String date
+     * @return true if the input is of the format dd-MM-yyyy, false otherwise.
+     */
+    private boolean isValidDateInput(String input) {
         try {
             validInputFormat.setLenient(false);
             validInputFormat.parse(input);
