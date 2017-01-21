@@ -67,7 +67,7 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
             fileDatas.add(new FileData(file));
         }
 
-        Alert fileConfirmationDialog = FileConfirmationDialog.getConfirmationFileDialog(fileDatas);
+        Alert fileConfirmationDialog = new FileConfirmationDialog().getConfirmationFileDialog(fileDatas);
         Optional<ButtonType> result = fileConfirmationDialog.showAndWait();
         if(result.get() == ButtonType.OK){
             System.out.println("Accepted base dates");
