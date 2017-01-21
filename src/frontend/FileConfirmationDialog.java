@@ -61,10 +61,11 @@ public class FileConfirmationDialog {
                 public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                     if (!newValue) {
                         //check validate text field input
-                        System.out.println("Inputted: " + dateTextField.getText());
-                        if (isValidDateInput(dateTextField.getText())) {
+                        String input = dateTextField.getText().trim();
+                        System.out.println("Inputted: " + input);
+                        if (isValidDateInput(input)) {
                             dateTextField.pseudoClassStateChanged(errorClass, false);
-                            fileData.setCreationDate(dateTextField.getText());
+                            fileData.setCreationDate(input);
                             textFieldStates.set(finalI, TextFieldState.CORRECT);
                             if (isAllCorrect(textFieldStates)) {
                                 alert.getDialogPane().lookupButton(ButtonType.OK).setDisable(false);
