@@ -114,7 +114,7 @@ public class FileConfirmationDialog {
         try {
             validInputFormat.setLenient(false);
             validInputFormat.parse(input);
-            return true;
+            return input.length() == 10;
         } catch (ParseException e) {
             return false;
         }
