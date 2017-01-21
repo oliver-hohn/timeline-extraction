@@ -36,6 +36,7 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
     private ArrayList<Result> currentResults = new ArrayList<>();//list of Results that it is currently showing
     private StartUpController startUpController;
     private ListViewController listViewController;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         //need to start engine
@@ -51,27 +52,27 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
         this.primaryStage = primaryStage;
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         launch(args);
     }
 
 
-    private List<File> loadFiles(Stage primaryStage){
+    private List<File> loadFiles(Stage primaryStage) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Document Files");
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text Files", "*.txt", "*.pdf", "*.docx"));
         return fileChooser.showOpenMultipleDialog(primaryStage);
     }
 
-    private List<FileData> getFileData(List<File> files){
+    private List<FileData> getFileData(List<File> files) {
         ArrayList<FileData> toReturn = new ArrayList<>();
-        for(File file: files){
+        for (File file : files) {
             toReturn.add(new FileData(file));
         }
         return toReturn;
     }
 
-    private Task<List<Result>> prepareTask(List<File> files, List<FileData> fileDatas){
+    private Task<List<Result>> prepareTask(List<File> files, List<FileData> fileDatas) {
         return new Task<List<Result>>() {
             @Override
             protected List<Result> call() throws Exception {
@@ -81,7 +82,7 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
         };
     }
 
-    private ListViewController showListView(Stage stage){
+    private ListViewController showListView(Stage stage) {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("controllers/res/listView.fxml"));
         try {
             startUpController = null;
@@ -100,70 +101,76 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
     @Override
     public void loadFiles() {
         List<File> files = loadFiles(primaryStage);
-        List<FileData> fileDatas = getFileData(files);
-        Alert fileConfirmationDialog = new FileConfirmationDialog().getConfirmationFileDialog(fileDatas);
-        Optional<ButtonType> response = fileConfirmationDialog.showAndWait();
-        if(response.get() == ButtonType.OK){
-            System.out.println(TAG+"Process Files and set them in the Timeline");
-            Task<List<Result>> task = prepareTask(files, fileDatas);
-            task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                @Override
-                public void handle(WorkerStateEvent event) {
-                    List<Result> results = task.getValue();
-                    listViewController = showListView(primaryStage);
-                    listViewController.setTimelineListView(results, fileDatas);
-                    primaryStage.show();
-                }
-            });
-            new Thread(task).start();
-        }else {
-            System.out.println(TAG+"Dont Process Files and set them in the Timeline");
+        if (files != null) {
+            List<FileData> fileDatas = getFileData(files);
+            Alert fileConfirmationDialog = new FileConfirmationDialog().getConfirmationFileDialog(fileDatas);
+            Optional<ButtonType> response = fileConfirmationDialog.showAndWait();
+            if (response.get() == ButtonType.OK) {
+                //disable button
+                startUpController.setDisableLoadDocumentsButton(true);
+                System.out.println(TAG + "Process Files and set them in the Timeline");
+                Task<List<Result>> task = prepareTask(files, fileDatas);
+                task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                    @Override
+                    public void handle(WorkerStateEvent event) {
+                        List<Result> results = task.getValue();
+                        listViewController = showListView(primaryStage);
+                        listViewController.setTimelineListView(results, fileDatas);
+                        primaryStage.show();
+                    }
+                });
+                new Thread(task).start();
+            } else {
+                System.out.println(TAG + "Dont Process Files and set them in the Timeline");
+            }
         }
     }
 
     @Override
     public void showAbout() {
-        System.out.println(TAG+"show about information");
+        System.out.println(TAG + "show about information");
     }
 
     @Override
     public void close() {
-        System.out.println(TAG+"close program");
+        System.out.println(TAG + "close program");
         primaryStage.close();
     }
 
     @Override
     public void timeline() {
-        System.out.println(TAG+"timeline options");
+        System.out.println(TAG + "timeline options");
     }
 
 
     @Override
     public void loadDocuments() {
         List<File> files = loadFiles(primaryStage);
-        List<FileData> fileDatas = getFileData(files);
-        Alert fileConfirmationDialog = new FileConfirmationDialog().getConfirmationFileDialog(fileDatas);
-        Optional<ButtonType> response = fileConfirmationDialog.showAndWait();
-        if(response.get() == ButtonType.OK){
-            System.out.println(TAG+"Process Files and Add them to the Timeline");
-            Task<List<Result>> task = prepareTask(files, fileDatas);
-            task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                @Override
-                public void handle(WorkerStateEvent event) {
-                    List<Result> results = task.getValue();
-                    if(listViewController != null){
-                        listViewController.addToTimelineListView(results, fileDatas);
+        if (files != null) {
+            List<FileData> fileDatas = getFileData(files);
+            Alert fileConfirmationDialog = new FileConfirmationDialog().getConfirmationFileDialog(fileDatas);
+            Optional<ButtonType> response = fileConfirmationDialog.showAndWait();
+            if (response.get() == ButtonType.OK) {
+                System.out.println(TAG + "Process Files and Add them to the Timeline");
+                Task<List<Result>> task = prepareTask(files, fileDatas);
+                task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                    @Override
+                    public void handle(WorkerStateEvent event) {
+                        List<Result> results = task.getValue();
+                        if (listViewController != null) {
+                            listViewController.addToTimelineListView(results, fileDatas);
+                        }
                     }
-                }
-            });
-            new Thread(task).start();
-        }else{
-            System.out.println(TAG+"Don't process Files");
+                });
+                new Thread(task).start();
+            } else {
+                System.out.println(TAG + "Don't process Files");
+            }
         }
     }
 
     @Override
     public void saveToPDF() {
-        System.out.println(TAG+"Save To PDF pressed");
+        System.out.println(TAG + "Save To PDF pressed");
     }
 }

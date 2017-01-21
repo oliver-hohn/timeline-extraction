@@ -75,11 +75,22 @@ public class ListViewController implements Initializable, MenuBarControllerInter
         });
     }
 
+    /**
+     * For the input List, sort and reverse it.
+     * O(n)
+     *
+     * @param results the input List.
+     */
     private void sortAndReverse(List<Result> results) {
         Collections.sort(results);
         Collections.reverse(results);
     }
 
+    /**
+     * For the input List of Results, set it as the items of the TimelineList.
+     *
+     * @param results the input List.
+     */
     private void setTimelineList(List<Result> results) {
         timelineObservableList.clear();
         timelineObservableList.addAll(results);
@@ -110,6 +121,11 @@ public class ListViewController implements Initializable, MenuBarControllerInter
         });
     }
 
+    /**
+     * For the input List of FileData, set it as the items of the Documents Loaded List.
+     *
+     * @param fileDatas the input List.
+     */
     private void setDocumentListView(List<FileData> fileDatas) {
         documentsLoadedObservableList.clear();
         documentsLoadedObservableList.addAll(fileDatas);
@@ -134,9 +150,10 @@ public class ListViewController implements Initializable, MenuBarControllerInter
     }
 
     /**
-     * For the given Results, populate the timelineListView with them.
+     * For the given Results and FileData, set the data of the timelineListView and documentListView with them.
      *
-     * @param results a list of Result objects which contain data to populate the rows of the timelineListView with.
+     * @param results   a list of Result objects which contain data to populate the rows of the timelineListView with.
+     * @param fileDatas a list of FileData objects which needs to populate the rows in the documentListView.
      */
     public void setTimelineListView(List<Result> results, List<FileData> fileDatas) {
         this.results = results;
@@ -148,6 +165,12 @@ public class ListViewController implements Initializable, MenuBarControllerInter
         setDocumentListView(this.fileDatas);
     }
 
+    /**
+     * For the given input, add it to their appropriate lists.
+     *
+     * @param results   a list of Result objects which contain data to add to the timelineListView.
+     * @param fileDatas a list of FileData objects which needs to be added to the documentListView.
+     */
     public void addToTimelineListView(List<Result> results, List<FileData> fileDatas) {
         this.results.addAll(results);
         sortAndReverse(this.results);

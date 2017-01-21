@@ -2,24 +2,15 @@ package backend.process;
 
 import backend.system.BackEndSystem;
 import backend.system.SystemState;
-import edu.stanford.nlp.util.Pair;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.attribute.FileTime;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -34,11 +25,7 @@ public class ProcessFiles implements ProcessFileCallback {
     private Semaphore semaphore = new Semaphore(maxNoOfThreads);
     private Semaphore semaphoreFinished = new Semaphore(0);//so that we wait until all threads finish
     private ArrayList<Result> results = new ArrayList<>();
-    private ArrayList<FileData> fileDataList = new ArrayList<>();
     private int filesToGo;//to notify the listener when it is done
-    private final static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private final static String epochDateFormatted = "1970-01-01";
-
 
     /**
      * For the list of Files passed in, it will process each in separate threads, while respecting the maximum number
@@ -46,22 +33,23 @@ public class ProcessFiles implements ProcessFileCallback {
      * Will call gotResults() on the backend.process.CallbackResults object when all files have been processed, and a list of Results has
      * been produced.
      *
-     * @param files           the list of File objects that contain text that needs to be processed (atm only processes .docx/.pdf/.txt files)
+     * @param files     the list of File objects that contain text that needs to be processed (atm only processes .docx/.pdf/.txt files)
+     * @param fileDatas the list of FileData objects, where the index corresponds the File in the same index in the files list, that
+     *                  contains the needed data for each File.
      */
     public List<Result> processFiles(List<File> files, List<FileData> fileDatas) {
         //should only run if we are not Processing
         //this will also set up the StanfordCoreNLP (when GUI is implemented, it will already by set up, as it will be the first thing ran)
         System.out.println("Will try to run");
-        if(BackEndSystem.getInstance().getSystemState() != SystemState.PROCESSING && files.size() == fileDatas.size()) {//if we arent processing, then we can begin to do that
+        if (BackEndSystem.getInstance().getSystemState() != SystemState.PROCESSING && files.size() == fileDatas.size()) {//if we arent processing, then we can begin to do that
             System.out.println("Is running");
             filesToGo = files.size();//and when we need to call
             BackEndSystem.getInstance().setSystemState(SystemState.PROCESSING);
             System.out.println("In Thread: " + Thread.currentThread().toString());
-            for (int i= 0; i<files.size(); i++) {
+            for (int i = 0; i < files.size(); i++) {
                 File file = files.get(i);
                 FileData fileData = fileDatas.get(i);//should be the same
                 //check they are the same?
-
                 //acquire from the semaphore
                 try {
                     System.out.println("Trying to acquire semaphore for file: " + file);
@@ -93,7 +81,7 @@ public class ProcessFiles implements ProcessFileCallback {
      * Enforces the rule of releasing the semaphore, as this Thread finished running, to then allow waiting Threads to run.
      * Will inform the CallbackResult object when it finishes processing all Files.
      *
-     * @param results the backend.process.Result objects produced by Processing the given file in the Thread.
+     * @param results  the backend.process.Result objects produced by Processing the given file in the Thread.
      * @param fileData the data of the File that produced these Results
      */
     public synchronized void callBack(ArrayList<Result> results, FileData fileData) {
@@ -102,19 +90,16 @@ public class ProcessFiles implements ProcessFileCallback {
         System.out.println("Files to go: " + filesToGo);
         //add the results to the list held
         this.results.addAll(results);
-        //add the data file to the list held
-        fileDataList.add(fileData);
         //release semaphore
         System.out.println("Released semaphore from Thread: " + Thread.currentThread().toString());
         semaphore.release();
-        //check if we have processed everything, if so inform listener
-        if (filesToGo == 0 /*&& callbackResults != null*/) {
+        //check if we have processed everything, if so release the finished semaphore
+        if (filesToGo == 0) {
             //has processed
             BackEndSystem.getInstance().setSystemState(SystemState.PROCESSED);
-            //callbackResults.gotResults(this.results, this.fileDataList);//return all the results obtained until now
             //has returned the results so we finished
             BackEndSystem.getInstance().setSystemState(SystemState.FINISHED);
-            semaphoreFinished.release();
+            semaphoreFinished.release();//value is now 1, so the thread that was acquiring can continue
         }
     }
 
@@ -123,7 +108,6 @@ public class ProcessFiles implements ProcessFileCallback {
      */
     private static class ProcessFile extends Thread {
         //Need to release even if it messes up
-        //TODO: change to use FileData constructor of passing in File to get its data
         File file;
         ProcessFileCallback processFileCallback;
         FileData fileData;
@@ -169,11 +153,12 @@ public class ProcessFiles implements ProcessFileCallback {
 
         /**
          * For the list passed in, set for all of them the given FileData.
+         *
          * @param fileData the FileData to be set to all the Results passed in.
-         * @param results the Results for which the FileData needs to be set.
+         * @param results  the Results for which the FileData needs to be set.
          */
-        private void addFileData(FileData fileData, ArrayList<Result> results){
-            for(Result result: results){
+        private void addFileData(FileData fileData, ArrayList<Result> results) {
+            for (Result result : results) {
                 result.setFileData(fileData);
             }
         }
@@ -275,29 +260,6 @@ public class ProcessFiles implements ProcessFileCallback {
                 e.printStackTrace();
             }
             //System.out.println("For file:"+file.getName()+" has text: "+toReturn);
-            return toReturn;
-        }
-
-        /**
-         * Used to get the creation Date of a File, to use as the Base date of the File.
-         *
-         * @param file the File for which we are trying to get the creation Date from.
-         * @return the creation Date of the file, or if that was not possible (due to OS issues) the current Date (default).
-         */
-        private String getFileCreationDate(File file) {
-            String toReturn = LocalDate.now().toString();//LocalDate.now gives you the Date for the current moment (default), in the format yyyy-MM-dd
-            //try and get file creation date
-            Path filePath = Paths.get(file.getAbsolutePath());//only way to use BasicFileAttributes is to pass in a Path,
-            try {//so get the Path for the passed in File
-                BasicFileAttributes basicFileAttributes = Files.readAttributes(filePath, BasicFileAttributes.class);//creation date of a File is a basic file attribute
-                FileTime creationTime = basicFileAttributes.creationTime();//can be epoch time if it does not exist, don't set it in that case
-                String possibleDate = simpleDateFormat.format(creationTime.toMillis());//need to check its not epoch time, as else the creation is not valid for this file
-                if (!possibleDate.equals(epochDateFormatted)) {//epoch time date is given if it cant find a creation date
-                    toReturn = possibleDate;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
             return toReturn;
         }
     }

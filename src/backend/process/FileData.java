@@ -15,7 +15,7 @@ import java.util.Date;
 /**
  * Class that holds the relevant data (for this project) of a File. In this case, the File's name and path in the System.
  */
-public class FileData implements Comparable<FileData>{
+public class FileData implements Comparable<FileData> {
     private final static SimpleDateFormat inputSimpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
     private final static SimpleDateFormat outputSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private final static String epochDateFormatted = "1970-01-01";
@@ -34,8 +34,8 @@ public class FileData implements Comparable<FileData>{
         this.filePath = filePath;
     }
 
-    public FileData(File file){
-        if(file.exists() && file.isFile()){
+    public FileData(File file) {
+        if (file.exists() && file.isFile()) {
             this.fileName = file.getName();
             this.filePath = file.getAbsolutePath();
             this.creationDate = getCreationDate(file);//set the creation date for this file
@@ -79,27 +79,48 @@ public class FileData implements Comparable<FileData>{
     }
 
 
+    /**
+     * Print the information of this FileData.
+     *
+     * @return a String with the name and path of the File being represented.
+     */
     @Override
     public String toString() {
         return String.format("Name: %s, Path: %s", fileName, filePath);
     }
 
+    /**
+     * Checks whether the given input is equal to this object.
+     *
+     * @param obj the Object to check equality with this object.
+     * @return true if obj is a FileData object with the same data as this object; false otherwise.
+     */
     @Override
     public boolean equals(Object obj) {
         try {
             FileData otherFileData = (FileData) obj;
             return fileName.equals(otherFileData.fileName) && filePath.equals(otherFileData.filePath);
-        }catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
 
+    /**
+     * The creationDate (or baseDate) of the File this is representing.
+     *
+     * @return the creationDate (or baseDate) of the File as a Date object.
+     */
     public Date getCreationDate() {
         return creationDate;
     }
 
+    /**
+     * Set the creation date as a String for the File this FileData is representing.
+     *
+     * @param creationDate the creation date as a String input of type: dd-MM-yyyy.
+     */
     public void setCreationDate(String creationDate) {
-        System.out.println("Set Creation Date: "+creationDate);
+        System.out.println("Set Creation Date: " + creationDate);
         try {
             this.creationDate = inputSimpleDateFormat.parse(creationDate);
         } catch (ParseException e) {
@@ -107,15 +128,31 @@ public class FileData implements Comparable<FileData>{
         }
     }
 
-    public String getCreationDateFormattedDayMonthYear(){
+    /**
+     * Get the creation date in the format of day, followed by month, followed by year.
+     *
+     * @return the creation date in the format: dd-MM-yyyy
+     */
+    public String getCreationDateFormattedDayMonthYear() {
         return inputSimpleDateFormat.format(creationDate);
     }
 
-    public String getCreationDateFormattedYearMonthDay(){
+    /**
+     * Get the creation date in the format of year, followed by month, followed by day.
+     *
+     * @return the creation date in the format: yyyy-MM-dd.
+     */
+    public String getCreationDateFormattedYearMonthDay() {
         return outputSimpleDateFormat.format(creationDate);
     }
 
-    private static Date getCreationDate(File file){
+    /**
+     * Used to get the creation date of a input File, by looking at the attributes associated with the File.
+     *
+     * @param file the input File.
+     * @return the creation date, or the current date now if no creation date is available, as a Date object.
+     */
+    private static Date getCreationDate(File file) {
         String creationDate = LocalDate.now().toString();//LocalDate.now gives you the Date for the current moment (default), in the format yyyy-MM-dd
         Date toReturn = null;
         //try and get file creation date
@@ -139,6 +176,13 @@ public class FileData implements Comparable<FileData>{
     }
 
 
+    /**
+     * Used to compare a given FileData to this FileData, by looking at their filename (to sort by their name, in
+     * ascending order).
+     *
+     * @param o the other FileData object we are comparing to.
+     * @return the result of comparing the file name of this FileData with the filename of the other FileData.
+     */
     @Override
     public int compareTo(FileData o) {
         return fileName.compareTo(o.fileName);
