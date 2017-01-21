@@ -1,7 +1,10 @@
 package frontend.controllers;
 
 import frontend.observers.StartUpObserver;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -14,6 +17,8 @@ import java.util.ResourceBundle;
 public class StartUpController implements Initializable, MenuBarControllerInter {
     private final static String TAG = "STARTUPCONTROLLER: ";
     private StartUpObserver observer;
+    @FXML
+    private Button loadDocumentsButton;
 
     /**
      * Called on creation of the Scene.
@@ -72,5 +77,14 @@ public class StartUpController implements Initializable, MenuBarControllerInter 
         if (observer != null) {
             observer.timeline();
         }
+    }
+
+    /**
+     * Set whether or not the Load Documents Button should be disabled (so that it cannot be pressed)
+     *
+     * @param disable whether or not the Load Documents Button should be disabled.
+     */
+    public void setDisableLoadDocumentsButton(boolean disable) {
+        loadDocumentsButton.setDisable(disable);
     }
 }
