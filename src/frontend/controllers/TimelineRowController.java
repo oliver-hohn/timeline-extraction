@@ -70,9 +70,9 @@ public class TimelineRowController {
         this.result = result;
         eventNumberLabel.setText("Event #" + (position + 1));
         dateLabel.setText("Date: " + result.getTimelineDate().toString());
-        subjectsLabel.setText("Subjects: " + result.getSubjects().toString());
+        subjectsLabel.setText("Subjects: " + result.getSubjectsAsString());
         eventLabel.setText("Event: " + result.getEvent());
-        fromLabel.setText("From: "+result.getFileData().getFileName());
+        fromLabel.setText("From: " + result.getFileData().getFileName());
         borderPane.setStyle("-fx-border-color: black; -fx-border-width: 4; -fx-border-style: solid inside;");
         editButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override

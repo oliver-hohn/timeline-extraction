@@ -16,7 +16,7 @@ import javafx.util.Callback;
 
 import java.net.URL;
 import java.util.*;
-//TODO: include the filename for each event
+//TODO: dont add repeated files
 /**
  * Controller for the layout where the ListView is shown. Allows the listview to be populated with Result data.
  */

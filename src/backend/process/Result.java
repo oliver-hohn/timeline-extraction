@@ -167,4 +167,21 @@ public class Result implements Comparable<Result> {
     public void setFileData(FileData fileData) {
         this.fileData = fileData;
     }
+
+    /**
+     * Used to produce a String of the Subjects of this Result. The String is every item in the Subjects set, separated
+     * by commas.
+     *
+     * @return a String of the Subjects of this Result, separated by commas.
+     */
+    public String getSubjectsAsString() {
+        String toReturn = "";
+        for (int i = 0; i < subjects.size(); i++) {
+            toReturn += subjects.toArray()[i];
+            if (i < subjects.size() - 1) {
+                toReturn += ", ";
+            }
+        }
+        return toReturn;
+    }
 }
