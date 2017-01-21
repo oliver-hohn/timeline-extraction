@@ -34,7 +34,8 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
     private Stage primaryStage;
     private ArrayList<FileData> fileDataList = new ArrayList<>();//add/remove to this, holds the information of the Files for which we are showing results to
     private ArrayList<Result> currentResults = new ArrayList<>();//list of Results that it is currently showing
-
+    private StartUpController startUpController;
+    private ListViewController listViewController;
     @Override
     public void start(Stage primaryStage) throws Exception {
         //need to start engine
@@ -43,7 +44,7 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("controllers/res/startup.fxml"));
         primaryStage.setScene(new Scene(fxmlLoader.load(), 1024, 800));
         primaryStage.setTitle("Automated Timeline Extractor - Oliver Philip Höhn");
-        StartUpController startUpController = fxmlLoader.getController();
+        startUpController = fxmlLoader.getController();
         startUpController.setObserver(this);
         primaryStage.show();
 
@@ -55,71 +56,69 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
     }
 
 
-    @Override
-    public void loadFiles() {
-        System.out.println(TAG+"need to load files "+Thread.currentThread().getName());
+    private List<File> loadFiles(Stage primaryStage){
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Document Files");
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text Files", "*.txt", "*.pdf", "*.docx"));
-        List<File> files = fileChooser.showOpenMultipleDialog(primaryStage);
-        ArrayList<FileData> fileDatas = new ArrayList<>();
+        return fileChooser.showOpenMultipleDialog(primaryStage);
+    }
+
+    private List<FileData> getFileData(List<File> files){
+        ArrayList<FileData> toReturn = new ArrayList<>();
         for(File file: files){
-            fileDatas.add(new FileData(file));
+            toReturn.add(new FileData(file));
         }
+        return toReturn;
+    }
 
+    private Task<List<Result>> prepareTask(List<File> files, List<FileData> fileDatas){
+        return new Task<List<Result>>() {
+            @Override
+            protected List<Result> call() throws Exception {
+                ProcessFiles processFiles = new ProcessFiles();
+                return processFiles.processFiles(files, fileDatas);
+            }
+        };
+    }
+
+    private ListViewController showListView(Stage stage){
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("controllers/res/listView.fxml"));
+        try {
+            startUpController = null;
+            primaryStage.setScene(new Scene(fxmlLoader.load(), primaryStage.getWidth(), primaryStage.getHeight()));
+            primaryStage.setTitle("Automated Timeline Extractor - Oliver Philip Höhn");
+            listViewController = fxmlLoader.getController();
+            listViewController.setTimelineObserver(this);
+            primaryStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return listViewController;
+    }
+
+
+    @Override
+    public void loadFiles() {
+        List<File> files = loadFiles(primaryStage);
+        List<FileData> fileDatas = getFileData(files);
         Alert fileConfirmationDialog = new FileConfirmationDialog().getConfirmationFileDialog(fileDatas);
-        Optional<ButtonType> result = fileConfirmationDialog.showAndWait();
-        if(result.get() == ButtonType.OK){
-            System.out.println("Accepted base dates");
-            //wait to set the dates for the files
-            //prune list of files, checking extension
-            //then processFile
-            Task<Pair<ArrayList<Result>, ArrayList<FileData>>> processFileTask = new Task<Pair<ArrayList<Result>, ArrayList<FileData>>>() {//to run the processing of files on a separate thread, and show a loading dialog
-                @Override
-                protected Pair<ArrayList<Result>, ArrayList<FileData>> call() throws Exception {
-                    ProcessFiles processFiles = new ProcessFiles();
-                    return processFiles.processFiles(files, fileDatas);
-                }
-            };
-
-            processFileTask.setOnRunning(new EventHandler<WorkerStateEvent>() {
+        Optional<ButtonType> response = fileConfirmationDialog.showAndWait();
+        if(response.get() == ButtonType.OK){
+            System.out.println(TAG+"Process Files and set them in the Timeline");
+            Task<List<Result>> task = prepareTask(files, fileDatas);
+            task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                 @Override
                 public void handle(WorkerStateEvent event) {
-                    //Show loading dialog
-                    System.out.println(TAG+"Working");
+                    List<Result> results = task.getValue();
+                    listViewController = showListView(primaryStage);
+                    listViewController.setTimelineListView(results, fileDatas);
+                    primaryStage.show();
                 }
             });
-
-            processFileTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                @Override
-                public void handle(WorkerStateEvent event) {//hasn't finished, just finished starting to run the last thread
-                    System.out.println(TAG+"Finished");
-                    Pair<ArrayList<Result>, ArrayList<FileData>> result = processFileTask.getValue();
-                    System.out.println("Got results of backend: "+ result);
-                    fileDataList.addAll(result.second());
-                    currentResults.addAll(result.first());
-                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("controllers/res/listView.fxml"));
-                    try {
-                        primaryStage.setScene(new Scene(fxmlLoader.load(), primaryStage.getWidth(), primaryStage.getHeight()));
-                        primaryStage.setTitle("Automated Timeline Extractor - Oliver Philip Höhn");
-                        ListViewController listViewController = fxmlLoader.getController();
-                        listViewController.setTimelineObserver(Main.this);
-                        listViewController.setTimelineListView(currentResults, fileDataList);
-                        primaryStage.show();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
-            if(files != null) {
-                new Thread(processFileTask).start();
-            }
-        }else{
-            System.out.println("Didnt accept base dates");
+            new Thread(task).start();
+        }else {
+            System.out.println(TAG+"Dont Process Files and set them in the Timeline");
         }
-
-
     }
 
     @Override
@@ -140,8 +139,27 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
 
 
     @Override
-    public void loadDocumets() {
-        System.out.println(TAG+"Load Documents pressed");
+    public void loadDocuments() {
+        List<File> files = loadFiles(primaryStage);
+        List<FileData> fileDatas = getFileData(files);
+        Alert fileConfirmationDialog = new FileConfirmationDialog().getConfirmationFileDialog(fileDatas);
+        Optional<ButtonType> response = fileConfirmationDialog.showAndWait();
+        if(response.get() == ButtonType.OK){
+            System.out.println(TAG+"Process Files and Add them to the Timeline");
+            Task<List<Result>> task = prepareTask(files, fileDatas);
+            task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                @Override
+                public void handle(WorkerStateEvent event) {
+                    List<Result> results = task.getValue();
+                    if(listViewController != null){
+                        listViewController.addToTimelineListView(results, fileDatas);
+                    }
+                }
+            });
+            new Thread(task).start();
+        }else{
+            System.out.println(TAG+"Don't process Files");
+        }
     }
 
     @Override

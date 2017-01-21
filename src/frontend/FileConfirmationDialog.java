@@ -13,6 +13,7 @@ import javafx.scene.layout.Priority;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Used to create and the confirmation dialog that will contain the filenames, and editable base dates for the File.
@@ -29,7 +30,7 @@ public class FileConfirmationDialog {
      * @param fileDatas the List of FileData for which we need to create the list of labels and text fields in the dialog.
      * @return an Alert object that can be shown for the user to confirm to use these dates for the given files.
      */
-    public Alert getConfirmationFileDialog(ArrayList<FileData> fileDatas) {
+    public Alert getConfirmationFileDialog(List<FileData> fileDatas) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirm the Base Dates");
         alert.setContentText("The following Base Dates will be used for the given Files. Change them appropriately");

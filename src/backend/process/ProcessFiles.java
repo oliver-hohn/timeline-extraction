@@ -48,7 +48,7 @@ public class ProcessFiles implements ProcessFileCallback {
      *
      * @param files           the list of File objects that contain text that needs to be processed (atm only processes .docx/.pdf/.txt files)
      */
-    public Pair<ArrayList<Result>, ArrayList<FileData>> processFiles(List<File> files, List<FileData> fileDatas) {
+    public List<Result> processFiles(List<File> files, List<FileData> fileDatas) {
         //should only run if we are not Processing
         //this will also set up the StanfordCoreNLP (when GUI is implemented, it will already by set up, as it will be the first thing ran)
         System.out.println("Will try to run");
@@ -82,7 +82,7 @@ public class ProcessFiles implements ProcessFileCallback {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            return new Pair<>(results, fileDataList);
+            return results;
         }
         return null;
     }

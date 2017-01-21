@@ -23,15 +23,15 @@ import java.util.*;
  */
 public class ListViewController implements Initializable, MenuBarControllerInter, DocumentsLoadedObserver {
     @FXML
-    private ListView timelineListView;
+    private ListView<Result> timelineListView;
     @FXML
     private Button loadDocumentsButton;
     @FXML
     private Button saveToPDFButton;
     @FXML
-    private ListView documentListView;
-    private ArrayList<Result> results;
-    private ArrayList<FileData> fileDatas;
+    private ListView<FileData> documentListView;
+    private List<Result> results;
+    private List<FileData> fileDatas;
     private ObservableList<Result> timelineObservableList = FXCollections.observableArrayList();
     private ObservableList<FileData> documentsLoadedObservableList = FXCollections.observableArrayList();
     private TimelineObserver timelineObserver;
@@ -49,16 +49,17 @@ public class ListViewController implements Initializable, MenuBarControllerInter
 
     /**
      * Called to set the Observer for this Scene.
+     *
      * @param timelineObserver the Observer for this Timeline Scene.
      */
-    public void setTimelineObserver(TimelineObserver timelineObserver){
+    public void setTimelineObserver(TimelineObserver timelineObserver) {
         this.timelineObserver = timelineObserver;
         loadDocumentsButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("Load in Documents");
-                if(timelineObserver != null){
-                    timelineObserver.loadDocumets();
+                if (timelineObserver != null) {
+                    timelineObserver.loadDocuments();
                 }
             }
         });
@@ -67,9 +68,67 @@ public class ListViewController implements Initializable, MenuBarControllerInter
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("Save to PDF");
-                if(timelineObserver != null){
+                if (timelineObserver != null) {
                     timelineObserver.saveToPDF();
                 }
+            }
+        });
+    }
+
+    private void sortAndReverse(List<Result> results) {
+        Collections.sort(results);
+        Collections.reverse(results);
+    }
+
+    private void setTimelineList(List<Result> results) {
+        timelineObservableList.clear();
+        timelineObservableList.addAll(results);
+        timelineListView.setItems(timelineObservableList);
+        timelineListView.setCellFactory(new Callback<ListView<Result>, ListCell<Result>>() {
+            @Override
+            public ListCell<Result> call(ListView<Result> param) {
+                return new ListCell<Result>() {
+                    /**
+                     * Called whenever a row needs to be shown/created on the screen.
+                     *
+                     * @param item the Result object for which this row has to display data for.
+                     * @param empty  whether or not the Row is empty (i.e. result == null).
+                     */
+                    @Override
+                    protected void updateItem(Result item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null && !empty) {
+                            TimelineRowController timelineRowController = new TimelineRowController(getIndex());
+                            timelineRowController.setData(item);
+                            setGraphic(timelineRowController.getGroup());
+                        } else {
+                            setGraphic(null);
+                        }
+                    }
+                };
+            }
+        });
+    }
+
+    private void setDocumentListView(List<FileData> fileDatas) {
+        documentsLoadedObservableList.clear();
+        documentsLoadedObservableList.addAll(fileDatas);
+        documentListView.setItems(documentsLoadedObservableList);
+        documentListView.setCellFactory(new Callback<ListView<FileData>, ListCell<FileData>>() {
+            @Override
+            public ListCell<FileData> call(ListView<FileData> param) {
+                return new ListCell<FileData>() {
+                    @Override
+                    protected void updateItem(FileData item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item != null && !empty) {
+                            DocumentLoadedRowController documentLoadedRowController = new DocumentLoadedRowController(item, ListViewController.this);
+                            setGraphic(documentLoadedRowController.getGridPane());
+                        } else {
+                            setGraphic(null);
+                        }
+                    }
+                };
             }
         });
     }
@@ -79,61 +138,24 @@ public class ListViewController implements Initializable, MenuBarControllerInter
      *
      * @param results a list of Result objects which contain data to populate the rows of the timelineListView with.
      */
-    public void setTimelineListView(ArrayList<Result> results, ArrayList<FileData> fileDatas) {
+    public void setTimelineListView(List<Result> results, List<FileData> fileDatas) {
         this.results = results;
-        Collections.sort(this.results);
-        Collections.reverse(this.results);
-        timelineObservableList.clear();
-        timelineObservableList.addAll(this.results);
-        timelineListView.setItems(timelineObservableList);
-        timelineListView.setCellFactory(new Callback<ListView, ListCell>() {
-            @Override
-            public ListCell call(ListView param) {
-                return new ListCell<Result>() {
-                    /**
-                     * Called whenever a row needs to be shown/created on the screen.
-                     *
-                     * @param result the Result object for which this row has to display data for.
-                     * @param empty  whether or not the Row is empty (i.e. result == null).
-                     */
-                    @Override
-                    protected void updateItem(Result result, boolean empty) {
-                        super.updateItem(result, empty);
-                        if (result != null) {
-                            System.out.println("Got Item: " + result);
-                            System.out.println("Position: " + getIndex());
-                            TimelineRowController timelineRowController = new TimelineRowController(getIndex());
-                            timelineRowController.setData(result);
-                            setGraphic(timelineRowController.getGroup());
-                        }
-                    }
-                };
-            }
-        });
+        sortAndReverse(this.results);
+        setTimelineList(this.results);
 
-        //custom documents loaded listview
         this.fileDatas = fileDatas;
-        documentsLoadedObservableList.clear();
-        documentsLoadedObservableList.addAll(fileDatas);
-        documentListView.setItems(documentsLoadedObservableList);
-        documentListView.setCellFactory(new Callback<ListView, ListCell>() {
-            @Override
-            public ListCell call(ListView param) {
-                return new ListCell<FileData>() {
-                    @Override
-                    protected void updateItem(FileData item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (item != null) {
-                            System.out.println("Got Item: " + item);
-                            System.out.println("Position: " + getIndex());
-                            DocumentLoadedRowController documentLoadedRowController = new DocumentLoadedRowController(item, ListViewController.this);
-                            setGraphic(documentLoadedRowController.getGridPane());
-                        }
-                    }
-                };
-            }
-        });
+        Collections.sort(this.fileDatas);
+        setDocumentListView(this.fileDatas);
+    }
 
+    public void addToTimelineListView(List<Result> results, List<FileData> fileDatas) {
+        this.results.addAll(results);
+        sortAndReverse(this.results);
+        setTimelineList(this.results);
+
+        this.fileDatas.addAll(fileDatas);
+        Collections.sort(this.fileDatas);
+        setDocumentListView(this.fileDatas);
     }
 
     /**
@@ -142,7 +164,7 @@ public class ListViewController implements Initializable, MenuBarControllerInter
     @Override
     public void close() {
         System.out.println("Close pressed");
-        if(timelineObserver != null){
+        if (timelineObserver != null) {
             timelineObserver.close();
         }
     }
@@ -153,7 +175,7 @@ public class ListViewController implements Initializable, MenuBarControllerInter
     @Override
     public void about() {
         System.out.println("About pressed");
-        if(timelineObserver != null){
+        if (timelineObserver != null) {
             timelineObserver.showAbout();
         }
     }
@@ -164,7 +186,7 @@ public class ListViewController implements Initializable, MenuBarControllerInter
     @Override
     public void timeline() {
         System.out.println("Timeline pressed");
-        if(timelineObserver != null){
+        if (timelineObserver != null) {
             timelineObserver.timeline();
         }
     }
@@ -189,7 +211,7 @@ public class ListViewController implements Initializable, MenuBarControllerInter
      * @param results  list of Results for which we we need to delete the Results linked to the given FileData.
      * @param fileData FileData for which in the given Results list we need to remove the linked Results.
      */
-    private void removeResults(ArrayList<Result> results, FileData fileData) {
+    private void removeResults(List<Result> results, FileData fileData) {
         Iterator<Result> resultIterator = results.iterator();
         while (resultIterator.hasNext()) {
             Result result = resultIterator.next();

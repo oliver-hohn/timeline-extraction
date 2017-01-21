@@ -50,6 +50,7 @@ public class TestClass {
         }
 
 */
+/*
         System.out.println("\n\nProcessing through files");
         ProcessFiles processFiles = new ProcessFiles();
         File file1 = new File("D:"+File.separator+"FYP"+File.separator+"text1.txt");
@@ -75,6 +76,7 @@ public class TestClass {
         for(Result result: results){
             System.out.println(result);
         }
+*/
 
 /*        TimelineDate timelineDate = new TimelineDate();
         timelineDate.parse("XXXX-01", "2016-12-31");*/

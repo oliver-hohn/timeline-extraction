@@ -9,6 +9,7 @@ import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Tests the the extracting of text in files and passing it to the backend.process.Engine, and the fact that Threads are being created
@@ -17,14 +18,7 @@ import java.util.ArrayList;
 
 public class ProcessFileTest {
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private ArrayList<Result> actualResults;
-    private CallbackResults callbackResults = new CallbackResults() {
-        @Override
-        public void gotResults(ArrayList<Result> results, ArrayList<FileData> fileDataList) {
-            System.out.println("Got results");
-            actualResults = results;
-        }
-    };
+    private List<Result> actualResults;
 
     /**
      * Chaining tests (all in same class running one after the other) for ProcessFile will overlap, as when the next
@@ -37,7 +31,7 @@ public class ProcessFileTest {
      */
     @Test
     public void testSampleFileProcessTXT() throws ParseException, InterruptedException {
-        ArrayList<Result> expectedResults = new ArrayList<>();
+        List<Result> expectedResults = new ArrayList<>();
         actualResults = null;
 
         Result result1 = new Result();
@@ -70,12 +64,12 @@ public class ProcessFileTest {
         files.add(testFile);
 
         ArrayList<FileData> fileDatas = new ArrayList<>();
-        for(File file: files){
+        for (File file : files) {
             fileDatas.add(new FileData(file));
         }
 
         ProcessFiles processFiles = new ProcessFiles();
-        actualResults = processFiles.processFiles(files, fileDatas).first();
+        actualResults = processFiles.processFiles(files, fileDatas);
         compareExpectedToActual(actualResults, expectedResults);
     }
 
@@ -99,7 +93,7 @@ public class ProcessFileTest {
         files.add(testFile3);
 
         ArrayList<FileData> fileDatas = new ArrayList<>();
-        for(File file: files){
+        for (File file : files) {
             fileDatas.add(new FileData(file));
         }
 
@@ -107,7 +101,7 @@ public class ProcessFileTest {
         Task<Boolean> task = new Task<Boolean>() {
             @Override
             protected Boolean call() throws Exception {
-                processFiles.processFiles(files, fileDatas).first();
+                processFiles.processFiles(files, fileDatas);
                 return null;
             }
         };
@@ -115,7 +109,7 @@ public class ProcessFileTest {
         System.out.println("Actual Threads running" + Thread.activeCount());
         Assert.assertEquals(true, Thread.activeCount() >= 2);
         Thread.sleep(10000);//give the backend.process.Engine time to finish running
-        Assert.assertEquals(true,true);//seems to be an error that if you finish with a thread sleep it will stop running the other operations on other threads (i.e. releasing semaphores and setting state to FINISHED).
+        Assert.assertEquals(true, true);//seems to be an error that if you finish with a thread sleep it will stop running the other operations on other threads (i.e. releasing semaphores and setting state to FINISHED).
     }
 
     /**
@@ -162,12 +156,12 @@ public class ProcessFileTest {
         files.add(testFile);
 
         ArrayList<FileData> fileDatas = new ArrayList<>();
-        for(File file: files){
+        for (File file : files) {
             fileDatas.add(new FileData(file));
         }
 
         ProcessFiles processFiles = new ProcessFiles();
-        actualResults = processFiles.processFiles(files, fileDatas).first();
+        actualResults = processFiles.processFiles(files, fileDatas);
         compareExpectedToActual(actualResults, expectedResults);
     }
 
@@ -203,12 +197,12 @@ public class ProcessFileTest {
         files.add(testFile);
 
         ArrayList<FileData> fileDatas = new ArrayList<>();
-        for(File file: files){
+        for (File file : files) {
             fileDatas.add(new FileData(file));
         }
 
         ProcessFiles processFiles = new ProcessFiles();
-        actualResults = processFiles.processFiles(files, fileDatas).first();
+        actualResults = processFiles.processFiles(files, fileDatas);
         System.out.println(actualResults);
         compareExpectedToActual(actualResults, expectedResults);
     }
@@ -220,7 +214,7 @@ public class ProcessFileTest {
      * @param actualResults   the list of produced backend.process.Result objects
      * @param expectedResults the list of expected backend.process.Result objects
      */
-    private void compareExpectedToActual(ArrayList<Result> actualResults, ArrayList<Result> expectedResults) {
+    private void compareExpectedToActual(List<Result> actualResults, List<Result> expectedResults) {
         System.out.println("Actual Results: " + actualResults);
         Assert.assertEquals(actualResults.size(), expectedResults.size());//if this does not hold then the test fails
         for (int i = 0; i < actualResults.size(); i++) {

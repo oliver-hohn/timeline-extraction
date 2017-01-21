@@ -15,7 +15,7 @@ import java.util.Date;
 /**
  * Class that holds the relevant data (for this project) of a File. In this case, the File's name and path in the System.
  */
-public class FileData {
+public class FileData implements Comparable<FileData>{
     private final static SimpleDateFormat inputSimpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
     private final static SimpleDateFormat outputSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private final static String epochDateFormatted = "1970-01-01";
@@ -136,5 +136,11 @@ public class FileData {
             e.printStackTrace();
         }
         return toReturn;
+    }
+
+
+    @Override
+    public int compareTo(FileData o) {
+        return fileName.compareTo(o.fileName);
     }
 }
