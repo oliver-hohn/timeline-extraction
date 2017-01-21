@@ -34,7 +34,7 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
     private Stage primaryStage;
     private ArrayList<FileData> fileDataList = new ArrayList<>();//add/remove to this, holds the information of the Files for which we are showing results to
     private ArrayList<Result> currentResults = new ArrayList<>();//list of Results that it is currently showing
-    //TODO: sort list
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         //need to start engine

@@ -16,9 +16,7 @@ import javafx.scene.control.ListView;
 import javafx.util.Callback;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Controller for the layout where the ListView is shown. Allows the listview to be populated with Result data.
@@ -82,11 +80,11 @@ public class ListViewController implements Initializable, MenuBarControllerInter
      * @param results a list of Result objects which contain data to populate the rows of the timelineListView with.
      */
     public void setTimelineListView(ArrayList<Result> results, ArrayList<FileData> fileDatas) {
-        //TODO:
-        //pass the load documents and save to pdf callbacks to observer
         this.results = results;
+        Collections.sort(this.results);
+        Collections.reverse(this.results);
         timelineObservableList.clear();
-        timelineObservableList.addAll(results);
+        timelineObservableList.addAll(this.results);
         timelineListView.setItems(timelineObservableList);
         timelineListView.setCellFactory(new Callback<ListView, ListCell>() {
             @Override
