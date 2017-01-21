@@ -43,7 +43,7 @@ public class FileConfirmationDialog {
         for (int i = 0; i < fileDatas.size(); i++) {
             FileData fileData = fileDatas.get(i);
             Label fileNameLabel = new Label(fileData.getFileName());
-            TextField dateTextField = new TextField(fileData.getCreationDate());
+            TextField dateTextField = new TextField(fileData.getCreationDateFormattedDayMonthYear());
             dateTextField.setMinWidth(150);//150 pixels is enough for 12 characters
             dateTextField.setMaxHeight(35);//enough for one line, if text size is 15
             dateTextField.setAlignment(Pos.CENTER);
@@ -55,6 +55,9 @@ public class FileConfirmationDialog {
                     if (!newValue) {
                         //check validate text field input
                         System.out.println("Inputted: " + dateTextField.getText());
+                        //validate
+                        //then can set it
+                        fileData.setCreationDate(dateTextField.getText());
                     }
                 }
             });

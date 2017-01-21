@@ -48,23 +48,27 @@ public class ProcessFiles implements ProcessFileCallback {
      *
      * @param files           the list of File objects that contain text that needs to be processed (atm only processes .docx/.pdf/.txt files)
      */
-    public Pair<ArrayList<Result>, ArrayList<FileData>> processFiles(List<File> files) {
+    public Pair<ArrayList<Result>, ArrayList<FileData>> processFiles(List<File> files, List<FileData> fileDatas) {
         //should only run if we are not Processing
         //this will also set up the StanfordCoreNLP (when GUI is implemented, it will already by set up, as it will be the first thing ran)
         System.out.println("Will try to run");
-        if(BackEndSystem.getInstance().getSystemState() != SystemState.PROCESSING) {//if we arent processing, then we can begin to do that
+        if(BackEndSystem.getInstance().getSystemState() != SystemState.PROCESSING && files.size() == fileDatas.size()) {//if we arent processing, then we can begin to do that
             System.out.println("Is running");
             filesToGo = files.size();//and when we need to call
             BackEndSystem.getInstance().setSystemState(SystemState.PROCESSING);
             System.out.println("In Thread: " + Thread.currentThread().toString());
-            for (File file : files) {
+            for (int i= 0; i<files.size(); i++) {
+                File file = files.get(i);
+                FileData fileData = fileDatas.get(i);//should be the same
+                //check they are the same?
+
                 //acquire from the semaphore
                 try {
                     System.out.println("Trying to acquire semaphore for file: " + file);
                     semaphore.acquire();//will wait if there is already maxnoofthreads running, until one finishes: then it gets to run
                     System.out.println("Acquired semaphore for file: " + file);
                     //process file
-                    Thread thread = new ProcessFile(file, this);//pass a reference so that the thread can call this when it finishes processing the file
+                    Thread thread = new ProcessFile(file, this, fileData);//pass a reference so that the thread can call this when it finishes processing the file
                     thread.start();//start processing this file(get its text and pass it to the backend.process.Engine)
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -122,6 +126,7 @@ public class ProcessFiles implements ProcessFileCallback {
         //TODO: change to use FileData constructor of passing in File to get its data
         File file;
         ProcessFileCallback processFileCallback;
+        FileData fileData;
 
         /**
          * Create a ProcessFile object that holds the data needed: the File to process and who to callback when the
@@ -130,9 +135,10 @@ public class ProcessFiles implements ProcessFileCallback {
          * @param file                the File to process.
          * @param processFileCallback who to inform when the backend.process.Engine finished processing the given file.
          */
-        ProcessFile(File file, ProcessFileCallback processFileCallback) {//hold sempahore
+        ProcessFile(File file, ProcessFileCallback processFileCallback, FileData fileData) {//hold sempahore
             this.file = file;
             this.processFileCallback = processFileCallback;
+            this.fileData = fileData;
         }
 
         /**
@@ -143,16 +149,15 @@ public class ProcessFiles implements ProcessFileCallback {
         public void run() {
             super.run();
             System.out.println("For: " + file + " in Thread: " + Thread.currentThread().toString());//for logging purposes
-            FileData fileData = null;
             ArrayList<Result> toReturnResults = new ArrayList<>();//initially no results
             //check file exists in system
             if (fileExists(file)) {
-                fileData = new FileData(file.getName(), file.getAbsolutePath());
+                //fileData = new FileData(file.getName(), file.getAbsolutePath());
                 //get the text for that file
                 String toProcess = getText(file);//will get the text for the file considering its extension
                 //run engine on this
                 if (!toProcess.equals("")) {//if we actually have text to process, don't waste time attempting to process else
-                    String baseDate = getFileCreationDate(file);//since we will need to process, get a base date to use
+                    String baseDate = fileData.getCreationDateFormattedYearMonthDay();//since we will need to process, get a base date to use
                     System.out.println("Base Date for " + file.getName() + " is: " + baseDate);
                     toReturnResults = new Engine().getResults(toProcess, baseDate);//pass in file data, so each result holds it
                     addFileData(fileData, toReturnResults);

@@ -69,8 +69,13 @@ public class ProcessFileTest {
         ArrayList<File> files = new ArrayList<>();
         files.add(testFile);
 
+        ArrayList<FileData> fileDatas = new ArrayList<>();
+        for(File file: files){
+            fileDatas.add(new FileData(file));
+        }
+
         ProcessFiles processFiles = new ProcessFiles();
-        actualResults = processFiles.processFiles(files).first();
+        actualResults = processFiles.processFiles(files, fileDatas).first();
         compareExpectedToActual(actualResults, expectedResults);
     }
 
@@ -93,11 +98,16 @@ public class ProcessFileTest {
         files.add(testFile2);
         files.add(testFile3);
 
+        ArrayList<FileData> fileDatas = new ArrayList<>();
+        for(File file: files){
+            fileDatas.add(new FileData(file));
+        }
+
         ProcessFiles processFiles = new ProcessFiles();
         Task<Boolean> task = new Task<Boolean>() {
             @Override
             protected Boolean call() throws Exception {
-                processFiles.processFiles(files).first();
+                processFiles.processFiles(files, fileDatas).first();
                 return null;
             }
         };
@@ -151,8 +161,13 @@ public class ProcessFileTest {
         ArrayList<File> files = new ArrayList<>();
         files.add(testFile);
 
+        ArrayList<FileData> fileDatas = new ArrayList<>();
+        for(File file: files){
+            fileDatas.add(new FileData(file));
+        }
+
         ProcessFiles processFiles = new ProcessFiles();
-        actualResults = processFiles.processFiles(files).first();
+        actualResults = processFiles.processFiles(files, fileDatas).first();
         compareExpectedToActual(actualResults, expectedResults);
     }
 
@@ -187,8 +202,13 @@ public class ProcessFileTest {
         ArrayList<File> files = new ArrayList<>();
         files.add(testFile);
 
+        ArrayList<FileData> fileDatas = new ArrayList<>();
+        for(File file: files){
+            fileDatas.add(new FileData(file));
+        }
+
         ProcessFiles processFiles = new ProcessFiles();
-        actualResults = processFiles.processFiles(files).first();
+        actualResults = processFiles.processFiles(files, fileDatas).first();
         System.out.println(actualResults);
         compareExpectedToActual(actualResults, expectedResults);
     }

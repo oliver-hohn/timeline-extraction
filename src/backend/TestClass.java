@@ -59,12 +59,16 @@ public class TestClass {
         File file5 = new File("D:"+File.separator+"FYP"+File.separator+"text5.pdf");
         File file6 = new File("D:"+File.separator+"FYP"+File.separator+"text6.docx");
         ArrayList<File> files = new ArrayList<>();
+        ArrayList<FileData> fileDatas = new ArrayList<>();
+        for(File file: files){
+            fileDatas.add(new FileData(file));
+        }
         files.add(file1); files.add(file2);
         //files.add(file3);
         files.add(file4);
         files.add(file5);
         //files.add(file6);
-        ArrayList<Result> results = processFiles.processFiles(files).first();
+        ArrayList<Result> results = processFiles.processFiles(files, fileDatas).first();
         System.out.println("Finished running, got: "+results.size()+" results");
         //would have to sort it
         Collections.sort(results);

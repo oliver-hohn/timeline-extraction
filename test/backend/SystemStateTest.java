@@ -1,5 +1,6 @@
 package backend;
 
+import backend.process.FileData;
 import backend.process.ProcessFiles;
 import backend.system.BackEndSystem;
 import backend.system.SystemState;
@@ -30,10 +31,15 @@ public class SystemStateTest {
         ArrayList<File> files = new ArrayList<>();
         files.add(testFile);
 
+        ArrayList<FileData> fileDatas = new ArrayList<>();
+        for(File file: files){
+            fileDatas.add(new FileData(file));
+        }
+
         Runnable newRunnable = new Runnable() {
             @Override
             public void run() {
-                processFiles.processFiles(files);
+                processFiles.processFiles(files, fileDatas);
             }
         };
 
@@ -61,7 +67,12 @@ public class SystemStateTest {
         ArrayList<File> files = new ArrayList<>();
         files.add(testFile);
 
-        processFiles.processFiles(files);
+        ArrayList<FileData> fileDatas = new ArrayList<>();
+        for(File file: files){
+            fileDatas.add(new FileData(file));
+        }
+
+        processFiles.processFiles(files, fileDatas);
 
         Assert.assertEquals(SystemState.FINISHED, BackEndSystem.getInstance().getSystemState());
 

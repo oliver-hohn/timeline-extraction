@@ -46,7 +46,7 @@ public class Engine {
     public ArrayList<Result> getResults(String input, String date) {
         ArrayList<Result> results = new ArrayList<>();
         baseDate = date;
-
+        System.out.println("Base Date: "+baseDate);
         Annotation annotation;
         annotation = new Annotation(input);
         annotation.set(CoreAnnotations.DocDateAnnotation.class, date);//setting a reference so that when it finds a normalazied entity tag that isnt complete will determine it
