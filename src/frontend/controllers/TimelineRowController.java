@@ -32,6 +32,8 @@ public class TimelineRowController {
     private Button editButton;
     @FXML
     private Button viewButton;
+    @FXML
+    private Label fromLabel;
     private int position;
     private Result result;
 
@@ -70,6 +72,7 @@ public class TimelineRowController {
         dateLabel.setText("Date: " + result.getTimelineDate().toString());
         subjectsLabel.setText("Subjects: " + result.getSubjects().toString());
         eventLabel.setText("Event: " + result.getEvent());
+        fromLabel.setText("From: "+result.getFileData().getFileName());
         borderPane.setStyle("-fx-border-color: black; -fx-border-width: 4; -fx-border-style: solid inside;");
         editButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override

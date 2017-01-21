@@ -84,6 +84,7 @@ public class FileConfirmationDialog {
             fileDateGridPane.add(dateTextField, 1, i);
         }
         alert.getDialogPane().setExpandableContent(scrollPane);
+        alert.getDialogPane().setPrefSize(480,250);
         return alert;
     }
 

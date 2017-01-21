@@ -40,6 +40,7 @@
                               <Label fx:id="dateLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="340.0" text="Date: dd-MM-yyy -&gt; dd-MM-yyyy" wrapText="true" />
                               <Label fx:id="subjectsLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="340.0" text="Subjects: Football, Gifts, London" wrapText="true" />
                               <Label fx:id="eventLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="340.0" text="Event: played football with friends" wrapText="true" />
+                              <Label fx:id="fromLabel" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="340.0" text="From: filename.ext" wrapText="true" />
                            </children>
                            <padding>
                               <Insets bottom="5.0" top="5.0" />
@@ -50,7 +51,7 @@
                </left>
             </BorderPane>
             <Line startX="-100.0" strokeWidth="3.0" />
-            <Line endY="200.0" nodeOrientation="LEFT_TO_RIGHT" strokeWidth="3.0" />
+            <Line endY="250.0" nodeOrientation="LEFT_TO_RIGHT" strokeWidth="3.0" />
             <Region maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="483.0" />
          </children>
          <padding>
