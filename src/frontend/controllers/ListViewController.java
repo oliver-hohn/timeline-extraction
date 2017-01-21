@@ -2,6 +2,7 @@ package frontend.controllers;
 
 import backend.process.FileData;
 import backend.process.Result;
+import frontend.RemoveConfirmationDialog;
 import frontend.observers.DocumentsLoadedObserver;
 import frontend.observers.TimelineObserver;
 import javafx.collections.FXCollections;
@@ -10,9 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.util.Callback;
 
 import java.net.URL;
@@ -222,10 +221,14 @@ public class ListViewController implements Initializable, MenuBarControllerInter
     @Override
     public void remove(FileData fileData) {
         System.out.println("Need to remove: " + fileData);
-        fileDatas.remove(fileData);
-        removeResults(results, fileData);
-        //TODO: dialog to confirm deletion
-        setTimelineListView(results, fileDatas);
+        Alert removeConfirmationDialog = RemoveConfirmationDialog.getRemoveConfirmationDialog(fileData.getFileName());
+        Optional<ButtonType> response = removeConfirmationDialog.showAndWait();
+        System.out.println("Text on clicked button: " + response.get().getText());
+        if (response.get() == ButtonType.YES) {
+            fileDatas.remove(fileData);
+            removeResults(results, fileData);
+            setTimelineListView(results, fileDatas);
+        }//else dont remove the events related to that file (as we keep it)
     }
 
     /**
