@@ -33,7 +33,7 @@ public class FileConfirmationDialog {
     public Alert getConfirmationFileDialog(List<FileData> fileDatas) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirm the Base Dates");
-        alert.setContentText("The following Base Dates will be used for the given Files. Change them appropriately");
+        alert.setContentText("The following Base Dates will be used for the given Files. Change them appropriately: ");
 
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setPadding(new Insets(10));
@@ -84,7 +84,7 @@ public class FileConfirmationDialog {
             fileDateGridPane.add(dateTextField, 1, i);
         }
         alert.getDialogPane().setExpandableContent(scrollPane);
-        alert.getDialogPane().setPrefSize(480,250);
+        //alert.getDialogPane().setPrefSize(480,250);
         return alert;
     }
 
