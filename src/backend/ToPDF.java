@@ -109,12 +109,10 @@ public class ToPDF {
      * @throws IOException due to working with streams.
      */
     private void drawOddEvent(Result result, PDPageContentStream contentStream, int position) throws IOException {
-        System.out.println("Here at Odd");
         //initially y is the top right where this needs to be shown, x starts from the middle
         currentY -= padding; //add some padding to y
         currentX = (int) widthOfPage / 2;
         contentStream.moveTo(currentX, currentY);
-        System.out.println("X: " + currentX + " Y: " + currentY);
         //write the text for the Event
         int lengthOfHorLine = (int) ((widthOfPage / 2) - (padding + widthOfRectangle));
         currentX += lengthOfHorLine;
@@ -139,7 +137,6 @@ public class ToPDF {
      * @throws IOException due to working with streams.
      */
     private void drawEvenEvent(Result result, PDPageContentStream contentStream, int position) throws IOException {
-        System.out.println("Here at Even");
         //initially x and y are top right in the page (0, pageHeight)
         //give some spacing between events
         currentY -= padding;//add some vertical small padding
