@@ -214,7 +214,9 @@ public class ProcessFiles implements ProcessFileCallback {
             String toReturn = "";//base text, if it fails we just return empty text
             try {
                 PDDocument pdDocument = PDDocument.load(file);//create Document that has processed the bytes in the pdf file
-                toReturn = new PDFTextStripper().getText(pdDocument);//to then get its text
+                PDFTextStripper pdfTextStripper = new PDFTextStripper();
+                //pdfTextStripper.setSortByPosition(true);//in the case the program that created the page, didnt place the text in the order it is shown (so could read text in wrong order)
+                toReturn = pdfTextStripper.getText(pdDocument);//to then get its text
                 pdDocument.close();//always remember to close the stream, or document in this case
             } catch (IOException e) {
                 e.printStackTrace();

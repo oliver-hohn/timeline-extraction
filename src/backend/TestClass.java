@@ -3,6 +3,7 @@ package backend;
 import backend.process.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -13,6 +14,85 @@ import java.util.Collections;
 public class TestClass {
 
     public static void main(String[] args) {
+        //to see the outputted pdf files format
+        ArrayList<Result> results = new ArrayList<>();
+        Result result = new Result();
+        result.setEvent("Hey there buddy");
+        result.addDate_1("2014-12-31", "1996-07-29");
+        result.addSubject("Buddy");
+        result.setFileData(new FileData("filename1.txt","Here"));
+        results.add(result);
+        result= new Result();
+        result.setEvent("Yo yo yo we out here");
+        result.addDate_1("2017-01-22","2017-01-22");
+        result.addSubject("Here");
+        result.setFileData(new FileData("filename2.txt","Not Here"));
+        results.add(result);
+        result= new Result();
+        result.setEvent("Hey friends!");
+        result.addDate_1("2017-01-25","2017-01-22");
+        result.addSubject("Friends");
+        result.setFileData(new FileData("filename3.txt","Not Here"));
+        results.add(result);
+        result= new Result();
+        result.setEvent("Supreme x Louis Vuitton coming out tomorrow");
+        result.addDate_1("2017-01-28","2017-01-22");
+        result.addSubject("Supreme");
+        result.addSubject("Louis Vuitton");
+        result.setFileData(new FileData("filename4.txt","Not Here"));
+        results.add(result);
+        result= new Result();
+        result.setEvent("Supreme x Air Jordan came out last year");
+        result.addDate_1("2017-01-31","2017-01-22");
+        result.addSubject("Supreme");
+        result.addSubject("Air Jordan");
+        result.setFileData(new FileData("filename5.txt","Not Here"));
+        results.add(result);
+        result = new Result();
+        result.setEvent("Here is another Result");
+        result.addDate_1("2014-12-31", "1996-07-29");
+        result.addSubject("Result");
+        result.setFileData(new FileData("filename1.txt","Here"));
+        results.add(result);
+        result= new Result();
+        result.setEvent("Yo yo yo we out here (repeated)");
+        result.addDate_1("2017-01-22","2017-01-22");
+        result.addSubject("Here");
+        result.setFileData(new FileData("filename2.txt","Not Here"));
+        results.add(result);
+        result= new Result();
+        result.setEvent("We here and we aint going no where");
+        result.addDate_1("2017-01-25","2017-01-22");
+        result.addSubject("here");
+        result.setFileData(new FileData("filename3.txt","Not Here"));
+        results.add(result);
+        result= new Result();
+        result.setEvent("Supreme x Louis Vuitton");
+        result.addDate_1("2017-01-28","2017-01-22");
+        result.addSubject("Supreme");
+        result.addSubject("Louis Vuitton");
+        result.setFileData(new FileData("filename4.txt","Not Here"));
+        results.add(result);
+        result= new Result();
+        result.setEvent("Supreme x Air Jordan");
+        result.addDate_1("2017-01-31","2017-01-22");
+        result.addSubject("Supreme");
+        result.addSubject("Air Jordan");
+        result.setFileData(new FileData("filename5.txt","Not Here"));
+        results.add(result);
+        result= new Result();
+        result.setEvent("Supreme x Air Jordan, this is repeated");
+        result.addDate_1("2017-01-31","2017-01-22");
+        result.addSubject("Supreme");
+        result.addSubject("Air Jordan");
+        result.setFileData(new FileData("filename5.txt","Not Here"));
+        results.add(result);
+        try {
+            new ToPDF().saveToPDF(results, "filename.ext");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         //String text = "";
 /*
 
