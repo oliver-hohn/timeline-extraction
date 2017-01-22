@@ -1,6 +1,7 @@
 package backend;
 
 import backend.process.Result;
+import org.apache.commons.lang3.text.WordUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -20,7 +21,8 @@ public class ToPDF {
     private static int heightOfRectangle = 150;
     private static int strokeWidthOfLine = 2;
     private static int padding = 7;
-    private static int fontSize = 12;
+    private static int fontSize = 15;
+    private static int maxNoOfCharacters = 40;//max number of characters per line in the event box
     private int currentX = 0;
     private int currentY = 0;
     private float widthOfPage;
@@ -85,9 +87,9 @@ public class ToPDF {
                 counterOfEvents = 0;
             }
             if (i % 2 == 0) {//even
-                drawEvenEvent(results.get(i), contentStream);
+                drawEvenEvent(results.get(i), contentStream, i);
             } else {//odd
-                drawOddEvent(results.get(i), contentStream);
+                drawOddEvent(results.get(i), contentStream, i);
             }
             counterOfEvents++;
         }
@@ -103,9 +105,10 @@ public class ToPDF {
      *
      * @param result        the given Result object for which to draw this event.
      * @param contentStream the stream to which we are drawing.
+     * @param position      the position of the Result in the timeline (to show in the event box)
      * @throws IOException due to working with streams.
      */
-    private void drawOddEvent(Result result, PDPageContentStream contentStream) throws IOException {
+    private void drawOddEvent(Result result, PDPageContentStream contentStream, int position) throws IOException {
         System.out.println("Here at Odd");
         //initially y is the top right where this needs to be shown, x starts from the middle
         currentY -= padding; //add some padding to y
@@ -115,7 +118,7 @@ public class ToPDF {
         //write the text for the Event
         int lengthOfHorLine = (int) ((widthOfPage / 2) - (padding + widthOfRectangle));
         currentX += lengthOfHorLine;
-        writeText(result, contentStream, currentX);
+        writeText(result, contentStream, currentX, position);
         //draw the rectangle to surround the text
         drawRectangle(contentStream, currentX, currentY - heightOfRectangle);
         //draw the horizontal line connecting event and timeline
@@ -132,9 +135,10 @@ public class ToPDF {
      *
      * @param result        the given Result object for which to draw this event.
      * @param contentStream the stream to which we are drawing.
+     * @param position      the position of the Result in the timeline (to show in the event box)
      * @throws IOException due to working with streams.
      */
-    private void drawEvenEvent(Result result, PDPageContentStream contentStream) throws IOException {
+    private void drawEvenEvent(Result result, PDPageContentStream contentStream, int position) throws IOException {
         System.out.println("Here at Even");
         //initially x and y are top right in the page (0, pageHeight)
         //give some spacing between events
@@ -142,7 +146,7 @@ public class ToPDF {
         currentX = padding;
         contentStream.moveTo(currentX, currentY);
         //write the text for the Event
-        writeText(result, contentStream, 0);
+        writeText(result, contentStream, 0, position);
         //draw the rectangle to surround the text
         drawRectangle(contentStream, currentX, currentY - heightOfRectangle);
         //draw the horizontal line connecting event and timeline
@@ -164,22 +168,46 @@ public class ToPDF {
      * @param result        the given Result.
      * @param contentStream the stream we are drawing to.
      * @param xOffset       an x-value offset from which the text is written from (starting at currentX)
+     * @param position      the position of the Result in the timeline (to show in the event box)
      * @throws IOException due to using streams.
      */
-    private void writeText(Result result, PDPageContentStream contentStream, int xOffset) throws IOException {
+    private void writeText(Result result, PDPageContentStream contentStream, int xOffset, int position) throws IOException {
         contentStream.beginText();
         contentStream.newLineAtOffset(2 * padding + xOffset, currentY - (fontSize + padding));//pad it horizontally and give vertical space for text
         contentStream.setFont(PDType1Font.TIMES_ROMAN, fontSize);
-        contentStream.showText("Event #");
+        contentStream.showText("Event #" + (position + 1));//show the position of the event (1st being the latest event)
         contentStream.newLineAtOffset(0, -(fontSize + padding));
-        contentStream.showText("Date: " + result.getTimelineDate());
+        wrapText("Date: " + result.getTimelineDate(), contentStream);
         contentStream.newLineAtOffset(0, -(fontSize + padding));
-        contentStream.showText("Subjects: " + result.getSubjectsAsString());
+        wrapText("Subjects: " + result.getSubjectsAsString(), contentStream);
         contentStream.newLineAtOffset(0, -(fontSize + padding));
-        contentStream.showText("Event: " + result.getEvent());
+        wrapText("Event: " + result.getEvent(), contentStream);
         contentStream.newLineAtOffset(0, -(fontSize + padding));
-        contentStream.showText("From: " + result.getFileData().getFileName());
+        wrapText("From: " + result.getFileData().getFileName(), contentStream);
         contentStream.endText();
+    }
+
+    /**
+     * For the given text, check whether it needs to be wrapped around to fit the constraint of the max number of
+     * characters in a sentence. If the text needs to be wrapped, write each sentence with a small space in between (no
+     * padding, that's to separate data), if it does not need to be wrapped write the text as it is.
+     *
+     * @param text          the given text.
+     * @param contentStream where the text needs to be written on.
+     * @throws IOException due to writing to streams.
+     */
+    private void wrapText(String text, PDPageContentStream contentStream) throws IOException {
+        if (text.length() > maxNoOfCharacters) {//we have text worth wrapping
+            String[] wrappedText = WordUtils.wrap(text, maxNoOfCharacters).split("\\r?\\n");
+            for (int i = 0; i < wrappedText.length; i++) {
+                contentStream.showText(wrappedText[i]);
+                if (i < wrappedText.length - 1) {
+                    contentStream.newLineAtOffset(0, -(fontSize));
+                }
+            }
+        } else {//no point doing the work of wrapping text, when its below the threshold
+            contentStream.showText(text);
+        }
     }
 
     /**

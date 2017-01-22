@@ -14,7 +14,8 @@ import java.util.Collections;
 public class TestClass {
 
     public static void main(String[] args) {
-   /*     //to see the outputted pdf files format
+/*
+        //to see the outputted pdf files format
         ArrayList<Result> results = new ArrayList<>();
         Result result = new Result();
         result.setEvent("Hey there buddy");
@@ -88,11 +89,12 @@ public class TestClass {
         result.setFileData(new FileData("filename5.txt","Not Here"));
         results.add(result);
         try {
-            new ToPDF().saveToPDF(results, "filename.ext");
+            new ToPDF().saveToPDF(results, new File("filename.pdf"));
         } catch (IOException e) {
             e.printStackTrace();
         }
 */
+
         //String text = "";
 /*
 
