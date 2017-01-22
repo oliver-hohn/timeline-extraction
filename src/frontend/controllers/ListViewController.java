@@ -17,6 +17,7 @@ import javafx.util.Callback;
 import java.net.URL;
 import java.util.*;
 //TODO: dont add repeated files
+
 /**
  * Controller for the layout where the ListView is shown. Allows the listview to be populated with Result data.
  */
@@ -68,7 +69,7 @@ public class ListViewController implements Initializable, MenuBarControllerInter
             public void handle(ActionEvent event) {
                 System.out.println("Save to PDF");
                 if (timelineObserver != null) {
-                    timelineObserver.saveToPDF();
+                    timelineObserver.saveToPDF(results);
                 }
             }
         });

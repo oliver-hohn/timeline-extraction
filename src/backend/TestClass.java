@@ -14,7 +14,7 @@ import java.util.Collections;
 public class TestClass {
 
     public static void main(String[] args) {
-        //to see the outputted pdf files format
+   /*     //to see the outputted pdf files format
         ArrayList<Result> results = new ArrayList<>();
         Result result = new Result();
         result.setEvent("Hey there buddy");
@@ -92,7 +92,7 @@ public class TestClass {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+*/
         //String text = "";
 /*
 

@@ -1,5 +1,6 @@
 package frontend;
 
+import backend.ToPDF;
 import backend.process.FileData;
 import backend.process.ProcessFiles;
 import backend.process.Result;
@@ -170,7 +171,18 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
     }
 
     @Override
-    public void saveToPDF() {
+    public void saveToPDF(List<Result> results) {
         System.out.println(TAG + "Save To PDF pressed");
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Document Files");
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("PDF File","*.pdf"));
+        File file = fileChooser.showSaveDialog(primaryStage);
+        if(file != null && listViewController != null){
+            try {
+                new ToPDF().saveToPDF(results, file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

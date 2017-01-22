@@ -73,11 +73,11 @@ public class ToPDF {
      * For the given Results, produce a PDF File that has all the given Results displayed in a timeline (like on the
      * Application but without the buttons).
      *
-     * @param results  the list of given Results.
-     * @param filename the name for the File we are storing
+     * @param results the list of given Results.
+     * @param file    the File where we are storing the timeline.
      * @throws IOException due to working with streams.(I.e. trying to read or remove a file that is already open).
      */
-    public void saveToPDF(List<Result> results, String filename) throws IOException {
+    public void saveToPDF(List<Result> results, File file) throws IOException {
         int counterOfEvents = 0;
         for (int i = 0; i < results.size(); i++) {
             if (counterOfEvents >= 5) {//start a new page
@@ -94,7 +94,7 @@ public class ToPDF {
         if (contentStream != null) {
             contentStream.close();
         }
-        pdDocument.save(new File(filename + ".pdf"));
+        pdDocument.save(file);
         pdDocument.close();
     }
 
