@@ -1,12 +1,14 @@
 package frontend.controllers;
 
 import backend.process.Result;
+import frontend.EditEventDialog;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 
@@ -79,6 +81,9 @@ public class TimelineRowController {
             public void handle(ActionEvent event) {
                 System.out.println("Edit button for timeline event: " + result.getTimelineDate() + " has been pressed");
                 //TODO: edit button implementation (edit dialog screen)
+                EditEventDialog editEventDialog = new EditEventDialog();
+                Dialog dialog = editEventDialog.getEditEventDialog(result, (position+1));
+                dialog.showAndWait();
             }
         });
         viewButton.setOnAction(new EventHandler<ActionEvent>() {
