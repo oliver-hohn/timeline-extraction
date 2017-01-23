@@ -8,7 +8,7 @@ import java.util.Set;
 /**
  * Holds the data for one event in the Timeline.
  */
-public class Result implements Comparable<Result> {
+public class Result implements Comparable<Result>, Cloneable {
     private ArrayList<String> dates;
     private String event;
     private Set<String> subjects;
@@ -186,8 +186,14 @@ public class Result implements Comparable<Result> {
         return toReturn;
     }
 
-    //TODO: implement clone
-    public Result copyOfThis(){
+    /**
+     * Makes a new Result object, with the same data as this one but not referencing to the same place in memory. So
+     * changes in the new Result object do not change the data of this Result object.
+     * @return a new Result object with the same data but not pointing to the data in memory.
+     * @throws CloneNotSupportedException
+     */
+    @Override
+    public Object clone() throws CloneNotSupportedException {
         Result copyResult = new Result();
         //copying the dates
         TimelineDate copyTimelineDate = new TimelineDate();

@@ -24,30 +24,35 @@ public class EditEventDialog {
      */
     public static Dialog<Result> getEditEventDialog(Result result, int position) {
         //make a copy of the passed in Result object, use it to change values, and pass that to return.
-        Result copyResult = result.copyOfThis();
         Dialog<Result> dialog = new Dialog<>();
-        dialog.setTitle("Event #" + position);
-        ButtonType buttonTypeSave = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
-        ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-        dialog.getDialogPane().getButtonTypes().addAll(buttonTypeSave, buttonTypeCancel);
+        try {
+            Result copyResult = (Result) result.clone();
+            dialog.setTitle("Editing Event");
+            dialog.setHeaderText("Event #" + position);
+            ButtonType buttonTypeSave = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+            ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+            dialog.getDialogPane().getButtonTypes().addAll(buttonTypeSave, buttonTypeCancel);
 
 
-        dialog.getDialogPane().setContent(new EditEventController(copyResult, new EditEventDialogObserver() {
-            @Override
-            public void disableSave(boolean disableSave) {
-                Node saveButton = dialog.getDialogPane().lookupButton(buttonTypeSave);
-                saveButton.setDisable(disableSave);
-            }
-        }).getRootGridPane());
-        dialog.setResultConverter(new Callback<ButtonType, Result>() {
-            @Override
-            public Result call(ButtonType param) {
-                if (param == buttonTypeSave) {
-                    return copyResult;
+            dialog.getDialogPane().setContent(new EditEventController(copyResult, new EditEventDialogObserver() {
+                @Override
+                public void disableSave(boolean disableSave) {
+                    Node saveButton = dialog.getDialogPane().lookupButton(buttonTypeSave);
+                    saveButton.setDisable(disableSave);
                 }
-                return null;
-            }
-        });
+            }).getRootGridPane());
+            dialog.setResultConverter(new Callback<ButtonType, Result>() {
+                @Override
+                public Result call(ButtonType param) {
+                    if (param == buttonTypeSave) {
+                        return copyResult;
+                    }
+                    return null;
+                }
+            });
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
         return dialog;
     }
 }
