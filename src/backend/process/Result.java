@@ -1,6 +1,7 @@
 package backend.process;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -183,5 +184,26 @@ public class Result implements Comparable<Result> {
             }
         }
         return toReturn;
+    }
+
+    //TODO: implement clone
+    public Result copyOfThis(){
+        Result copyResult = new Result();
+        //copying the dates
+        TimelineDate copyTimelineDate = new TimelineDate();
+        copyTimelineDate.setDate1((Date) timelineDate.getDate1().clone());
+        if(timelineDate.getDate2() != null) {
+            copyTimelineDate.setDate2((Date) timelineDate.getDate2().clone());
+        }else{
+            copyTimelineDate.setDate2(null);
+        }
+        copyResult.setTimelineDate(copyTimelineDate);
+        //copying the event
+        copyResult.setEvent(new String(event));
+        //copying the subjects
+        copyResult.subjects = new HashSet<>(subjects);
+        //set the filedata
+        copyResult.setFileData(fileData);//all results of the same file point to the same filedata (not a unique one)
+        return copyResult;
     }
 }

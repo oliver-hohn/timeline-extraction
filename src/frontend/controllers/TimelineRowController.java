@@ -2,6 +2,7 @@ package frontend.controllers;
 
 import backend.process.Result;
 import frontend.EditEventDialog;
+import frontend.observers.TimelineRowObserver;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -13,6 +14,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 
 import java.io.IOException;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * Controller class for each row in the timline listview.
@@ -38,14 +41,16 @@ public class TimelineRowController {
     private Label fromLabel;
     private int position;
     private Result result;
+    private TimelineRowObserver timelineRowObserver;
 
     /**
      * Loads the layout for the row (appropriate layout picked depending on whether row is even or not).
      *
      * @param position the position this row is in the timeline (to determine if its odd or even and to display its index).
      */
-    public TimelineRowController(int position) {
+    public TimelineRowController(int position, TimelineRowObserver timelineRowObserver) {
         this.position = position;
+        this.timelineRowObserver = timelineRowObserver;
         FXMLLoader fxmlLoader;
         boolean isEven = (position % 2) == 0;
         if (isEven) {
@@ -83,7 +88,19 @@ public class TimelineRowController {
                 //TODO: edit button implementation (edit dialog screen)
                 EditEventDialog editEventDialog = new EditEventDialog();
                 Dialog dialog = editEventDialog.getEditEventDialog(result, (position+1));
-                dialog.showAndWait();
+                Optional<Result> response = dialog.showAndWait();
+                response.ifPresent(new Consumer<Result>() {
+                    @Override
+                    public void accept(Result result) {
+                        System.out.println("comparing original and copy:");
+                        System.out.println("Original: "+TimelineRowController.this.result);
+                        System.out.println("\n");
+                        System.out.println("Copy: "+result);
+
+                        //need to tell observer to update
+                        timelineRowObserver.update(result, position);
+                    }
+                });
             }
         });
         viewButton.setOnAction(new EventHandler<ActionEvent>() {

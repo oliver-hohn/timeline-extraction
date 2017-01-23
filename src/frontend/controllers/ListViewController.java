@@ -5,6 +5,7 @@ import backend.process.Result;
 import frontend.RemoveConfirmationDialog;
 import frontend.observers.DocumentsLoadedObserver;
 import frontend.observers.TimelineObserver;
+import frontend.observers.TimelineRowObserver;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -21,7 +22,7 @@ import java.util.*;
 /**
  * Controller for the layout where the ListView is shown. Allows the listview to be populated with Result data.
  */
-public class ListViewController implements Initializable, MenuBarControllerInter, DocumentsLoadedObserver {
+public class ListViewController implements Initializable, MenuBarControllerInter, DocumentsLoadedObserver, TimelineRowObserver {
     @FXML
     private ListView<Result> timelineListView;
     @FXML
@@ -109,7 +110,7 @@ public class ListViewController implements Initializable, MenuBarControllerInter
                     protected void updateItem(Result item, boolean empty) {
                         super.updateItem(item, empty);
                         if (item != null && !empty) {
-                            TimelineRowController timelineRowController = new TimelineRowController(getIndex());
+                            TimelineRowController timelineRowController = new TimelineRowController(getIndex(), ListViewController.this);
                             timelineRowController.setData(item);
                             setGraphic(timelineRowController.getGroup());
                         } else {
@@ -247,5 +248,23 @@ public class ListViewController implements Initializable, MenuBarControllerInter
                 resultIterator.remove();
             }
         }
+    }
+
+    /**
+     * Called by a member of the ListView, to inform the ListView to update, as it updated its values.
+     * The updated list can have this new Result row somewhere else as the user could have changed its date (and the list
+     * is sorted by dates).
+     *
+     * @param updatedResult the Result object of the row that was edited.
+     * @param position      the position this cell was in the ListView.
+     */
+    @Override
+    public void update(Result updatedResult, int position) {
+        System.out.println("Update the list");
+        if (results.size() > position) {
+            results.set(position, updatedResult);
+            setTimelineListView(results, fileDatas);
+        }
+
     }
 }

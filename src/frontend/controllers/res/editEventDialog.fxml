@@ -20,8 +20,8 @@
   </columnConstraints>
   <rowConstraints>
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="46.0" minHeight="10.0" prefHeight="46.0" vgrow="SOMETIMES" />
+    <RowConstraints maxHeight="305.0" minHeight="10.0" prefHeight="294.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
       <Label text="Date: " GridPane.hgrow="NEVER" GridPane.vgrow="NEVER" />
@@ -45,11 +45,11 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </padding>
       </BorderPane>
-      <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.vgrow="SOMETIMES">
+      <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
          <children>
             <BorderPane prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                <center>
-                  <TextField fx:id="subjectsTextField" BorderPane.alignment="CENTER">
+                  <TextField fx:id="subjectTextField" BorderPane.alignment="CENTER">
                      <BorderPane.margin>
                         <Insets right="5.0" />
                      </BorderPane.margin>
@@ -74,7 +74,7 @@
       </VBox>
       <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">
          <children>
-            <TextArea fx:id="eventTextArea" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+            <TextArea fx:id="eventTextArea" prefHeight="200.0" prefWidth="200.0" wrapText="true" HBox.hgrow="ALWAYS" />
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
