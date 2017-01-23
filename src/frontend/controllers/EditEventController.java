@@ -24,7 +24,7 @@ import java.util.*;
 /**
  * Controller of the Content in the EditEventDialog
  */
-//TODO: refactor, clone Result, char limit in textarea
+//TODO: refactor, char limit in textarea
 public class EditEventController {
     @FXML
     private TextField firstDateTextField;
