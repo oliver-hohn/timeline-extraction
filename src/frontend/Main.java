@@ -37,7 +37,7 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
     private ArrayList<Result> currentResults = new ArrayList<>();//list of Results that it is currently showing
     private StartUpController startUpController;
     private ListViewController listViewController;
-
+    //TODO: show dialog when cant save pdf due to file in use.
     @Override
     public void start(Stage primaryStage) throws Exception {
         //need to start engine

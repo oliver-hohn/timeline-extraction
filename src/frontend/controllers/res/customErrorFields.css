@@ -2,3 +2,8 @@
   -fx-text-box-border: red ;
   -fx-focus-color: red ;
 }
+
+.text-area:error{
+  -fx-text-box-border: red ;
+  -fx-focus-color: red ;
+}

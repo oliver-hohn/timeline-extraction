@@ -85,7 +85,6 @@ public class TimelineRowController {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("Edit button for timeline event: " + result.getTimelineDate() + " has been pressed");
-                //TODO: edit button implementation (edit dialog screen)
                 EditEventDialog editEventDialog = new EditEventDialog();
                 Dialog dialog = editEventDialog.getEditEventDialog(result, (position+1));
                 Optional<Result> response = dialog.showAndWait();

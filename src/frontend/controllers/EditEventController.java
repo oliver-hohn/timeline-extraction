@@ -24,8 +24,9 @@ import java.util.*;
 /**
  * Controller of the Content in the EditEventDialog
  */
-//TODO: refactor, char limit in textarea
 public class EditEventController {
+    private final static int charLimit = 100;//100 characters should be enough for the user to write a summary of a sentence (might reduce it to less)
+    private final static String maxChar = "Maximum 100 characters ";
     @FXML
     private TextField firstDateTextField;
     @FXML
@@ -40,6 +41,8 @@ public class EditEventController {
     private HBox subjectsHBox;
     @FXML
     private GridPane rootGridPane;
+    @FXML
+    private Label maxCharacterLabel;
     private Result result;
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
     private SimpleDateFormat validInputFormat = new SimpleDateFormat("dd-MM-yyyy");
@@ -59,7 +62,7 @@ public class EditEventController {
     public EditEventController(Result result, EditEventDialogObserver editEventDialogObserver) {
         this.result = result;
         this.editEventDialogObserver = editEventDialogObserver;
-        textFieldStates = new ArrayList<>(2);
+        textFieldStates = new ArrayList<>(3);
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("res/editEventDialog.fxml"));
         fxmlLoader.setController(this);
         try {
@@ -78,16 +81,15 @@ public class EditEventController {
         //for the set result object populate the fields
         if (result != null) {
             firstDateTextField.setText(getStringFromDate(result.getTimelineDate().getDate1()));
-            firstDateTextField.getStylesheets().add(getClass().getResource("res/customTextField.css").toExternalForm());
+            firstDateTextField.getStylesheets().add(getClass().getResource("res/customErrorFields.css").toExternalForm());
             textFieldStates.add(0, TextFieldState.CORRECT);
             secondDateTextField.setText(getStringFromDate(result.getTimelineDate().getDate2()));
-            secondDateTextField.getStylesheets().add(getClass().getResource("res/customTextField.css").toExternalForm());
+            secondDateTextField.getStylesheets().add(getClass().getResource("res/customErrorFields.css").toExternalForm());
             textFieldStates.add(1, TextFieldState.CORRECT);
             subjectsHBox.getChildren().setAll(getSubjectLabels(result.getSubjects()));
             eventTextArea.setText(result.getEvent());
-            firstDateTextField.setEditable(true);
-            secondDateTextField.setEditable(true);
-            eventTextArea.setEditable(true);
+            eventTextArea.getStylesheets().add(getClass().getResource("res/customErrorFields.css").toExternalForm());
+            textFieldStates.add(2, TextFieldState.CORRECT);
         }
     }
 
@@ -109,9 +111,9 @@ public class EditEventController {
                     System.out.println("Remove this label and subject from the Result: " + subject);
                     if (shouldDeleteSubjectLabel(subject)) {
                         System.out.println("Removed: " + subject);
-                        result.getSubjects().remove(subject);
-                        System.out.println("Remaining: " + result.getSubjects());
-                        subjectsHBox.getChildren().setAll(getSubjectLabels(result.getSubjects()));
+                        result.getSubjects().remove(subject);//remove the given subject
+                        System.out.println("Remaining: " + result.getSubjects());//need to update the subjects shown
+                        subjectsHBox.getChildren().setAll(getSubjectLabels(result.getSubjects()));//so get the new labels and set them
 
                     }
                 }
@@ -140,16 +142,14 @@ public class EditEventController {
             @Override
             public void handle(MouseEvent event) {
                 System.out.println("Add subject in textfield to subject list: " + subjectTextField.getText());
-                addTextToSubjects(subjectTextField.getText().trim());
-                subjectTextField.setText("");
+                addSubjectAndClear(subjectTextField);
             }
         });
         subjectTextField.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("Enter is pressed, add subject to list: " + subjectTextField.getText());
-                addTextToSubjects(subjectTextField.getText().trim());
-                subjectTextField.setText("");
+                addSubjectAndClear(subjectTextField);
             }
         });
         firstDateTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
@@ -160,7 +160,6 @@ public class EditEventController {
                     firstDateTextField.pseudoClassStateChanged(errorClass, false);
                     result.getTimelineDate().setDate1(getDate(firstDateTextField.getText().trim()));
                     textFieldStates.set(0, TextFieldState.CORRECT);
-
                     enableSave();
                 } else {
                     firstDateTextField.pseudoClassStateChanged(errorClass, true);
@@ -176,6 +175,9 @@ public class EditEventController {
                 if (secondDateTextField.getText().trim().length() == 0) {
                     //no second date
                     result.getTimelineDate().setDate2(null);
+                    secondDateTextField.pseudoClassStateChanged(errorClass, false);
+                    textFieldStates.set(1, TextFieldState.CORRECT);
+                    enableSave();
                 } else if (isValidDateInput(secondDateTextField.getText()) && getDate(secondDateTextField.getText().trim()).compareTo(result.getTimelineDate().getDate1()) > 0) {
                     //valid input
                     secondDateTextField.pseudoClassStateChanged(errorClass, false);
@@ -189,14 +191,58 @@ public class EditEventController {
                 }
             }
         });
+        eventTextArea.lengthProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                if (updateLabel(newValue.intValue())) {
+                    textFieldStates.set(2, TextFieldState.WRONG);
+                    eventTextArea.pseudoClassStateChanged(errorClass, true);
+                    disableSave();
+                } else {
+                    textFieldStates.set(2, TextFieldState.CORRECT);
+                    eventTextArea.pseudoClassStateChanged(errorClass, false);
+                    enableSave();
+                }
+            }
+        });
         eventTextArea.focusedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 //save the event once we leave it
-                System.out.println("Saving result event: " + eventTextArea.getText());
-                result.setEvent(eventTextArea.getText());
+                if (textFieldStates.size() == 3 && textFieldStates.get(2) == TextFieldState.CORRECT) {
+                    System.out.println("Saving result event: " + eventTextArea.getText());
+                    result.setEvent(eventTextArea.getText());
+                }
             }
         });
+    }
+
+    /**
+     * Update the label that shows how many characters the users has left to type into the text area, or by how many
+     * characters they have exceeded the limit. Returns whether or not the user has exceeded the character limit.
+     * @param charAmount the amount of characters the user has written in the textarea.
+     * @return true if the charAmount has exceeded the maximum number of characters.
+     */
+    private boolean updateLabel(int charAmount) {
+        String textToSet = maxChar;
+        if (charAmount > charLimit) {
+            textToSet += "(" + (charAmount - charLimit) + " too many)";
+        } else {
+            textToSet += "(" + (charLimit - charAmount) + " remaining)";
+        }
+        maxCharacterLabel.setText(textToSet);
+        return charAmount > charLimit;
+    }
+
+    /**
+     * For the given TextField, add its text to the list of Subjects of the Result (including showing its label), and
+     * clear the field (as the subjects has already been added).
+     *
+     * @param textFieldSubject the givenTextField.
+     */
+    private void addSubjectAndClear(TextField textFieldSubject) {
+        addTextToSubjects(textFieldSubject.getText());
+        textFieldSubject.setText("");
     }
 
     /**
@@ -250,7 +296,6 @@ public class EditEventController {
             }
         }
         if (canSave) {
-            System.out.println("Enabling Save");
             //tell the dialog to enable save
             editEventDialogObserver.disableSave(false);
         }
@@ -293,7 +338,6 @@ public class EditEventController {
         confirmationDeleteDialog.setTitle("Deleting a Subject");
         confirmationDeleteDialog.setContentText("Are you sure you want to delete: " + subject + " from the subjects of this event?");
         confirmationDeleteDialog.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
-
         Optional<ButtonType> response = confirmationDeleteDialog.showAndWait();
         return response.get() == ButtonType.YES;
     }

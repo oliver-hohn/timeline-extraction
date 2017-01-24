@@ -49,7 +49,7 @@ public class FileConfirmationDialog {
             FileData fileData = fileDatas.get(i);
             Label fileNameLabel = new Label(fileData.getFileName());
             TextField dateTextField = new TextField(fileData.getCreationDateFormattedDayMonthYear());
-            dateTextField.getStylesheets().add(getClass().getResource("controllers/res/customTextField.css").toExternalForm());
+            dateTextField.getStylesheets().add(getClass().getResource("controllers/res/customErrorFields.css").toExternalForm());
             dateTextField.setMinWidth(150);//150 pixels is enough for 12 characters
             dateTextField.setMaxHeight(35);//enough for one line, if text size is 15
             dateTextField.setAlignment(Pos.CENTER);
