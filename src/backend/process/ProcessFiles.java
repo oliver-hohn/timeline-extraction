@@ -103,6 +103,10 @@ public class ProcessFiles implements ProcessFileCallback {
         }
     }
 
+    public String getTextInFile(File file){
+        return new ProcessFile(file, null, null).getText(file);
+    }
+
     /**
      * In charge of Processing just one File in a separate Thread.
      */

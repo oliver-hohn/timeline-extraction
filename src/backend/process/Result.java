@@ -14,6 +14,7 @@ public class Result implements Comparable<Result>, Cloneable {
     private Set<String> subjects;
     private TimelineDate timelineDate;
     private FileData fileData;
+    private String originalString;
 
     /**
      * Initialises variables.
@@ -32,6 +33,7 @@ public class Result implements Comparable<Result>, Cloneable {
         this.event = event;
         subjects = new HashSet<>();
         timelineDate = new TimelineDate();
+        originalString = "";
     }
 
     /**
@@ -211,5 +213,13 @@ public class Result implements Comparable<Result>, Cloneable {
         //set the filedata
         copyResult.setFileData(fileData);//all results of the same file point to the same filedata (not a unique one)
         return copyResult;
+    }
+
+    public String getOriginalString() {
+        return originalString;
+    }
+
+    public void setOriginalString(String originalString) {
+        this.originalString = originalString;
     }
 }

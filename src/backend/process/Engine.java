@@ -73,6 +73,7 @@ public class Engine {
      */
     private Result getResult(CoreMap sentence) {
         Result result = new Result();
+        result.setOriginalString(sentence.toString());
         setDatesAndSubjectsNET(sentence, result);
 
         if (result.getDates().size() > 0) {//we have found dates, so lets find more subjects and the event of the sentence

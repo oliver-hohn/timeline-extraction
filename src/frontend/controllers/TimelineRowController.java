@@ -8,10 +8,12 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -106,7 +108,11 @@ public class TimelineRowController {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("Go to Document button for timeline event: " + result.getTimelineDate() + " has been pressed");
-                //TODO: go to document implementation (file reader with related sentence highlighted).
+                DocumentReaderController documentReaderController = new DocumentReaderController(result);
+                Stage stage = new Stage();
+                stage.setScene(new Scene(documentReaderController.getRootBorderPane(), 1024, 800));
+                stage.setTitle("Document Reader - "+result.getFileData().getFileName());
+                stage.show();
             }
         });
     }
