@@ -88,17 +88,11 @@ public class TimelineRowController {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("Edit button for timeline event: " + result.getTimelineDate() + " has been pressed");
-                EditEventDialog editEventDialog = new EditEventDialog();
-                Dialog dialog = editEventDialog.getEditEventDialog(result, (position+1));
+                Dialog dialog = EditEventDialog.getEditEventDialog(result, (position + 1));
                 Optional<Result> response = dialog.showAndWait();
                 response.ifPresent(new Consumer<Result>() {
                     @Override
                     public void accept(Result result) {
-                        System.out.println("comparing original and copy:");
-                        System.out.println("Original: "+TimelineRowController.this.result);
-                        System.out.println("\n");
-                        System.out.println("Copy: "+result);
-
                         //need to tell observer to update
                         timelineRowObserver.update(result, position);
                     }
@@ -118,7 +112,7 @@ public class TimelineRowController {
                     }
                 });
                 stage.setScene(new Scene(documentReaderController.getRootBorderPane(), 1024, 800));
-                stage.setTitle("Document Reader - "+result.getFileData().getFileName());
+                stage.setTitle("Document Reader - " + result.getFileData().getFileName());
                 stage.show();
             }
         });

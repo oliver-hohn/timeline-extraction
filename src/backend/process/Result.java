@@ -191,34 +191,48 @@ public class Result implements Comparable<Result>, Cloneable {
     /**
      * Makes a new Result object, with the same data as this one but not referencing to the same place in memory. So
      * changes in the new Result object do not change the data of this Result object.
+     *
      * @return a new Result object with the same data but not pointing to the data in memory.
      * @throws CloneNotSupportedException
      */
     @Override
     public Object clone() throws CloneNotSupportedException {
+        super.clone();
         Result copyResult = new Result();
         //copying the dates
         TimelineDate copyTimelineDate = new TimelineDate();
         copyTimelineDate.setDate1((Date) timelineDate.getDate1().clone());
-        if(timelineDate.getDate2() != null) {
+        if (timelineDate.getDate2() != null) {
             copyTimelineDate.setDate2((Date) timelineDate.getDate2().clone());
-        }else{
+        } else {
             copyTimelineDate.setDate2(null);
         }
         copyResult.setTimelineDate(copyTimelineDate);
         //copying the event
-        copyResult.setEvent(new String(event));
+        copyResult.setEvent(event);
         //copying the subjects
         copyResult.subjects = new HashSet<>(subjects);
         //set the filedata
         copyResult.setFileData(fileData);//all results of the same file point to the same filedata (not a unique one)
+        //set the original sentence
+        copyResult.setOriginalString(originalString);
         return copyResult;
     }
 
+    /**
+     * Get the original sentence that produced this Result object.
+     *
+     * @return the original sentence that produced this.
+     */
     public String getOriginalString() {
         return originalString;
     }
 
+    /**
+     * Set the original sentence that produced this Result object.
+     *
+     * @param originalString the original sentence that produced this.
+     */
     public void setOriginalString(String originalString) {
         this.originalString = originalString;
     }

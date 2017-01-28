@@ -103,7 +103,13 @@ public class ProcessFiles implements ProcessFileCallback {
         }
     }
 
-    public String getTextInFile(File file){
+    /**
+     * Called to return the text of a given File.
+     *
+     * @param file the given File.
+     * @return the text of the given File.
+     */
+    public String getTextInFile(File file) {
         return new ProcessFile(file, null, null).getText(file);
     }
 
@@ -221,7 +227,7 @@ public class ProcessFiles implements ProcessFileCallback {
                 PDFTextStripper pdfTextStripper = new PDFTextStripper();
                 //pdfTextStripper.setSortByPosition(true);//in the case the program that created the page, didnt place the text in the order it is shown (so could read text in wrong order)
                 toReturn = pdfTextStripper.getText(pdDocument).replaceAll(pdfTextStripper.getLineSeparator(), "");//to then get its text
-                System.out.println("Line Seperator: "+pdfTextStripper.getLineSeparator());
+                System.out.println("Line Seperator: " + pdfTextStripper.getLineSeparator());
                 pdDocument.close();//always remember to close the stream, or document in this case
             } catch (IOException e) {
                 e.printStackTrace();
