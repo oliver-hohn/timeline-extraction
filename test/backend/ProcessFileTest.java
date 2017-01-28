@@ -42,20 +42,20 @@ public class ProcessFileTest {
 
         Result result2 = new Result();
         TimelineDate timelineDate2 = new TimelineDate();
-        timelineDate2.setDate1(simpleDateFormat.parse("2016-12-27"));
+        timelineDate2.setDate1(simpleDateFormat.parse("2017-01-27"));
         result2.setTimelineDate(timelineDate2);
         expectedResults.add(result2);
 
         Result result3 = new Result();
         TimelineDate timelineDate3 = new TimelineDate();
-        timelineDate3.setDate1(simpleDateFormat.parse("2016-12-29"));
+        timelineDate3.setDate1(simpleDateFormat.parse("2017-01-29"));
         result3.setTimelineDate(timelineDate3);
         expectedResults.add(result3);
 
         Result result4 = new Result();
         TimelineDate timelineDate4 = new TimelineDate();
-        timelineDate4.setDate1(simpleDateFormat.parse("2016-12-19"));
-        timelineDate4.setDate2(simpleDateFormat.parse("2016-12-25"));
+        timelineDate4.setDate1(simpleDateFormat.parse("2017-01-16"));
+        timelineDate4.setDate2(simpleDateFormat.parse("2017-01-22"));
         result4.setTimelineDate(timelineDate4);
         expectedResults.add(result4);
 
@@ -127,14 +127,14 @@ public class ProcessFileTest {
         //base date is 29/12/2016 (creation date of file)
         Result result1 = new Result();
         TimelineDate timelineDate1 = new TimelineDate();
-        timelineDate1.setDate1(simpleDateFormat.parse("2016-12-30"));
+        timelineDate1.setDate1(simpleDateFormat.parse("2017-01-27"));
         result1.setTimelineDate(timelineDate1);
         expectedResults.add(result1);
 
         Result result2 = new Result();
         TimelineDate timelineDate2 = new TimelineDate();
         timelineDate2.setDate1(simpleDateFormat.parse("2008-01-01"));//second sentence talks about donations between 2008 and spring of this year (2016)
-        timelineDate2.setDate2(simpleDateFormat.parse("2016-05-31"));//last day of spring
+        timelineDate2.setDate2(simpleDateFormat.parse("2017-05-31"));//last day of spring
         result2.setTimelineDate(timelineDate2);
         expectedResults.add(result2);
 
@@ -182,7 +182,7 @@ public class ProcessFileTest {
         //1967 = 1967-01-01
         Result result1 = new Result();
         TimelineDate timelineDate1 = new TimelineDate();
-        timelineDate1.setDate1(simpleDateFormat.parse("2016-12-30"));
+        timelineDate1.setDate1(simpleDateFormat.parse("2017-01-27"));
         result1.setTimelineDate(timelineDate1);
         expectedResults.add(result1);
 

@@ -174,7 +174,7 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
     public void saveToPDF(List<Result> results) {
         System.out.println(TAG + "Save To PDF pressed");
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Document Files");
+        fileChooser.setTitle("Save Timeline As...");
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("PDF File","*.pdf"));
         File file = fileChooser.showSaveDialog(primaryStage);
         if(file != null && listViewController != null){
