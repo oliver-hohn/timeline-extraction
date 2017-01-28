@@ -2,6 +2,7 @@ package frontend.controllers;
 
 import backend.process.Result;
 import frontend.EditEventDialog;
+import frontend.observers.DocumentReaderObserver;
 import frontend.observers.TimelineRowObserver;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -108,8 +109,14 @@ public class TimelineRowController {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("Go to Document button for timeline event: " + result.getTimelineDate() + " has been pressed");
-                DocumentReaderController documentReaderController = new DocumentReaderController(result);
                 Stage stage = new Stage();
+                DocumentReaderController documentReaderController = new DocumentReaderController(result, new DocumentReaderObserver() {
+                    @Override
+                    public void close() {
+                        System.out.println("Closing document reader window");
+                        stage.close();
+                    }
+                });
                 stage.setScene(new Scene(documentReaderController.getRootBorderPane(), 1024, 800));
                 stage.setTitle("Document Reader - "+result.getFileData().getFileName());
                 stage.show();
