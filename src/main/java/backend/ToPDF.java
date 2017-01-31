@@ -180,8 +180,8 @@ public class ToPDF {
         contentStream.newLineAtOffset(0, -(fontSize + padding));
         wrapText("Event: " + result.getEvent(), contentStream);
         contentStream.newLineAtOffset(0, -(fontSize + padding));
-        wrapText("From: " + result.getFileData().getFileName()+" ("+
-                result.getFileData().getCreationDateFormattedDayMonthYear()+")", contentStream);
+        wrapText("From: " + result.getFileData().getFileName() + " (" +
+                result.getFileData().getCreationDateFormattedDayMonthYear() + ")", contentStream);
         contentStream.endText();
     }
 

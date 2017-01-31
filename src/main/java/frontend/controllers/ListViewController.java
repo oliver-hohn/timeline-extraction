@@ -184,25 +184,38 @@ public class ListViewController implements Initializable, MenuBarControllerInter
         setDocumentListView(this.fileDatas);
     }
 
-    private void cleanRepeatedFileData(List<FileData> oldFileData, List<FileData> newFileData){
+    /**
+     * Called to remove from the newFileData list, all the FileData objects that are already present in the oldFileData.
+     *
+     * @param oldFileData the given oldFileData.
+     * @param newFileData the given newFileData.
+     */
+    private void cleanRepeatedFileData(List<FileData> oldFileData, List<FileData> newFileData) {
         Iterator<FileData> newFileDataIterator = newFileData.iterator();
-        while (newFileDataIterator.hasNext()){//for each new result
+        while (newFileDataIterator.hasNext()) {//for each new result
             FileData fileData = newFileDataIterator.next();
-            if(oldFileData.contains(fileData)){//if its in the old list
+            if (oldFileData.contains(fileData)) {//if its in the old list
                 newFileDataIterator.remove();//then dont add it to it (so remove it)
             }
         }
     }
 
-    private void cleanRepeatedResults(List<Result> results, List<FileData> fileDatas){
+    /**
+     * Called to remove all the Result objects in results list that have their FileData object present in the fileDatas
+     * List.
+     *
+     * @param results   the given Result list.
+     * @param fileDatas the given FileData list.
+     */
+    private void cleanRepeatedResults(List<Result> results, List<FileData> fileDatas) {
         Iterator<Result> resultIterator = results.iterator();
-        while (resultIterator.hasNext()){
+        while (resultIterator.hasNext()) {
             //for each result, check it with the filedata, if its filedata is already there, then remove it
             Result result = resultIterator.next();
-            if(fileDatas.contains(result.getFileData())){
+            if (fileDatas.contains(result.getFileData())) {
                 //this file data already exists, so remove the result
                 resultIterator.remove();
-                System.out.println("Removed: "+result+ " from results to be added");
+                System.out.println("Removed: " + result + " from results to be added");
             }
         }
     }
