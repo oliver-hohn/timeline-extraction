@@ -42,7 +42,7 @@ public class DocumentReaderController {
      */
     public DocumentReaderController(Result result, DocumentReaderObserver documentReaderObserver) {
         this.documentReaderObserver = documentReaderObserver;
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("res/documentReader.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("documentReader.fxml"));
         fxmlLoader.setController(this);
         try {
             fxmlLoader.load();

@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public class ProcessFileTest {
      * @throws InterruptedException as we are putting the Thread that runs this test to sleep to let ProcessFile finish running.
      */
     @Test
-    public void testSampleFileProcessTXT() throws ParseException, InterruptedException {
+    public void testSampleFileProcessTXT() throws ParseException, InterruptedException, URISyntaxException {
         List<Result> expectedResults = new ArrayList<>();
         actualResults = null;
 
@@ -59,14 +60,14 @@ public class ProcessFileTest {
         result4.setTimelineDate(timelineDate4);
         expectedResults.add(result4);
 
-        File testFile = new File("test/resources/testfile1.txt");
+        File testFile = new File(getClass().getResource("testfile1.txt").toURI());
         ArrayList<File> files = new ArrayList<>();
         files.add(testFile);
 
         ArrayList<FileData> fileDatas = new ArrayList<>();
-        for (File file : files) {
-            fileDatas.add(new FileData(file));
-        }
+        FileData fileData = new FileData("testfile1.txt", getClass().getResource("testfile1.txt").toString());
+        fileData.setCreationDate("28-01-2017");
+        fileDatas.add(fileData);
 
         ProcessFiles processFiles = new ProcessFiles();
         actualResults = processFiles.processFiles(files, fileDatas);
@@ -80,12 +81,12 @@ public class ProcessFileTest {
      * @throws InterruptedException as we put the Thread that runs this test to sleep, so that ProcessFile can finish running.
      */
     @Test
-    public void testMultiThread() throws InterruptedException {//check that processfile makes two more threads run
+    public void testMultiThread() throws InterruptedException, URISyntaxException {//check that processfile makes two more threads run
         // at least 2 Threads should be running (main and the one created by process file).
         actualResults = null;
-        File testFile1 = new File("test/resources/testfile1.txt");
-        File testFile2 = new File("test/resources/testfile2.txt");
-        File testFile3 = new File("test/resources/testfile3.txt");
+        File testFile1 = new File(getClass().getResource("testfile1.txt").toURI());
+        File testFile2 = new File(getClass().getResource("testfile2.txt").toURI());
+        File testFile3 = new File(getClass().getResource("testfile3.txt").toURI());
 
         ArrayList<File> files = new ArrayList<>();
         files.add(testFile1);
@@ -93,9 +94,15 @@ public class ProcessFileTest {
         files.add(testFile3);
 
         ArrayList<FileData> fileDatas = new ArrayList<>();
-        for (File file : files) {
-            fileDatas.add(new FileData(file));
-        }
+        FileData fileData = new FileData("testfile1.txt", getClass().getResource("testfile1.txt").toString());
+        fileData.setCreationDate("28-01-2017");
+        fileDatas.add(fileData);
+        fileData = new FileData("testfile2.txt", getClass().getResource("testfile2.txt").toString());
+        fileData.setCreationDate("28-01-2017");
+        fileDatas.add(fileData);
+        fileData = new FileData("testfile3.txt", getClass().getResource("testfile3.txt").toString());
+        fileData.setCreationDate("28-01-2017");
+        fileDatas.add(fileData);
 
         ProcessFiles processFiles = new ProcessFiles();
         Task<Boolean> task = new Task<Boolean>() {
@@ -121,7 +128,7 @@ public class ProcessFileTest {
      * @throws ParseException       for the Dates that we create for the expected Results.
      */
     @Test
-    public void testSampleFileProcessDocx() throws InterruptedException, ParseException {
+    public void testSampleFileProcessDocx() throws InterruptedException, ParseException, URISyntaxException {
         actualResults = null;
         ArrayList<Result> expectedResults = new ArrayList<>();
         //base date is 29/12/2016 (creation date of file)
@@ -151,14 +158,14 @@ public class ProcessFileTest {
         result4.setTimelineDate(timelineDate4);
         expectedResults.add(result4);
 
-        File testFile = new File("test/resources/testfile4.docx");
+        File testFile = new File(getClass().getResource("testfile4.docx").toURI());
         ArrayList<File> files = new ArrayList<>();
         files.add(testFile);
 
         ArrayList<FileData> fileDatas = new ArrayList<>();
-        for (File file : files) {
-            fileDatas.add(new FileData(file));
-        }
+        FileData fileData = new FileData("testfile4.docx", getClass().getResource("testfile4.docx").toString());
+        fileData.setCreationDate("28-01-2017");
+        fileDatas.add(fileData);
 
         ProcessFiles processFiles = new ProcessFiles();
         actualResults = processFiles.processFiles(files, fileDatas);
@@ -173,7 +180,7 @@ public class ProcessFileTest {
      * @throws ParseException       for the Dates that we create for the expected Results.
      */
     @Test
-    public void testSampleFilePDF() throws InterruptedException, ParseException {
+    public void testSampleFilePDF() throws InterruptedException, ParseException, URISyntaxException {
         actualResults = null;
         ArrayList<Result> expectedResults = new ArrayList<>();
         //base date 2016-12-29
@@ -192,14 +199,14 @@ public class ProcessFileTest {
         result2.setTimelineDate(timelineDate2);
         expectedResults.add(result2);
 
-        File testFile = new File("test/resources/testfile5.pdf");//bbc article (http://www.bbc.com/news/world-us-canada-38451258)
+        File testFile = new File(getClass().getResource("testfile5.pdf").toURI());//bbc article (http://www.bbc.com/news/world-us-canada-38451258)
         ArrayList<File> files = new ArrayList<>();
         files.add(testFile);
 
         ArrayList<FileData> fileDatas = new ArrayList<>();
-        for (File file : files) {
-            fileDatas.add(new FileData(file));
-        }
+        FileData fileData = new FileData("testfile5.pdf", getClass().getResource("testfile5.pdf").toString());
+        fileData.setCreationDate("28-01-2017");
+        fileDatas.add(fileData);
 
         ProcessFiles processFiles = new ProcessFiles();
         actualResults = processFiles.processFiles(files, fileDatas);

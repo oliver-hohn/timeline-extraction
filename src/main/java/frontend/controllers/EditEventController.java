@@ -63,7 +63,7 @@ public class EditEventController {
         this.result = result;
         this.editEventDialogObserver = editEventDialogObserver;
         textFieldStates = new ArrayList<>(3);
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("res/editEventDialog.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("editEventDialog.fxml"));
         fxmlLoader.setController(this);
         try {
             fxmlLoader.load();
@@ -81,14 +81,14 @@ public class EditEventController {
         //for the set result object populate the fields
         if (result != null) {
             firstDateTextField.setText(getStringFromDate(result.getTimelineDate().getDate1()));
-            firstDateTextField.getStylesheets().add(getClass().getResource("res/customErrorFields.css").toExternalForm());
+            firstDateTextField.getStylesheets().add(getClass().getResource("customErrorFields.css").toExternalForm());
             textFieldStates.add(0, TextFieldState.CORRECT);
             secondDateTextField.setText(getStringFromDate(result.getTimelineDate().getDate2()));
-            secondDateTextField.getStylesheets().add(getClass().getResource("res/customErrorFields.css").toExternalForm());
+            secondDateTextField.getStylesheets().add(getClass().getResource("customErrorFields.css").toExternalForm());
             textFieldStates.add(1, TextFieldState.CORRECT);
             subjectsHBox.getChildren().setAll(getSubjectLabels(result.getSubjects()));
             eventTextArea.setText(result.getEvent());
-            eventTextArea.getStylesheets().add(getClass().getResource("res/customErrorFields.css").toExternalForm());
+            eventTextArea.getStylesheets().add(getClass().getResource("customErrorFields.css").toExternalForm());
             textFieldStates.add(2, TextFieldState.CORRECT);
         }
     }

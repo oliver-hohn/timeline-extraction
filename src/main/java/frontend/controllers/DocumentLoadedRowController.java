@@ -33,7 +33,7 @@ public class DocumentLoadedRowController {
      */
     public DocumentLoadedRowController(FileData fileData, DocumentsLoadedObserver documentsLoadedObserver) {
         this.documentsLoadedObserver = documentsLoadedObserver;
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("res/documentLoadedRow.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("documentLoadedRow.fxml"));
         fxmlLoader.setController(this);
         try {
             fxmlLoader.load();

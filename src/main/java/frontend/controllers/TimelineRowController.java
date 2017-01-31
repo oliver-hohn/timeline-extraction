@@ -57,9 +57,9 @@ public class TimelineRowController {
         FXMLLoader fxmlLoader;
         boolean isEven = (position % 2) == 0;
         if (isEven) {
-            fxmlLoader = new FXMLLoader(getClass().getResource("res/timelineRowEven.fxml"));
+            fxmlLoader = new FXMLLoader(getClass().getResource("timelineRowEven.fxml"));
         } else {
-            fxmlLoader = new FXMLLoader(getClass().getResource("res/timelineRowOdd.fxml"));
+            fxmlLoader = new FXMLLoader(getClass().getResource("timelineRowOdd.fxml"));
         }
         fxmlLoader.setController(this);
         try {
