@@ -9,6 +9,10 @@ repositories {
 }
 
 dependencies {
+    //added slf4j  because one of the libraries points to it, hence throwing the error Failed to load class “org.slf4j.impl.StaticLoggerBinder”
+    //when running the build
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.7'
+    compile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.7'
 	compile group: 'edu.stanford.nlp', name: 'stanford-corenlp', version: '3.7.0'
 	compile group: 'edu.stanford.nlp', name: 'stanford-corenlp', version: '3.7.0', classifier: 'models-english'
 	compile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.4'
@@ -20,6 +24,8 @@ dependencies {
 
 
 	testCompile 'junit:junit:4.12'
+    testCompile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.7'
+    testCompile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.7'
 	testCompile group: 'edu.stanford.nlp', name: 'stanford-corenlp', version: '3.7.0'
 	testCompile group: 'edu.stanford.nlp', name: 'stanford-corenlp', version: '3.7.0', classifier: 'models-english'
 	testCompile group: 'org.apache.pdfbox', name: 'pdfbox', version: '2.0.4'

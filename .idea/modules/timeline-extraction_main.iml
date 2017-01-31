@@ -28,7 +28,6 @@
     <orderEntry type="library" name="Gradle: joda-time:joda-time:2.9" level="project" />
     <orderEntry type="library" name="Gradle: com.googlecode.efficient-java-matrix-library:ejml:0.23" level="project" />
     <orderEntry type="library" name="Gradle: org.glassfish:javax.json:1.0.4" level="project" />
-    <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.12" level="project" />
     <orderEntry type="library" name="Gradle: com.google.protobuf:protobuf-java:2.6.1" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.pdfbox:fontbox:2.0.4" level="project" />
     <orderEntry type="library" name="Gradle: commons-logging:commons-logging:1.2" level="project" />
@@ -46,5 +45,6 @@
     <orderEntry type="library" name="Gradle: xml-apis:xml-apis:1.4.01" level="project" />
     <orderEntry type="library" name="Gradle: xerces:xercesImpl:2.8.0" level="project" />
     <orderEntry type="library" name="Gradle: xalan:xalan:2.7.0" level="project" />
+    <orderEntry type="library" name="Gradle: org.slf4j:slf4j-api:1.7.12" level="project" />
   </component>
 </module>

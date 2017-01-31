@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 /**
@@ -22,12 +23,12 @@ public class SystemStateTest {
      * @throws InterruptedException as we make the Test thread wait for ProcessFile to finish processing the Files.
      */
     @Test
-    public void testSystemStatePROCESSING() throws InterruptedException {
+    public void testSystemStatePROCESSING() throws InterruptedException, URISyntaxException {
         BackEndSystem.getInstance().setSystemState(SystemState.STARTED);
         Assert.assertEquals(SystemState.STARTED, BackEndSystem.getInstance().getSystemState());
 
         ProcessFiles processFiles = new ProcessFiles();
-        File testFile = new File("test/resources/testfile1.txt");
+        File testFile = new File(getClass().getResource("testfile1.txt").toURI());
         ArrayList<File> files = new ArrayList<>();
         files.add(testFile);
 
@@ -58,12 +59,12 @@ public class SystemStateTest {
      * Checks that the state is set to FINISHED when files have been processed, and the result has been returned.
      */
     @Test
-    public void testSystemStateFINISHED() {
+    public void testSystemStateFINISHED() throws URISyntaxException {
         BackEndSystem.getInstance().setSystemState(SystemState.STARTED);
         Assert.assertEquals(SystemState.STARTED, BackEndSystem.getInstance().getSystemState());
 
         ProcessFiles processFiles = new ProcessFiles();
-        File testFile = new File("test/resources/testfile1.txt");
+        File testFile = new File(getClass().getResource("testfile1.txt").toURI());
         ArrayList<File> files = new ArrayList<>();
         files.add(testFile);
 
