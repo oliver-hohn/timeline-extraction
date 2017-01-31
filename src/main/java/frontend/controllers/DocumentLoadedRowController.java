@@ -56,7 +56,7 @@ public class DocumentLoadedRowController {
      * @param fileData label for which we set the File name.
      */
     private void setData(FileData fileData) {
-        documentLabel.setText(fileData.getFileName());
+        documentLabel.setText(fileData.getFileName()+" ("+fileData.getCreationDateFormattedDayMonthYear()+")");
     }
 
     /**

@@ -173,6 +173,8 @@ public class ListViewController implements Initializable, MenuBarControllerInter
      * @param fileDatas a list of FileData objects which needs to be added to the documentListView.
      */
     public void addToTimelineListView(List<Result> results, List<FileData> fileDatas) {
+        cleanRepeatedResults(results, this.fileDatas);
+        cleanRepeatedFileData(this.fileDatas, fileDatas);
         this.results.addAll(results);
         sortAndReverse(this.results);
         setTimelineList(this.results);
@@ -180,6 +182,29 @@ public class ListViewController implements Initializable, MenuBarControllerInter
         this.fileDatas.addAll(fileDatas);
         Collections.sort(this.fileDatas);
         setDocumentListView(this.fileDatas);
+    }
+
+    private void cleanRepeatedFileData(List<FileData> oldFileData, List<FileData> newFileData){
+        Iterator<FileData> newFileDataIterator = newFileData.iterator();
+        while (newFileDataIterator.hasNext()){//for each new result
+            FileData fileData = newFileDataIterator.next();
+            if(oldFileData.contains(fileData)){//if its in the old list
+                newFileDataIterator.remove();//then dont add it to it (so remove it)
+            }
+        }
+    }
+
+    private void cleanRepeatedResults(List<Result> results, List<FileData> fileDatas){
+        Iterator<Result> resultIterator = results.iterator();
+        while (resultIterator.hasNext()){
+            //for each result, check it with the filedata, if its filedata is already there, then remove it
+            Result result = resultIterator.next();
+            if(fileDatas.contains(result.getFileData())){
+                //this file data already exists, so remove the result
+                resultIterator.remove();
+                System.out.println("Removed: "+result+ " from results to be added");
+            }
+        }
     }
 
     /**

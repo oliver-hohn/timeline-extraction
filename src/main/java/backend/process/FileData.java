@@ -99,7 +99,7 @@ public class FileData implements Comparable<FileData> {
     public boolean equals(Object obj) {
         try {
             FileData otherFileData = (FileData) obj;
-            return fileName.equals(otherFileData.fileName) && filePath.equals(otherFileData.filePath);
+            return fileName.equals(otherFileData.fileName) && filePath.equals(otherFileData.filePath) && creationDate.equals(otherFileData.creationDate);
         } catch (Exception e) {
             return false;
         }
