@@ -78,11 +78,18 @@ public class DocumentReaderController {
         }
     }
 
-    private Alert documentUnavailableDialog(FileData fileData){
+    /**
+     * For the given FileData (holds the Files name, and represents it), produce an Alert Dialog to show to the User,
+     * to inform them that the File which they wish to read is unavailable.
+     *
+     * @param fileData the given FileData
+     * @return the Alert Dialog the informs the User the File is unavailable to read.
+     */
+    private Alert documentUnavailableDialog(FileData fileData) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Document Unavailable");
         alert.setHeaderText(null);
-        alert.setContentText("The File: "+fileData.getFileName()+" is Unavailable");
+        alert.setContentText("The File: " + fileData.getFileName() + " is Unavailable");
         alert.getDialogPane().getButtonTypes().setAll(ButtonType.OK);
         return alert;
     }
@@ -114,16 +121,13 @@ public class DocumentReaderController {
     private void highlightText(String textToHighlight, String from) {//highlight first occurrence of the text to highlight
         int startHighlight = from.indexOf(textToHighlight);
         int endHighlight = startHighlight + textToHighlight.length();//as we highlight the original sentence, which we know its length, and its start index
-        System.out.println("Start: " + startHighlight + " End: " + endHighlight);
-        System.out.println("From: " + from + " Length: " + from.length());
-        System.out.println("Text: " + textToHighlight + " Length: " + textToHighlight.length());
-        System.out.println("StartPoint: " + from.substring(startHighlight));
-        System.out.println("Length of From: " + documentInlineCssTextArea.getText().length());
         if (endHighlight > from.length()) {//if we are over the limit of the text, then we go up to that point
             endHighlight = documentInlineCssTextArea.getText().length();
         }
         System.out.println("EndHighlight: " + endHighlight);
-        documentInlineCssTextArea.setStyle(startHighlight, endHighlight, "-fx-fill: red;");//TODO: change css
+        if (startHighlight > 0 && startHighlight < from.length() && endHighlight > 0) {
+            documentInlineCssTextArea.setStyle(startHighlight, endHighlight, "-fx-fill: red;");//TODO: change css
+        }
     }
 
     /**
