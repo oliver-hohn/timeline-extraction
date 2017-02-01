@@ -152,7 +152,7 @@ public class DocumentReaderController {
             endHighlight = documentInlineCssTextArea.getText().length();
         }
         System.out.println("EndHighlight: " + endHighlight);
-        if (startHighlight > 0 && startHighlight < from.length() && endHighlight > 0) {
+        if (startHighlight >= 0 && startHighlight < from.length() && endHighlight >= 0) {
             documentInlineCssTextArea.setStyle(startHighlight, endHighlight, "-fx-fill: red;");//TODO: change css
         }
     }
