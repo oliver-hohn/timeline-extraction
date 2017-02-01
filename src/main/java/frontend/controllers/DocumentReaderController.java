@@ -4,12 +4,15 @@ import backend.process.FileData;
 import backend.process.ProcessFiles;
 import backend.process.Result;
 import frontend.observers.DocumentReaderObserver;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import org.fxmisc.richtext.InlineCssTextArea;
@@ -67,6 +70,30 @@ public class DocumentReaderController {
         if ((stringInFile = getStringInFile(result.getFileData())) != null) {
             documentInlineCssTextArea.clear();
             documentInlineCssTextArea.replaceText(stringInFile);
+            ContextMenu contextMenu = new ContextMenu();
+            MenuItem menuItemCopy = new MenuItem("Copy");
+            menuItemCopy.setDisable(true);//initially cant copy as no text is selected
+            copyMenuItem.setDisable(true);
+            menuItemCopy.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    copy();//copy the selected text
+                }
+            });
+            contextMenu.getItems().setAll(menuItemCopy);
+            documentInlineCssTextArea.selectedTextProperty().addListener(new ChangeListener<String>() {
+                @Override
+                public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                    if (newValue.equals("")) {
+                        menuItemCopy.setDisable(true);
+                        copyMenuItem.setDisable(true);
+                    } else {
+                        menuItemCopy.setDisable(false);
+                        copyMenuItem.setDisable(false);
+                    }
+                }
+            });
+            documentInlineCssTextArea.setContextMenu(contextMenu);
             highlightText(result.getOriginalString(), stringInFile);
         } else {
             System.out.println("File is unavailable, cant be read");
@@ -163,11 +190,12 @@ public class DocumentReaderController {
      * Called when the Copy Menu Item is pressed. Used to copy the text in the file to the clipboard.
      */
     private void copy() {
-        //TODO: copy selected text or all if none is selected
-        System.out.println("Copy Text to Clipboard");
-        Toolkit toolkit = Toolkit.getDefaultToolkit();
-        if (toolkit != null && documentInlineCssTextArea.getText() != null) {
-            toolkit.getSystemClipboard().setContents(new StringSelection(documentInlineCssTextArea.getText()), null);
+        if (documentInlineCssTextArea != null) {
+            System.out.println("Copy Text to Clipboard: " + documentInlineCssTextArea.getSelectedText());
+            Toolkit toolkit = Toolkit.getDefaultToolkit();
+            if (toolkit != null && documentInlineCssTextArea.getSelectedText() != null) {
+                toolkit.getSystemClipboard().setContents(new StringSelection(documentInlineCssTextArea.getSelectedText()), null);
+            }
         }
     }
 
