@@ -37,7 +37,7 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
     private ArrayList<Result> currentResults = new ArrayList<>();//list of Results that it is currently showing
     private StartUpController startUpController;
     private ListViewController listViewController;
-    //TODO: show dialog when cant save pdf due to file in use, clean up class (eg unused lists)
+    //TODO: clean up class (eg unused lists)
     @Override
     public void start(Stage primaryStage) throws Exception {
         //need to start engine
@@ -180,8 +180,16 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
         if(file != null && listViewController != null){
             try {
                 new ToPDF().saveToPDF(results, file);
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException e) {//if cant save the file, because it is most probably in use or it has been deleted
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);//then inform the user,
+                alert.setTitle("File In Use");
+                alert.setHeaderText(null);
+                alert.setContentText("The file: "+file.getName()+" is in use by another process.");
+                alert.getDialogPane().getButtonTypes().setAll(ButtonType.OK);
+                Optional<ButtonType> response = alert.showAndWait();
+                if(response.isPresent() && response.get() == ButtonType.OK) {//and if they press OK, ie want to save
+                    saveToPDF(results);//show them the file chooser to let them pick a different (or same location, if
+                }                               //they closed the process
             }
         }
     }
