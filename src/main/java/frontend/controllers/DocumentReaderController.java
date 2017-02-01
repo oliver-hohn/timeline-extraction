@@ -8,6 +8,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import org.fxmisc.richtext.InlineCssTextArea;
@@ -67,10 +69,22 @@ public class DocumentReaderController {
             documentInlineCssTextArea.replaceText(stringInFile);
             highlightText(result.getOriginalString(), stringInFile);
         } else {
-            //TODO: show alert that tells file is unavailable, then closes reader
             System.out.println("File is unavailable, cant be read");
-            documentInlineCssTextArea.replaceText("File Is Unavailable. It could have been deleted, or it's permissions have changed");
+            documentInlineCssTextArea.replaceText("");
+            Alert documentUnvailable = documentUnavailableDialog(result.getFileData());
+            documentUnvailable.showAndWait();
+            //should close this window, as the file is unavailable
+            rootBorderPane = null;
         }
+    }
+
+    private Alert documentUnavailableDialog(FileData fileData){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Document Unavailable");
+        alert.setHeaderText(null);
+        alert.setContentText("The File: "+fileData.getFileName()+" is Unavailable");
+        alert.getDialogPane().getButtonTypes().setAll(ButtonType.OK);
+        return alert;
     }
 
     /**

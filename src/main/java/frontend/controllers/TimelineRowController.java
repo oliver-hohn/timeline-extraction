@@ -14,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -111,9 +112,12 @@ public class TimelineRowController {
                         stage.close();
                     }
                 });
-                stage.setScene(new Scene(documentReaderController.getRootBorderPane(), 1024, 800));
-                stage.setTitle("Document Reader - " + result.getFileData().getFileName());
-                stage.show();
+                Pane rootLayout = documentReaderController.getRootBorderPane();
+                if(rootLayout != null) {
+                    stage.setScene(new Scene(documentReaderController.getRootBorderPane(), 1024, 800));
+                    stage.setTitle("Document Reader - " + result.getFileData().getFileName());
+                    stage.show();
+                }
             }
         });
     }

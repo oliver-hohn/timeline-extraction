@@ -45,7 +45,7 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
         System.out.println("Called getInstance");
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("startup.fxml"));
         primaryStage.setScene(new Scene(fxmlLoader.load(), 1024, 800));
-        primaryStage.setTitle("Automated Timeline Extractor - Oliver Philip Höhn");
+        primaryStage.setTitle("Automated Timeline Extractor - Oliver Philip Hohn");
         startUpController = fxmlLoader.getController();
         startUpController.setObserver(this);
         primaryStage.show();
@@ -88,7 +88,7 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
         try {
             startUpController = null;
             primaryStage.setScene(new Scene(fxmlLoader.load(), primaryStage.getWidth(), primaryStage.getHeight()));
-            primaryStage.setTitle("Automated Timeline Extractor - Oliver Philip Höhn");
+            primaryStage.setTitle("Automated Timeline Extractor - Oliver Philip Hohn");
             listViewController = fxmlLoader.getController();
             listViewController.setTimelineObserver(this);
             primaryStage.show();
