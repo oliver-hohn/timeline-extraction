@@ -11,7 +11,6 @@ import java.util.Collections;
 /**
  * Created by Oliver on 29/10/2016.
  */
-//TODO: pass libraries to project directory
 public class TestClass {
 
     public static void main(String[] args) {
