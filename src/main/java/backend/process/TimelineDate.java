@@ -180,7 +180,6 @@ public class TimelineDate implements Comparable<TimelineDate> {
      * @param date an input text that contains date information (can be exact or relative).
      * @return a list of exact Dates formed from the input.
      */
-    //TODO: split this up into smaller methods
     private ArrayList<Date> getDate(String date) {
         calendar.clear();
         ArrayList<Date> dates = new ArrayList<>();
@@ -191,6 +190,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
         String month2 = null;
         String day2 = null;
         boolean isBC = false;
+        boolean isWeekNumber = false;
         //can have a date that is PRESENT_REF (when the text has now)
         if (onlyPresentRefPattern.matcher(date).matches()) {
             //should be base date, as it means this current moment?
@@ -230,7 +230,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
                         if (isBC) {
                             year2 = dateInfo[i].replace("X", "0");
                         } else {
-                            year2 = dateInfo[i].replace("X", "9");//could be the casse that we dont want it to point to the last day in the year
+                            year2 = dateInfo[i].replace("X", "9");//could be the case that we dont want it to point to the last day in the year
 
                         }
                         month2 = "12";//last day of the second year
@@ -245,6 +245,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
                     System.out.println("In onlyMonthPattern");
                     month1 = dateInfo[i];
                 } else if (onlyWeekNumberPattern.matcher(dateInfo[i]).matches()) {//checking if its a week number
+                    isWeekNumber = true;
                     //calculate month and start day-end
                     //split W from actual week number
                     if (isBC) {
@@ -281,6 +282,19 @@ public class TimelineDate implements Comparable<TimelineDate> {
                 }
             } else if (i == 2) {//can be a day, or previously had week this could be weekend
                 System.out.println("Checking: " + dateInfo[i] + "size: " + dateInfo[i].length());
+                if (isWeekNumber) {//then if it has another digit, its the day of the week (so its not a week, but a specific day of the week)
+                    System.out.println("Day of the week: " + dateInfo[i]);
+                    int day = getInt(dateInfo[i]);
+                    //as the calendar here starts with sunday and in iso it starts with monday, we need to increase by one and mod
+                    day = (day % 7) + 1;
+                    calendar.set(Calendar.DAY_OF_WEEK, day);
+                    year1 = new SimpleDateFormat("yyyy").format(calendar.getTime());//in the case the week goes into the next year, update our year1
+                    month1 = new SimpleDateFormat("MM").format(calendar.getTime());
+                    day1 = new SimpleDateFormat("dd").format(calendar.getTime());
+                    day2 = null;
+                    month2 = null;
+                    year2 = null;
+                }
                 if (onlyDayPattern.matcher(dateInfo[i]).matches()) {//got the day
                     System.out.println("Got day: " + dateInfo[i]);
                     day1 = dateInfo[i];
