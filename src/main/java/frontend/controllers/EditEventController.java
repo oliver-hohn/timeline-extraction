@@ -49,6 +49,8 @@ public class EditEventController {
     private final PseudoClass errorClass = PseudoClass.getPseudoClass("error");
     private EditEventDialogObserver editEventDialogObserver;
     private ArrayList<TextFieldState> textFieldStates;
+    private final static int subjectLimit = 5;
+    private int subjectCount = 0;
 
 
     /**
@@ -102,6 +104,7 @@ public class EditEventController {
      */
     private List<Label> getSubjectLabels(Set<String> subjects) {
         List<Label> labels = new ArrayList<>();
+        subjectCount = subjects.size();
         for (String subject : subjects) {
             Label label = new Label(subject);
             label.setUnderline(true);
@@ -220,6 +223,7 @@ public class EditEventController {
     /**
      * Update the label that shows how many characters the users has left to type into the text area, or by how many
      * characters they have exceeded the limit. Returns whether or not the user has exceeded the character limit.
+     *
      * @param charAmount the amount of characters the user has written in the textarea.
      * @return true if the charAmount has exceeded the maximum number of characters.
      */
@@ -241,8 +245,14 @@ public class EditEventController {
      * @param textFieldSubject the givenTextField.
      */
     private void addSubjectAndClear(TextField textFieldSubject) {
-        addTextToSubjects(textFieldSubject.getText());
-        textFieldSubject.setText("");
+        if (canAdd()) {
+            addTextToSubjects(textFieldSubject.getText());
+            textFieldSubject.setText("");
+        } else {
+            //inform the user they cant add more subjects
+            Alert maxNumberSubjectDialog = getInformMaxSubject();
+            maxNumberSubjectDialog.show();
+        }
     }
 
     /**
@@ -336,9 +346,34 @@ public class EditEventController {
     private boolean shouldDeleteSubjectLabel(String subject) {
         Alert confirmationDeleteDialog = new Alert(Alert.AlertType.CONFIRMATION);
         confirmationDeleteDialog.setTitle("Deleting a Subject");
-        confirmationDeleteDialog.setContentText("Are you sure you want to delete: " + subject + " from the subjects of this event?");
+        confirmationDeleteDialog.setContentText("Are you sure you want to delete: \"" + subject + "\" from the subjects of this event?");
         confirmationDeleteDialog.getButtonTypes().setAll(ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
         Optional<ButtonType> response = confirmationDeleteDialog.showAndWait();
         return response.get() == ButtonType.YES;
     }
+
+    /**
+     * Whether or not a Subject can be added to the list of Subjects of the Result object.
+     *
+     * @return true if the current subject count is below the subjectLimit (5); false otherwise.
+     */
+    private boolean canAdd() {
+        return subjectCount < subjectLimit;
+    }
+
+    /**
+     * Get a Information Alert Dialog that informs the user that the subject limit has been reached, and that they can
+     * remove subjects by pressing them in the list (to make space for the new subject). This is so that the user doesn't
+     * add too many subjects for an event which was given by just 1 sentence.
+     *
+     * @return a Information Dialog to inform the user the subject limit has been reached.
+     */
+    private Alert getInformMaxSubject() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Add Subject Information");
+        alert.setHeaderText(null);
+        alert.setContentText("The maximum number of Subjects allowed has been reached. To remove a Subject just click on it.");
+        return alert;
+    }
+
 }
