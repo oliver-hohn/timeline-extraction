@@ -90,12 +90,20 @@ public class TimelineRowController {
             public void handle(ActionEvent event) {
                 System.out.println("Edit button for timeline event: " + result.getTimelineDate() + " has been pressed");
                 Dialog dialog = EditEventDialog.getEditEventDialog(result, (position + 1));
-                Optional<Result> response = dialog.showAndWait();
-                response.ifPresent(new Consumer<Result>() {
+                Optional<EditEventDialog.DialogResult> response = dialog.showAndWait();
+                response.ifPresent(new Consumer<EditEventDialog.DialogResult>() {
                     @Override
-                    public void accept(Result result) {
-                        //need to tell observer to update
-                        timelineRowObserver.update(result, position);
+                    public void accept(EditEventDialog.DialogResult dialogResult) {
+                        if (dialogResult.getResultType() == EditEventDialog.DialogResult.ResultType.DELETE) {
+                            System.out.println("Delete the event");
+                            timelineRowObserver.delete(position);
+                        } else if (dialogResult.getResultType() == EditEventDialog.DialogResult.ResultType.SAVE) {
+                            System.out.println("Update the timeline");
+                            Result copy = dialogResult.getResult();
+                            timelineRowObserver.update(copy, position);
+                        } else if (dialogResult.getResultType() == EditEventDialog.DialogResult.ResultType.CANCEL) {
+                            System.out.println("Dont do anything");
+                        }
                     }
                 });
             }
@@ -113,7 +121,7 @@ public class TimelineRowController {
                     }
                 });
                 Pane rootLayout = documentReaderController.getRootBorderPane();
-                if(rootLayout != null) {
+                if (rootLayout != null) {
                     stage.setScene(new Scene(documentReaderController.getRootBorderPane(), 1024, 800));
                     stage.setTitle("Document Reader - " + result.getFileData().getFileName());
                     stage.show();

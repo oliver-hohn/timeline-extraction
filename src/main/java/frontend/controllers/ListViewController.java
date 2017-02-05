@@ -305,4 +305,19 @@ public class ListViewController implements Initializable, MenuBarControllerInter
         }
 
     }
+
+    /**
+     * Called by a member of the ListView, to inform the ListView that it needs to be removed from the List.
+     * Thereby the list needs to be updated (i.e. set again).
+     *
+     * @param position the position of the event that needs to be deleted.
+     */
+    @Override
+    public void delete(int position) {
+        System.out.println("Deleting the event");
+        if (results.size() > position) {
+            results.remove(position);
+            setTimelineListView(results, fileDatas);
+        }
+    }
 }
