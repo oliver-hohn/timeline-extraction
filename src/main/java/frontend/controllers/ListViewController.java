@@ -253,6 +253,13 @@ public class ListViewController implements Initializable, MenuBarControllerInter
         }
     }
 
+    @Override
+    public void preferences() {
+        if(timelineObserver != null){
+            timelineObserver.preferences();
+        }
+    }
+
     /**
      * Called when a given row in the Loaded Documents listview is removed.
      *

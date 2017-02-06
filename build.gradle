@@ -22,7 +22,6 @@ dependencies {
 	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
 	compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.15'
 
-
 	testCompile 'junit:junit:4.12'
     testCompile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.7'
     testCompile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.7'

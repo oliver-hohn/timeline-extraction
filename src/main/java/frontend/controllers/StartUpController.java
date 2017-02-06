@@ -79,6 +79,13 @@ public class StartUpController implements Initializable, MenuBarControllerInter 
         }
     }
 
+    @Override
+    public void preferences() {
+        if(observer != null){
+            observer.preferences();
+        }
+    }
+
     /**
      * Set whether or not the Load Documents Button should be disabled (so that it cannot be pressed)
      *

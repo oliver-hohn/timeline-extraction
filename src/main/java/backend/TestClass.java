@@ -1,12 +1,6 @@
 package backend;
 
-import backend.process.*;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import backend.system.Settings;
 
 /**
  * Created by Oliver on 29/10/2016.
@@ -14,6 +8,15 @@ import java.util.Collections;
 public class TestClass {
 
     public static void main(String[] args) {
+        Settings settings = new Settings();
+
+
+        System.out.println("Threads: "+settings.getMaxNoOfThreads());
+        System.out.println("Threshold: "+settings.getThresholdSummary());
+        System.out.println("Width: "+settings.getWidth());
+        System.out.println("Height: "+settings.getHeight());
+
+        System.out.println(settings.saveSettingsFile());
 /*
         //to see the outputted pdf files format
         ArrayList<Result> results = new ArrayList<>();

@@ -18,4 +18,6 @@ public interface MenuBarControllerInter {
      * Called when the timeline menu item is selected.
      */
     void timeline();
+
+    void preferences();
 }

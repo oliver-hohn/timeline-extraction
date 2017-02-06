@@ -18,4 +18,6 @@ public interface MenuBarObserver {
      * Called when the timeline menu item is pressed.
      */
     void timeline();
+
+    void preferences();
 }

@@ -194,6 +194,12 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
         System.out.println(TAG + "timeline options");
     }
 
+    @Override
+    public void preferences() {
+        System.out.println(TAG+"Preferences pressed");
+        //TODO: should show settings dialog
+    }
+
     /**
      * Called by the StartUpController, to indicate to Main, to allow the User to pick Files (from the File Chooser),
      * process them, and add them to the timeline (instead of setting them like in the previous method). The layout is
