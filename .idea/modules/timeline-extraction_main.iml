@@ -18,6 +18,7 @@
     <orderEntry type="library" name="Gradle: org.fxmisc.richtext:richtextfx:0.6.10" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.commons:commons-lang3:3.5" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.poi:poi-ooxml:3.15" level="project" />
+    <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.8.0" level="project" />
     <orderEntry type="library" name="Gradle: com.apple:AppleJavaExtensions:1.4" level="project" />
     <orderEntry type="library" name="Gradle: de.jollyday:jollyday:0.4.9" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.lucene:lucene-queryparser:4.10.3" level="project" />
