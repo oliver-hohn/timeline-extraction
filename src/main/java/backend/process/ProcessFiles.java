@@ -21,8 +21,8 @@ import java.util.concurrent.Semaphore;
  * Handles the parsing of files, and the multi-threading of the backend.process.Engine.
  */
 public class ProcessFiles implements ProcessFileCallback {
-    private static int maxNoOfThreads = 2;
-    private Semaphore semaphore = new Semaphore(maxNoOfThreads);
+    private static int maxNoOfThreads;
+    private Semaphore semaphore;
     private Semaphore semaphoreFinished = new Semaphore(0);//so that we wait until all threads finish
     private ArrayList<Result> results = new ArrayList<>();
     private int filesToGo;//to notify the listener when it is done
@@ -33,11 +33,14 @@ public class ProcessFiles implements ProcessFileCallback {
      * Will call gotResults() on the backend.process.CallbackResults object when all files have been processed, and a list of Results has
      * been produced.
      *
+     * <b>Should be the only thing called in this class by its Users.</b>
      * @param files     the list of File objects that contain text that needs to be processed (atm only processes .docx/.pdf/.txt files)
      * @param fileDatas the list of FileData objects, where the index corresponds the File in the same index in the files list, that
      *                  contains the needed data for each File.
      */
     public List<Result> processFiles(List<File> files, List<FileData> fileDatas) {
+        maxNoOfThreads = BackEndSystem.getInstance().getSettings().getMaxNoOfThreads();
+        semaphore = new Semaphore(maxNoOfThreads);
         //should only run if we are not Processing
         //this will also set up the StanfordCoreNLP (when GUI is implemented, it will already by set up, as it will be the first thing ran)
         System.out.println("Will try to run");

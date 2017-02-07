@@ -13,6 +13,7 @@ public class BackEndSystem {
     private static BackEndSystem ourInstance = new BackEndSystem();
     private StanfordCoreNLP coreNLP;
     private SystemState systemState = SystemState.NOT_STARTED;
+    private Settings settings;
 
     /**
      * Will make a new backend.system.BackEndSystem if one has not been created yet, or else return the one that was previously
@@ -35,6 +36,7 @@ public class BackEndSystem {
         ));
         System.out.println("Finished running");
         systemState = SystemState.STARTED;
+        settings = new Settings(true);//load the settings of the file, or use default Settings
     }
 
     /**
@@ -64,5 +66,24 @@ public class BackEndSystem {
     public void setSystemState(SystemState systemState) {
         this.systemState = systemState;
         System.out.println("System is now in state: " + systemState);
+    }
+
+    /**
+     * Get the Settings that this System uses (i.e preferred width/height on startup, how many threads to run in parallel, etc).
+     *
+     * @return the Settings used by this System.
+     */
+    public Settings getSettings() {
+        return settings;
+    }
+
+    /**
+     * Set the Settings that this System uses.
+     *
+     * @param settings the Settings used by this System.
+     */
+    public void setSettings(Settings settings) {
+        this.settings = settings;
+        this.settings.saveSettingsFile();
     }
 }

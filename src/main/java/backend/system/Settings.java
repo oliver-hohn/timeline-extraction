@@ -11,7 +11,7 @@ import java.util.Scanner;
 /**
  * Class that represents the possible Settings of the System.
  */
-public class Settings implements Cloneable{
+public class Settings implements Cloneable {
     //default values (to reset to default, or if settings file not found)
     public final static int defaultMaxNoThreads = 2;
     public final static int defaultThresholdSummary = 10;
@@ -22,27 +22,28 @@ public class Settings implements Cloneable{
     private final static String widthTag = "width";
     private final static String heightTag = "height";
     //actual values
-    @Expose (deserialize = false)
+    @Expose(deserialize = false)
     private int maxNoOfThreads;
-    @Expose (deserialize = false)
+    @Expose(deserialize = false)
     private int thresholdSummary;
-    @Expose (deserialize = false)
+    @Expose(deserialize = false)
     private int width;
-    @Expose (deserialize = false)
+    @Expose(deserialize = false)
     private int height;
 
-    public Settings(){
+    public Settings(boolean loadFromFile) {
         //try to read from settings file, if not possible, then use default values
-        if(!loadSettingsFile()) {
-            //all the default values are used
-            maxNoOfThreads = defaultMaxNoThreads;
-            thresholdSummary = defaultThresholdSummary;
-            width = defaultWidth;
-            height = defaultHeight;
+        if (!loadFromFile || !loadSettingsFile()) {
+            reset();
         }
     }
 
-    private boolean loadSettingsFile(){
+    public Settings() {
+        this(false);
+    }
+
+    private boolean loadSettingsFile() {
+        System.out.println("Trying to load from file");
         //load the file, return true if it could
         try {
             File settingsFile = new File("settings.ini");
@@ -63,23 +64,25 @@ public class Settings implements Cloneable{
     private String getJSONString(File file) throws FileNotFoundException {
         Scanner scanner = new Scanner(file);
         StringBuilder stringBuilder = new StringBuilder();
-        while (scanner.hasNext()){
+        while (scanner.hasNext()) {
             stringBuilder.append(scanner.nextLine());
         }
         scanner.close();
         return stringBuilder.toString();
     }
 
-    private void setValues(JsonObject jsonObject){
+    private void setValues(JsonObject jsonObject) {
         maxNoOfThreads = (jsonObject.get(threadTag) != null) ? jsonObject.get(threadTag).getAsInt() : defaultMaxNoThreads;
         thresholdSummary = (jsonObject.get(thresholdTag) != null) ? jsonObject.get(thresholdTag).getAsInt() : defaultThresholdSummary;
         width = (jsonObject.get(widthTag) != null) ? jsonObject.get(widthTag).getAsInt() : defaultWidth;
         height = (jsonObject.get(heightTag) != null) ? jsonObject.get(heightTag).getAsInt() : defaultHeight;
+        if(!isConstrained()){//if constraints have not been set then reset
+            reset();
+        }
     }
 
 
-
-    public boolean saveSettingsFile(){
+    public boolean saveSettingsFile() {
         final GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.excludeFieldsWithoutExposeAnnotation();
         final Gson gson = gsonBuilder.create();
@@ -87,7 +90,7 @@ public class Settings implements Cloneable{
             String json = gson.toJson(this);
             System.out.println(json);
             saveToSettingsFile(json);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
@@ -100,12 +103,22 @@ public class Settings implements Cloneable{
         writer.close();
     }
 
+    public void reset() {
+        //resets all the values to default
+        maxNoOfThreads = defaultMaxNoThreads;
+        thresholdSummary = defaultThresholdSummary;
+        width = defaultWidth;
+        height = defaultHeight;
+    }
+
     public int getMaxNoOfThreads() {
         return maxNoOfThreads;
     }
 
     public void setMaxNoOfThreads(int maxNoOfThreads) {
-        this.maxNoOfThreads = maxNoOfThreads;
+        if(isMaxNoOfThreadsConstrained(maxNoOfThreads)) {
+            this.maxNoOfThreads = maxNoOfThreads;
+        }
     }
 
     public int getThresholdSummary() {
@@ -113,7 +126,9 @@ public class Settings implements Cloneable{
     }
 
     public void setThresholdSummary(int thresholdSummary) {
-        this.thresholdSummary = thresholdSummary;
+        if(isThresholdConstrained(thresholdSummary)) {
+            this.thresholdSummary = thresholdSummary;
+        }
     }
 
     public int getWidth() {
@@ -121,7 +136,9 @@ public class Settings implements Cloneable{
     }
 
     public void setWidth(int width) {
-        this.width = width;
+        if(isWidthConstrained(width)) {
+            this.width = width;
+        }
     }
 
     public int getHeight() {
@@ -129,7 +146,9 @@ public class Settings implements Cloneable{
     }
 
     public void setHeight(int height) {
-        this.height = height;
+        if(isHeightConstrained(height)) {
+            this.height = height;
+        }
     }
 
     @Override
@@ -141,6 +160,27 @@ public class Settings implements Cloneable{
         clonedSettings.setThresholdSummary(thresholdSummary);
         clonedSettings.setWidth(width);
         return clonedSettings;
+    }
+
+    private boolean isThresholdConstrained(int thresholdSummary){
+        return thresholdSummary > 0 && thresholdSummary <=20;
+    }
+
+    private boolean isMaxNoOfThreadsConstrained(int maxNoOfThreads){
+        return maxNoOfThreads > 0 && maxNoOfThreads <=20;
+    }
+
+    private boolean isWidthConstrained(int width){
+        return width > 0 && width <= 1920;
+    }
+
+    private boolean isHeightConstrained(int height){
+        return height > 0 && height <= 1080;
+    }
+
+    private boolean isConstrained(){
+        return isThresholdConstrained(thresholdSummary) && isMaxNoOfThreadsConstrained(maxNoOfThreads)
+                && isWidthConstrained(width) && isHeightConstrained(height);
     }
 
 }

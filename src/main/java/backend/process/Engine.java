@@ -25,7 +25,7 @@ import java.util.List;
  * Computational Linguistics, pp. 1–8.
  */
 public class Engine {
-    private static int threshold = 10;
+    private static int threshold;
     private StanfordCoreNLP coreNLP;
     private String baseDate;
 
@@ -34,6 +34,7 @@ public class Engine {
      */
     public Engine() {
         coreNLP = BackEndSystem.getInstance().getCoreNLP();//can have it like before as the models will already be  loaded, but this avoids having to check that
+        threshold = BackEndSystem.getInstance().getSettings().getThresholdSummary();
     }
 
     /**
@@ -46,7 +47,7 @@ public class Engine {
     public ArrayList<Result> getResults(String input, String date) {
         ArrayList<Result> results = new ArrayList<>();
         baseDate = date;
-        System.out.println("Base Date: "+baseDate);
+        System.out.println("Base Date: " + baseDate);
         Annotation annotation;
         annotation = new Annotation(input);
         annotation.set(CoreAnnotations.DocDateAnnotation.class, date);//setting a reference so that when it finds a normalazied entity tag that isnt complete will determine it

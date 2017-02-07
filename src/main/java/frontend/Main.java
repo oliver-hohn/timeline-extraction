@@ -5,6 +5,7 @@ import backend.process.FileData;
 import backend.process.ProcessFiles;
 import backend.process.Result;
 import backend.system.BackEndSystem;
+import backend.system.Settings;
 import edu.stanford.nlp.util.Pair;
 import frontend.controllers.ListViewController;
 import frontend.controllers.StartUpController;
@@ -18,6 +19,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -26,6 +28,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * Main class that is used to run the program (i.e. show the UI that uses the backend). It handles loading the different
@@ -47,9 +50,10 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
     public void start(Stage primaryStage) throws Exception {
         //need to start engine
         BackEndSystem.getInstance();//thread waits for this to be done
+        Settings settings = BackEndSystem.getInstance().getSettings();
         System.out.println("Called getInstance");
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("startup.fxml"));
-        primaryStage.setScene(new Scene(fxmlLoader.load(), 1024, 800));
+        primaryStage.setScene(new Scene(fxmlLoader.load(), settings.getWidth(), settings.getHeight()));
         primaryStage.setTitle("Automated Timeline Extractor - Oliver Philip Hohn");
         startUpController = fxmlLoader.getController();
         startUpController.setObserver(this);
@@ -196,8 +200,21 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
 
     @Override
     public void preferences() {
-        System.out.println(TAG+"Preferences pressed");
-        //TODO: should show settings dialog
+        System.out.println(TAG + "Preferences pressed");
+        try {
+            Dialog<Settings> settingsDialog = new SettingsDialog().settingsDialog();
+            Optional<Settings> response = settingsDialog.showAndWait();
+            response.ifPresent(new Consumer<Settings>() {
+                @Override
+                public void accept(Settings settings) {
+                    if (settings != null) {//then the user decided to save the settings
+                        BackEndSystem.getInstance().setSettings(settings);
+                    }
+                }
+            });
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
