@@ -1,10 +1,9 @@
 package backend.system;
 
 
-import javax.json.Json;
-import javax.json.JsonBuilderFactory;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
+import com.google.gson.*;
+import com.google.gson.annotations.Expose;
+
 import java.io.*;
 import java.net.URISyntaxException;
 import java.util.Scanner;
@@ -18,11 +17,18 @@ public class Settings implements Cloneable{
     public final static int defaultThresholdSummary = 10;
     public final static int defaultWidth = 1024;
     public final static int defaultHeight = 800;
+    private final static String threadTag = "maxNoOfThreads";
+    private final static String thresholdTag = "thresholdSummary";
+    private final static String widthTag = "width";
+    private final static String heightTag = "height";
     //actual values
-
+    @Expose (deserialize = false)
     private int maxNoOfThreads;
+    @Expose (deserialize = false)
     private int thresholdSummary;
+    @Expose (deserialize = false)
     private int width;
+    @Expose (deserialize = false)
     private int height;
 
     public Settings(){
@@ -44,8 +50,8 @@ public class Settings implements Cloneable{
             System.out.println("Could find settings.ini file");
             String text = getJSONString(settingsFile);
             System.out.println("String in file: " + text);
-            JsonReader jsonReader = Json.createReader(new StringReader(text));
-            JsonObject jsonObject = jsonReader.readObject();
+            JsonElement jsonElement = new JsonParser().parse(text);
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
             System.out.println(jsonObject);
             setValues(jsonObject);
         } catch (Exception e) {
@@ -65,28 +71,23 @@ public class Settings implements Cloneable{
     }
 
     private void setValues(JsonObject jsonObject){
-        this.maxNoOfThreads = jsonObject.getInt("maxNoOfThreads", defaultMaxNoThreads);
-        this.thresholdSummary = jsonObject.getInt("thresholdSummary", defaultThresholdSummary);
-        this.width = jsonObject.getInt("width", defaultWidth);
-        this.height = jsonObject.getInt("height", defaultHeight);
+        maxNoOfThreads = (jsonObject.get(threadTag) != null) ? jsonObject.get(threadTag).getAsInt() : defaultMaxNoThreads;
+        thresholdSummary = (jsonObject.get(thresholdTag) != null) ? jsonObject.get(thresholdTag).getAsInt() : defaultThresholdSummary;
+        width = (jsonObject.get(widthTag) != null) ? jsonObject.get(widthTag).getAsInt() : defaultWidth;
+        height = (jsonObject.get(heightTag) != null) ? jsonObject.get(heightTag).getAsInt() : defaultHeight;
     }
 
 
 
     public boolean saveSettingsFile(){
-        JsonBuilderFactory jsonBuilderFactory = Json.createBuilderFactory(null);
-        JsonObject jsonObject = jsonBuilderFactory.createObjectBuilder()
-                .add("maxNoOfThreads", maxNoOfThreads)
-                .add("thresholdSummary", thresholdSummary)
-                .add("width", width)
-                .add("height", height)
-                .build();
-        String jsonString = jsonObject.toString();
-        System.out.println("Writing: "+jsonString);
-        //save to settings.ini file
+        final GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.excludeFieldsWithoutExposeAnnotation();
+        final Gson gson = gsonBuilder.create();
         try {
-            saveToSettingsFile(jsonString);
-        } catch (Exception e) {
+            String json = gson.toJson(this);
+            System.out.println(json);
+            saveToSettingsFile(json);
+        }catch (Exception e){
             e.printStackTrace();
             return false;
         }
