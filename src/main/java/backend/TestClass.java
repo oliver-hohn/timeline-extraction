@@ -92,7 +92,7 @@ public class TestClass {
         result.setFileData(new FileData("filename5.txt","Not Here"));
         results.add(result);
         try {
-            new ToPDF().saveToPDF(results, new File("filename.pdf"));
+            new ToPDF().saveTo(results, new File("filename.pdf"));
         } catch (IOException e) {
             e.printStackTrace();
         }

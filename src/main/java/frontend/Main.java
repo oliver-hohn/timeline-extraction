@@ -1,12 +1,12 @@
 package frontend;
 
+import backend.ToJSON;
 import backend.ToPDF;
 import backend.process.FileData;
 import backend.process.ProcessFiles;
 import backend.process.Result;
 import backend.system.BackEndSystem;
 import backend.system.Settings;
-import edu.stanford.nlp.util.Pair;
 import frontend.controllers.ListViewController;
 import frontend.controllers.StartUpController;
 import frontend.observers.StartUpObserver;
@@ -18,6 +18,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.stage.FileChooser;
@@ -25,6 +26,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -251,6 +253,67 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
         }
     }
 
+
+    /**
+     * Used to show the Alert the dialog to allow the User to pick in what format to save the List of Results (JSON or
+     * PDF). Depending on the option selected, the FileChooser is shown, and then the User picks the location to save
+     * the file. An Alert is shown if the User is trying to overwrite a File in use when saving.
+     *
+     * @param results the List of Results to Save.
+     */
+    @Override
+    public void saveTo(List<Result> results) {
+        //show alert to know what to save as
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Save to...");
+        alert.setHeaderText(null);
+        alert.setContentText("Do you wish to save as PDF or JSON?");
+        ButtonType buttonTypePDF = new ButtonType("Save to PDF");
+        ButtonType buttonTypeJSON = new ButtonType("Save to JSON");
+        ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        alert.getDialogPane().getButtonTypes().setAll(buttonTypePDF, buttonTypeJSON, buttonTypeCancel);
+
+        Optional<ButtonType> response = alert.showAndWait();
+        if (response.isPresent() && response.get() == buttonTypePDF) {
+            saveToPDF(results);
+        } else if (response.isPresent() && response.get() == buttonTypeJSON) {
+            saveToJSON(results);
+        }
+    }
+
+    /**
+     * Called when the Timeline being displayed (described by the List of Result objects) needs to be saved as a JSON.
+     * The System should allow the user to pick a location to save the PDF, if it is overwriting a File in use by
+     * another process the user is informed and given the option to select another location or close the process using
+     * the File that they wish to overwrite.
+     *
+     * @param results the given List of Result objects.
+     */
+    private void saveToJSON(List<Result> results) {
+        String json = ToJSON.toJSON(results);
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Timeline As...");
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON File", "*.json"));
+        File file = fileChooser.showSaveDialog(primaryStage);
+        if (file != null && listViewController != null) {
+            try {
+                PrintWriter printWriter = new PrintWriter(file);
+                printWriter.write(json);
+                printWriter.close();
+            } catch (Exception e) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);//then inform the user,
+                alert.setTitle("File In Use");
+                alert.setHeaderText(null);
+                alert.setContentText("The file: " + file.getName() + " is in use by another process.");
+                alert.getDialogPane().getButtonTypes().setAll(ButtonType.OK);
+                Optional<ButtonType> response = alert.showAndWait();
+                if (response.isPresent() && response.get() == ButtonType.OK) {//and if they press OK, ie want to save
+                    saveToJSON(results);//show them the file chooser to let them pick a different (or same location, if
+                }
+            }
+        }
+    }
+
     /**
      * Called when the Timeline being displayed (described by the List of Result objects) needs to be saved as a PDF.
      * The System should allow the user to pick a location to save the PDF, if it is overwriting a File in use by
@@ -259,8 +322,7 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
      *
      * @param results the given List of Result objects.
      */
-    @Override
-    public void saveToPDF(List<Result> results) {
+    private void saveToPDF(List<Result> results) {
         System.out.println(TAG + "Save To PDF pressed");
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Timeline As...");

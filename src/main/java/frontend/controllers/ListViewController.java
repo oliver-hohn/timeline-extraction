@@ -28,7 +28,7 @@ public class ListViewController implements Initializable, MenuBarControllerInter
     @FXML
     private Button loadDocumentsButton;
     @FXML
-    private Button saveToPDFButton;
+    private Button saveToButton;
     @FXML
     private ListView<FileData> documentListView;
     private List<Result> results;
@@ -45,7 +45,7 @@ public class ListViewController implements Initializable, MenuBarControllerInter
         System.out.println("Initialised timelineListView");
         System.out.println("documentListView: " + documentListView);
         System.out.println("loadDocumentsButton: " + loadDocumentsButton);
-        System.out.println("saveToPDFButton: " + saveToPDFButton);
+        System.out.println("saveToButton: " + saveToButton);
     }
 
     /**
@@ -64,13 +64,13 @@ public class ListViewController implements Initializable, MenuBarControllerInter
                 }
             }
         });
-
-        saveToPDFButton.setOnAction(new EventHandler<ActionEvent>() {
+        saveToButton.setText("Save \nTo...");
+        saveToButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 System.out.println("Save to PDF");
                 if (timelineObserver != null) {
-                    timelineObserver.saveToPDF(results);
+                    timelineObserver.saveTo(results);
                 }
             }
         });

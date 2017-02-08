@@ -79,7 +79,7 @@
                               </Button>
                            </left>
                            <right>
-                              <Button fx:id="saveToPDFButton" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="120.0" text="Save to  PDF" textAlignment="CENTER" wrapText="true" BorderPane.alignment="CENTER">
+                              <Button fx:id="saveToButton" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefWidth="120.0" text="Save to... " textAlignment="CENTER" wrapText="true" BorderPane.alignment="CENTER">
                                  <font>
                                     <Font size="18.0" />
                                  </font>

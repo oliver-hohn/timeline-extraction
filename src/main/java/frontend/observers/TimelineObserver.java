@@ -14,8 +14,8 @@ public interface TimelineObserver extends MenuBarObserver {
     void loadDocuments();
 
     /**
-     * Called when the "Save to PDF" button is pressed.
+     * Called when the "Save to ..." button is pressed.
      * @param resultList the List of Results to save.
      */
-    void saveToPDF(List<Result> resultList);
+    void saveTo(List<Result> resultList);
 }
