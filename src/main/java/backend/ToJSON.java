@@ -15,6 +15,9 @@ public class ToJSON {
      * For the given List of Result objects, produce a JSON String of an array, where each index corresponds to one Result
      * in the list. Each Result is given by its range (date1, date2), its subjects (array of subjects), its event, and its
      * FileData (the filename, and base date used for processing the file), represented as a JsonObject from.
+     * <p>
+     * Whenever a value of data in a Result object is null, its corresponding key-pair will not be included in the final
+     * JSON string. Such that, a completely empty Result object would be represented by: {subjects:[], event:"", from:{}}.
      *
      * @param results the given List of Result objects.
      * @return the JSON String representing the list of Result objects.
@@ -28,6 +31,7 @@ public class ToJSON {
             public JsonElement serialize(Result src, Type typeOfSrc, JsonSerializationContext context) {
                 JsonObject jsonObject = new JsonObject();
                 //adding the range dates (which can be null)
+                //whenever a value is null, the key-pair will not be included in the final JSON
                 jsonObject.addProperty("date1", src.getTimelineDate().getDate1FormattedDayMonthYear());
                 jsonObject.addProperty("date2", src.getTimelineDate().getDate2FormattedDayMonthYear());
                 //adding the subjects
@@ -50,7 +54,7 @@ public class ToJSON {
                 return jsonObject;
             }
         });
-        gsonBuilder.setPrettyPrinting();
+        //gsonBuilder.setPrettyPrinting();
         final Gson gson = gsonBuilder.create();
         toReturn = gson.toJson(results);
         return toReturn;
