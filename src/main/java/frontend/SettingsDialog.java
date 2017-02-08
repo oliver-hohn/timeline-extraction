@@ -183,7 +183,6 @@ public class SettingsDialog {
          */
         @Override
         public Integer fromString(String string) {
-            System.out.println("Value there is: " + string);
             Integer integer;
             try {
                 integer = Integer.parseInt(string);
