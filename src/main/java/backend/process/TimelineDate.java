@@ -1,5 +1,6 @@
 package backend.process;
 
+import com.google.gson.annotations.Expose;
 import edu.stanford.nlp.util.Pair;
 
 import java.text.ParseException;
@@ -20,6 +21,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
     private static final Map<Character, String> durationMap;
     private static final Map<Character, String> timeMap;
     private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd G");
+    private static final SimpleDateFormat dayMonthYearFormat = new SimpleDateFormat("dd-MM-yyyy G");
 
     static {
         /*
@@ -536,5 +538,31 @@ public class TimelineDate implements Comparable<TimelineDate> {
      */
     public String getDurationData() {
         return durationData;
+    }
+
+    /**
+     * Get date1 as a String in the format dd-MM-yyyy G, or null if that is not possible.
+     *
+     * @return a formatted String of date1.
+     */
+    public String getDate1FormattedDayMonthYear() {
+        try {
+            return (date1 != null) ? dayMonthYearFormat.format(date1) : null;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * Get date2 as a String in the format dd-MM-yyyy G, or null if that is not possible.
+     *
+     * @return a formatted String of date2.
+     */
+    public String getDate2FormattedDayMonthYear() {
+        try {
+            return (date2 != null) ? dayMonthYearFormat.format(date2) : null;
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

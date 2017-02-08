@@ -134,7 +134,7 @@ public class FileData implements Comparable<FileData> {
      * @return the creation date in the format: dd-MM-yyyy
      */
     public String getCreationDateFormattedDayMonthYear() {
-        return inputSimpleDateFormat.format(creationDate);
+        return (creationDate != null) ? inputSimpleDateFormat.format(creationDate) : null;
     }
 
     /**
