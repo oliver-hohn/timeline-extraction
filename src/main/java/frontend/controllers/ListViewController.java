@@ -68,7 +68,6 @@ public class ListViewController implements Initializable, MenuBarControllerInter
         saveToButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Save to PDF");
                 if (timelineObserver != null) {
                     timelineObserver.saveTo(results);
                 }
