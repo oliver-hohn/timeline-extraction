@@ -23,9 +23,15 @@ public class SettingsDialog {
     private Spinner<Integer> thresholdSpinner;
     private Spinner<Integer> widthSpinner;
     private Spinner<Integer> heightSpinner;
-    private final PseudoClass errorClass = PseudoClass.getPseudoClass("error");
 
-
+    /**
+     * Get a Settings Dialog, that will allow the user to change the Settings of the System and either Save them or
+     * discard them. The option to return to the Default Settings is also added. The changed Settings would be applied
+     * to the cloned Settings held in the BackEndSystem, which should be then set to the Settings of the System.
+     *
+     * @return the Settings Dialog.
+     * @throws CloneNotSupportedException when cloning the BackEndSystem Settings.
+     */
     public Dialog<Settings> settingsDialog() throws CloneNotSupportedException {
         Settings copy = (Settings) BackEndSystem.getInstance().getSettings().clone();
         Dialog<Settings> settingsDialog = new Dialog<>();
@@ -76,6 +82,13 @@ public class SettingsDialog {
         return settingsDialog;
     }
 
+    /**
+     * For the Settings Dialog, get its Content Root Layout: a GridPane with Text and Spinners for the different Settings
+     * options. The given Settings are used to populate the fields in the layout.
+     *
+     * @param settings the given Settings.
+     * @return the root Content layout of the Dialog.
+     */
     private GridPane getDialogLayout(Settings settings) {
         GridPane gridPane = new GridPane();
         gridPane.setMaxWidth(Double.MAX_VALUE);
@@ -135,18 +148,39 @@ public class SettingsDialog {
         return gridPane;
     }
 
+    /**
+     * Private Class to deal with the conversion of Strings to Ints in the Spinner text fields.
+     */
     private static class IntegerStringConverter extends StringConverter<Integer> {
         Spinner<Integer> spinner;
 
+        /**
+         * Constructor that takes in the Spinner where the changes will be applied on.
+         *
+         * @param spinner the given Spinner.
+         */
         IntegerStringConverter(Spinner<Integer> spinner) {
             this.spinner = spinner;
         }
 
+        /**
+         * For the given Integer held in the Spinner, show its String version.
+         *
+         * @param object the given Integer.
+         * @return the Integer as a String.
+         */
         @Override
         public String toString(Integer object) {
             return String.valueOf(object);
         }
 
+        /**
+         * For the given String (in the textfield) attempt to turn it into an Integer, if that is not possible, use the
+         * previous value held by the Spinner (which would be an Integer).
+         *
+         * @param string the text in the textfield.
+         * @return an Integer made from the text in the textfield, or the previous available Integer.
+         */
         @Override
         public Integer fromString(String string) {
             System.out.println("Value there is: " + string);

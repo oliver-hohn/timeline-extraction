@@ -35,6 +35,7 @@ public class Engine {
     public Engine() {
         coreNLP = BackEndSystem.getInstance().getCoreNLP();//can have it like before as the models will already be  loaded, but this avoids having to check that
         threshold = BackEndSystem.getInstance().getSettings().getThresholdSummary();
+        System.out.println("Using a threshold value of: " + threshold);
     }
 
     /**

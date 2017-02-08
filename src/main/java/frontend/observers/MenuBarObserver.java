@@ -19,5 +19,8 @@ public interface MenuBarObserver {
      */
     void timeline();
 
+    /**
+     * Called when the preferences menu item is pressed.
+     */
     void preferences();
 }

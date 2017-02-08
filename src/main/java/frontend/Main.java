@@ -198,18 +198,21 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
         System.out.println(TAG + "timeline options");
     }
 
+    /**
+     * Called when the Preferences MenuItem is pressed in the File Menu.
+     */
     @Override
     public void preferences() {
         System.out.println(TAG + "Preferences pressed");
         try {
-            Dialog<Settings> settingsDialog = new SettingsDialog().settingsDialog();
+            Dialog<Settings> settingsDialog = new SettingsDialog().settingsDialog();//show a settings dialog
             Optional<Settings> response = settingsDialog.showAndWait();
             response.ifPresent(new Consumer<Settings>() {
                 @Override
                 public void accept(Settings settings) {
                     if (settings != null) {//then the user decided to save the settings
                         BackEndSystem.getInstance().setSettings(settings);
-                    }
+                    }//else dont apply the Settings to the System.
                 }
             });
         } catch (CloneNotSupportedException e) {

@@ -253,9 +253,12 @@ public class ListViewController implements Initializable, MenuBarControllerInter
         }
     }
 
+    /**
+     * When the preferences menu item is pressed.
+     */
     @Override
     public void preferences() {
-        if(timelineObserver != null){
+        if (timelineObserver != null) {
             timelineObserver.preferences();
         }
     }
@@ -271,7 +274,7 @@ public class ListViewController implements Initializable, MenuBarControllerInter
         Alert removeConfirmationDialog = RemoveConfirmationDialog.getRemoveConfirmationDialog(fileData.getFileName());
         Optional<ButtonType> response = removeConfirmationDialog.showAndWait();
         System.out.println("Text on clicked button: " + response.get().getText());
-        if (response.get() == ButtonType.YES) {
+        if (response.isPresent() && response.get() == ButtonType.YES) {
             fileDatas.remove(fileData);
             removeResults(results, fileData);
             setTimelineListView(results, fileDatas);

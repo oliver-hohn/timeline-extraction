@@ -79,9 +79,12 @@ public class StartUpController implements Initializable, MenuBarControllerInter 
         }
     }
 
+    /**
+     * When the preferences menu item is pressed.
+     */
     @Override
     public void preferences() {
-        if(observer != null){
+        if (observer != null) {
             observer.preferences();
         }
     }

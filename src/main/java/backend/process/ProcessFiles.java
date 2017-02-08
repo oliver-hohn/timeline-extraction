@@ -21,8 +21,8 @@ import java.util.concurrent.Semaphore;
  * Handles the parsing of files, and the multi-threading of the backend.process.Engine.
  */
 public class ProcessFiles implements ProcessFileCallback {
-    private static int maxNoOfThreads;
-    private Semaphore semaphore;
+    private static int maxNoOfThreads;//this value is determined by the settings of the System (by default 2)
+    private Semaphore semaphore;//will use the maxNoOfThreads to control how many Threads will be running in parallel
     private Semaphore semaphoreFinished = new Semaphore(0);//so that we wait until all threads finish
     private ArrayList<Result> results = new ArrayList<>();
     private int filesToGo;//to notify the listener when it is done
@@ -32,18 +32,19 @@ public class ProcessFiles implements ProcessFileCallback {
      * of threads that can run at any given time (i.e. maximum 2 extra threads running at a time).
      * Will call gotResults() on the backend.process.CallbackResults object when all files have been processed, and a list of Results has
      * been produced.
-     *
+     * <p>
      * <b>Should be the only thing called in this class by its Users.</b>
+     *
      * @param files     the list of File objects that contain text that needs to be processed (atm only processes .docx/.pdf/.txt files)
      * @param fileDatas the list of FileData objects, where the index corresponds the File in the same index in the files list, that
      *                  contains the needed data for each File.
      */
     public List<Result> processFiles(List<File> files, List<FileData> fileDatas) {
-        maxNoOfThreads = BackEndSystem.getInstance().getSettings().getMaxNoOfThreads();
-        semaphore = new Semaphore(maxNoOfThreads);
+        maxNoOfThreads = BackEndSystem.getInstance().getSettings().getMaxNoOfThreads();//get the Settings value
+        semaphore = new Semaphore(maxNoOfThreads);//set the Max number of Threads that can run in parallel
         //should only run if we are not Processing
         //this will also set up the StanfordCoreNLP (when GUI is implemented, it will already by set up, as it will be the first thing ran)
-        System.out.println("Will try to run");
+        System.out.println("Will try to run, with maxNoOfThreads: "+maxNoOfThreads+" and available permits: "+semaphore.availablePermits());
         if (BackEndSystem.getInstance().getSystemState() != SystemState.PROCESSING && files.size() == fileDatas.size()) {//if we arent processing, then we can begin to do that
             System.out.println("Is running");
             filesToGo = files.size();//and when we need to call
