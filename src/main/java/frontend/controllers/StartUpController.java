@@ -105,11 +105,17 @@ public class StartUpController implements Initializable, MenuBarControllerInter 
         loadDocumentsButton.setDisable(disable);
     }
 
-    public void showLoadingDialog(){
+    /**
+     * Called to show the loading dialog. (Only if the layouts have been passed to LoadingDialog)
+     */
+    public void showLoadingDialog() {
         loadingDialog.showLoadingDialog();
     }
 
-    public void removeLoadingDialog(){
+    /**
+     * Called to remove the loading dialog.
+     */
+    public void removeLoadingDialog() {
         loadingDialog.removeLoadingDialog();
     }
 }

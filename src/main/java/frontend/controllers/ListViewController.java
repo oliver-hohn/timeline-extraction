@@ -44,6 +44,7 @@ public class ListViewController implements Initializable, MenuBarControllerInter
     private ObservableList<FileData> documentsLoadedObservableList = FXCollections.observableArrayList();
     private TimelineObserver timelineObserver;
     private LoadingDialog loadingDialog;
+
     /**
      * Called when the layout is created.
      */
@@ -53,8 +54,8 @@ public class ListViewController implements Initializable, MenuBarControllerInter
         System.out.println("documentListView: " + documentListView);
         System.out.println("loadDocumentsButton: " + loadDocumentsButton);
         System.out.println("saveToButton: " + saveToButton);
-        loadingDialog = new LoadingDialog(stackPane, vBox);
-    }
+        loadingDialog = new LoadingDialog(stackPane, vBox);//pass the root layout and main content layout to know where
+    }                                       //to show the loading dialog, and what to disable.
 
     /**
      * Called to set the Observer for this Scene.
@@ -280,7 +281,6 @@ public class ListViewController implements Initializable, MenuBarControllerInter
         System.out.println("Need to remove: " + fileData);
         Alert removeConfirmationDialog = RemoveConfirmationDialog.getRemoveConfirmationDialog(fileData.getFileName());
         Optional<ButtonType> response = removeConfirmationDialog.showAndWait();
-        System.out.println("Text on clicked button: " + response.get().getText());
         if (response.isPresent() && response.get() == ButtonType.YES) {
             fileDatas.remove(fileData);
             removeResults(results, fileData);
@@ -338,11 +338,17 @@ public class ListViewController implements Initializable, MenuBarControllerInter
         }
     }
 
-    public void showLoadingDialog(){
+    /**
+     * Called to show the loading dialog. (Only if the layouts have been passed to LoadingDialog)
+     */
+    public void showLoadingDialog() {
         loadingDialog.showLoadingDialog();
     }
 
-    public void removeLoadingDialog(){
+    /**
+     * Called to remove the loading dialog.
+     */
+    public void removeLoadingDialog() {
         loadingDialog.removeLoadingDialog();
     }
 }

@@ -44,7 +44,7 @@ public class ProcessFiles implements ProcessFileCallback {
         semaphore = new Semaphore(maxNoOfThreads);//set the Max number of Threads that can run in parallel
         //should only run if we are not Processing
         //this will also set up the StanfordCoreNLP (when GUI is implemented, it will already by set up, as it will be the first thing ran)
-        System.out.println("Will try to run, with maxNoOfThreads: "+maxNoOfThreads+" and available permits: "+semaphore.availablePermits());
+        System.out.println("Will try to run, with maxNoOfThreads: " + maxNoOfThreads + " and available permits: " + semaphore.availablePermits());
         if (BackEndSystem.getInstance().getSystemState() != SystemState.PROCESSING && files.size() == fileDatas.size()) {//if we arent processing, then we can begin to do that
             System.out.println("Is running");
             filesToGo = files.size();//and when we need to call
