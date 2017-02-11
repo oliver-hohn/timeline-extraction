@@ -44,8 +44,8 @@ public class EditEventController {
     @FXML
     private Label maxCharacterLabel;
     private Result result;
-    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-    private SimpleDateFormat validInputFormat = new SimpleDateFormat("dd-MM-yyyy");
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy G");
+    private SimpleDateFormat validInputFormat = new SimpleDateFormat("dd-MM-yyyy G");
     private final PseudoClass errorClass = PseudoClass.getPseudoClass("error");
     private EditEventDialogObserver editEventDialogObserver;
     private ArrayList<TextFieldState> textFieldStates;
@@ -321,7 +321,7 @@ public class EditEventController {
         try {
             validInputFormat.setLenient(false);
             validInputFormat.parse(input);
-            return input.length() == 10;
+            return input.length() == 13;
         } catch (ParseException e) {
             return false;
         }
