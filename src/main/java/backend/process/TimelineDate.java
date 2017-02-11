@@ -1,6 +1,5 @@
 package backend.process;
 
-import com.google.gson.annotations.Expose;
 import edu.stanford.nlp.util.Pair;
 
 import java.text.ParseException;
@@ -20,9 +19,8 @@ public class TimelineDate implements Comparable<TimelineDate> {
     private static final Map<String, Pair<String, String>> seasonMap;
     private static final Map<Character, String> durationMap;
     private static final Map<Character, String> timeMap;
-    private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd G");
-    private static final SimpleDateFormat dayMonthYearFormat = new SimpleDateFormat("dd-MM-yyyy G");
-
+    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd G");
+    private final SimpleDateFormat dayMonthYearFormat = new SimpleDateFormat("dd-MM-yyyy G");
     static {
         /*
             Seasons are given according to educationuk.org, by:
