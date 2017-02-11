@@ -1,10 +1,12 @@
 package frontend.controllers;
 
+import frontend.dialogs.LoadingDialog;
 import frontend.observers.StartUpObserver;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -19,6 +21,11 @@ public class StartUpController implements Initializable, MenuBarControllerInter 
     private StartUpObserver observer;
     @FXML
     private Button loadDocumentsButton;
+    @FXML
+    private StackPane stackPane;
+    @FXML
+    private VBox vBox;//main layout
+    private LoadingDialog loadingDialog;
 
     /**
      * Called on creation of the Scene.
@@ -26,7 +33,7 @@ public class StartUpController implements Initializable, MenuBarControllerInter 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println(TAG + "StartUp fxml is starting to run");
-
+        loadingDialog = new LoadingDialog(stackPane, vBox);
     }
 
     /**
@@ -96,5 +103,13 @@ public class StartUpController implements Initializable, MenuBarControllerInter 
      */
     public void setDisableLoadDocumentsButton(boolean disable) {
         loadDocumentsButton.setDisable(disable);
+    }
+
+    public void showLoadingDialog(){
+        loadingDialog.showLoadingDialog();
+    }
+
+    public void removeLoadingDialog(){
+        loadingDialog.removeLoadingDialog();
     }
 }

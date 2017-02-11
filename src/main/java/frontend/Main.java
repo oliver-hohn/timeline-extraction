@@ -127,7 +127,6 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
     private ListViewController showListView() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("listView.fxml"));
         try {
-            startUpController = null;
             primaryStage.setScene(new Scene(fxmlLoader.load(), primaryStage.getWidth(), primaryStage.getHeight()));
             listViewController = fxmlLoader.getController();
             listViewController.setTimelineObserver(this);
@@ -163,7 +162,17 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
                         List<Result> results = task.getValue();
                         listViewController = showListView();
                         listViewController.setTimelineListView(results, fileDatas);
+                        //stop showing the loading dialog as we have the other layout ready to show
+                        startUpController.removeLoadingDialog();
+                        startUpController = null;
                         primaryStage.show();
+                    }
+                });
+                task.setOnRunning(new EventHandler<WorkerStateEvent>() {
+                    @Override
+                    public void handle(WorkerStateEvent event) {
+                        //show loading dialog
+                        startUpController.showLoadingDialog();
                     }
                 });
                 new Thread(task).start();
@@ -243,7 +252,16 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
                         List<Result> results = task.getValue();
                         if (listViewController != null) {
                             listViewController.addToTimelineListView(results, fileDatas);
+                            //stop showing loading dialog as we have added the results
+                            listViewController.removeLoadingDialog();
                         }
+                    }
+                });
+                task.setOnRunning(new EventHandler<WorkerStateEvent>() {
+                    @Override
+                    public void handle(WorkerStateEvent event) {
+                        //show loading dialog
+                        listViewController.showLoadingDialog();
                     }
                 });
                 new Thread(task).start();

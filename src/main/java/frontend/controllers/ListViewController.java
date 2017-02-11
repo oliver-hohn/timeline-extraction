@@ -3,6 +3,7 @@ package frontend.controllers;
 import backend.process.FileData;
 import backend.process.Result;
 import frontend.RemoveConfirmationDialog;
+import frontend.dialogs.LoadingDialog;
 import frontend.observers.DocumentsLoadedObserver;
 import frontend.observers.TimelineObserver;
 import frontend.observers.TimelineRowObserver;
@@ -13,6 +14,8 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
 import java.net.URL;
@@ -23,6 +26,10 @@ import java.util.*;
  * Controller for the layout where the ListView is shown. Allows the listview to be populated with Result data.
  */
 public class ListViewController implements Initializable, MenuBarControllerInter, DocumentsLoadedObserver, TimelineRowObserver {
+    @FXML
+    private StackPane stackPane;
+    @FXML
+    private VBox vBox;
     @FXML
     private ListView<Result> timelineListView;
     @FXML
@@ -36,7 +43,7 @@ public class ListViewController implements Initializable, MenuBarControllerInter
     private ObservableList<Result> timelineObservableList = FXCollections.observableArrayList();
     private ObservableList<FileData> documentsLoadedObservableList = FXCollections.observableArrayList();
     private TimelineObserver timelineObserver;
-
+    private LoadingDialog loadingDialog;
     /**
      * Called when the layout is created.
      */
@@ -46,6 +53,7 @@ public class ListViewController implements Initializable, MenuBarControllerInter
         System.out.println("documentListView: " + documentListView);
         System.out.println("loadDocumentsButton: " + loadDocumentsButton);
         System.out.println("saveToButton: " + saveToButton);
+        loadingDialog = new LoadingDialog(stackPane, vBox);
     }
 
     /**
@@ -328,5 +336,13 @@ public class ListViewController implements Initializable, MenuBarControllerInter
             results.remove(position);
             setTimelineListView(results, fileDatas);
         }
+    }
+
+    public void showLoadingDialog(){
+        loadingDialog.showLoadingDialog();
+    }
+
+    public void removeLoadingDialog(){
+        loadingDialog.removeLoadingDialog();
     }
 }

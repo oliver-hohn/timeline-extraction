@@ -1,0 +1,14 @@
+.please-wait-text {
+    -fx-font-weight: bold;
+    -fx-font-size: 18px;
+}
+
+.processing-text {
+    -fx-font-size: 16px;
+}
+
+.loading-dialog {
+    -fx-background-color: #ffffff;
+    -fx-border-color: -fx-text-box-border;
+    -fx-border-width: 2;
+}
