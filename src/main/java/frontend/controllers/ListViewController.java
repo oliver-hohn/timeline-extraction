@@ -2,7 +2,7 @@ package frontend.controllers;
 
 import backend.process.FileData;
 import backend.process.Result;
-import frontend.RemoveConfirmationDialog;
+import frontend.dialogs.RemoveConfirmationDialog;
 import frontend.dialogs.LoadingDialog;
 import frontend.observers.DocumentsLoadedObserver;
 import frontend.observers.TimelineObserver;

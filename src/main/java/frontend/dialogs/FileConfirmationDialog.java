@@ -1,6 +1,7 @@
-package frontend;
+package frontend.dialogs;
 
 import backend.process.FileData;
+import frontend.helpers.TextFieldState;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.css.PseudoClass;
@@ -50,7 +51,7 @@ public class FileConfirmationDialog {
             Label fileNameLabel = new Label(fileData.getFileName());
             TextField dateTextField = new TextField(fileData.getCreationDateFormattedDayMonthYear());
             dateTextField.setPromptText("dd-MM-yyyy");//give the user a prompt in case they dont know what the input format is
-            dateTextField.getStylesheets().add(getClass().getResource("controllers/customErrorFields.css").toExternalForm());
+            dateTextField.getStylesheets().add(getClass().getResource("customErrorFields.css").toExternalForm());
             dateTextField.setMinWidth(150);//150 pixels is enough for 12 characters
             dateTextField.setMaxHeight(35);//enough for one line, if text size is 15
             dateTextField.setAlignment(Pos.CENTER);

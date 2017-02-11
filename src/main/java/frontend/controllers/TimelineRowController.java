@@ -1,7 +1,7 @@
 package frontend.controllers;
 
 import backend.process.Result;
-import frontend.EditEventDialog;
+import frontend.dialogs.EditEventDialog;
 import frontend.observers.DocumentReaderObserver;
 import frontend.observers.TimelineRowObserver;
 import javafx.event.ActionEvent;

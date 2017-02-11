@@ -1,4 +1,4 @@
-package frontend;
+package frontend.dialogs;
 
 import backend.process.Result;
 import frontend.controllers.EditEventController;

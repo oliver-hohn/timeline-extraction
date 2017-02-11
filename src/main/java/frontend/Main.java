@@ -9,6 +9,8 @@ import backend.system.BackEndSystem;
 import backend.system.Settings;
 import frontend.controllers.ListViewController;
 import frontend.controllers.StartUpController;
+import frontend.dialogs.FileConfirmationDialog;
+import frontend.dialogs.SettingsDialog;
 import frontend.observers.StartUpObserver;
 import frontend.observers.TimelineObserver;
 import javafx.application.Application;

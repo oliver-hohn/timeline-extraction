@@ -1,7 +1,7 @@
 package frontend.controllers;
 
 import backend.process.Result;
-import frontend.TextFieldState;
+import frontend.helpers.TextFieldState;
 import frontend.observers.EditEventDialogObserver;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;

@@ -1,4 +1,4 @@
-package frontend;
+package frontend.dialogs;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;

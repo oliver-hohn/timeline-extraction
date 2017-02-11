@@ -1,8 +1,7 @@
-package frontend;
+package frontend.dialogs;
 
 import backend.system.BackEndSystem;
 import backend.system.Settings;
-import javafx.css.PseudoClass;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
