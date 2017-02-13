@@ -1,6 +1,8 @@
 package backend.process;
 
 import edu.stanford.nlp.util.Pair;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -70,7 +72,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
     private String baseDate;
     private String durationData;//holds the latest duration data (additional info to show with event)
     //have a pair of list dates and duration string, if you use the dates pass in the string as additional info
-
+    private int range = 0;
     /**
      * Initialises the Calendar used to determine dates based on week number.
      */
@@ -399,9 +401,22 @@ public class TimelineDate implements Comparable<TimelineDate> {
                     dateStr = date;
                     durationData = dateDurationPair.second();
                 }
-
             }
+            updateRange();
         }
+    }
+
+    private void updateRange(){
+        if(date1 != null && date2 != null){
+            DateTime dateTime1 = new DateTime(date1);
+            DateTime dateTime2 = new DateTime(date2);
+            range = Days.daysBetween(dateTime1, dateTime2).getDays();
+        }
+    }
+
+    public int getRange() {
+        updateRange();
+        return range;
     }
 
     /**
@@ -460,13 +475,20 @@ public class TimelineDate implements Comparable<TimelineDate> {
      */
     @Override
     public int compareTo(TimelineDate o) {
-        if (o.date1 != null && this.date1 != null) {
+/*        if (o.date1 != null && this.date1 != null) {
             return o.date1.compareTo(this.date1);
         }
         if (this.date1 == null) {
             return -1;
         }
-        return 1;
+        return 1;*/
+        if(range > o.range){
+            return 1;
+        }else if(range < o.range){
+            return -1;
+        }else{
+            return 0;
+        }
     }
 
     /**

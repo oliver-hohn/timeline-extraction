@@ -2,6 +2,7 @@ package frontend.controllers;
 
 import backend.process.FileData;
 import backend.process.Result;
+import backend.ranges.ProduceRanges;
 import frontend.dialogs.RemoveConfirmationDialog;
 import frontend.dialogs.LoadingDialog;
 import frontend.observers.DocumentsLoadedObserver;
@@ -101,6 +102,10 @@ public class ListViewController implements Initializable, MenuBarControllerInter
      * @param results the input List.
      */
     private void setTimelineList(List<Result> results) {
+        ProduceRanges produceRanges = new ProduceRanges();
+        produceRanges.produceRanges(results);
+
+
         timelineObservableList.clear();
         timelineObservableList.addAll(results);
         timelineListView.setItems(timelineObservableList);

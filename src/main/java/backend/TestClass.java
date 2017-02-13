@@ -1,22 +1,60 @@
 package backend;
 
+import backend.process.Result;
+import backend.process.TimelineDate;
+import backend.ranges.ProduceRanges;
 import backend.system.Settings;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Oliver on 29/10/2016.
  */
 public class TestClass {
 
-    public static void main(String[] args) {
-        Settings settings = new Settings();
+    public static void main(String[] args) throws ParseException {
+        List<Result> resultList = new ArrayList<>();
+        Result result;
+        TimelineDate timelineDate;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy G");
 
 
-        System.out.println("Threads: "+settings.getMaxNoOfThreads());
-        System.out.println("Threshold: "+settings.getThresholdSummary());
-        System.out.println("Width: "+settings.getWidth());
-        System.out.println("Height: "+settings.getHeight());
+        /*result = new Result();
+        timelineDate = new TimelineDate();
+        timelineDate.setDate1(simpleDateFormat.parse("01-01-0001 AD"));
+        timelineDate.setDate2(simpleDateFormat.parse("31-12-9999 AD"));
+        result.setTimelineDate(timelineDate);
+        resultList.add(result);*/
+        result = new Result();
+        timelineDate = new TimelineDate();
+        timelineDate.setDate1(simpleDateFormat.parse("12-12-2016 AD"));
+        timelineDate.setDate2(simpleDateFormat.parse("18-12-2016 AD"));
+        result.setTimelineDate(timelineDate);
+        resultList.add(result);
+        result = new Result();
+        timelineDate = new TimelineDate();
+        timelineDate.setDate1(simpleDateFormat.parse("15-12-2016 AD"));
+        timelineDate.setDate2(simpleDateFormat.parse("20-12-2016 AD"));
+        result.setTimelineDate(timelineDate);
+        resultList.add(result);
+        result = new Result();
+        timelineDate = new TimelineDate();
+        timelineDate.setDate1(simpleDateFormat.parse("15-12-2016 AD"));
+        timelineDate.setDate2(simpleDateFormat.parse("20-12-2016 AD"));
+        result.setTimelineDate(timelineDate);
+        resultList.add(result);
+/*        result = new Result();
+        timelineDate = new TimelineDate();
+        timelineDate.setDate1(simpleDateFormat.parse("01-01-0499 BC"));
+        timelineDate.setDate2(simpleDateFormat.parse("31-12-9999 AD"));
+        result.setTimelineDate(timelineDate);
+        resultList.add(result);*/
 
-        System.out.println(settings.saveSettingsFile());
+        ProduceRanges produceRanges = new ProduceRanges();
+        produceRanges.produceRanges(resultList);
 /*
         //to see the outputted pdf files format
         ArrayList<Result> results = new ArrayList<>();
