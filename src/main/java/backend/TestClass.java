@@ -3,7 +3,6 @@ package backend;
 import backend.process.Result;
 import backend.process.TimelineDate;
 import backend.ranges.ProduceRanges;
-import backend.system.Settings;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,36 +21,41 @@ public class TestClass {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy G");
 
 
-        /*result = new Result();
+        result = new Result();
         timelineDate = new TimelineDate();
         timelineDate.setDate1(simpleDateFormat.parse("01-01-0001 AD"));
         timelineDate.setDate2(simpleDateFormat.parse("31-12-9999 AD"));
+        timelineDate.getRange();
         result.setTimelineDate(timelineDate);
-        resultList.add(result);*/
+        resultList.add(result);
         result = new Result();
         timelineDate = new TimelineDate();
         timelineDate.setDate1(simpleDateFormat.parse("12-12-2016 AD"));
         timelineDate.setDate2(simpleDateFormat.parse("18-12-2016 AD"));
         result.setTimelineDate(timelineDate);
+        timelineDate.getRange();
         resultList.add(result);
         result = new Result();
         timelineDate = new TimelineDate();
         timelineDate.setDate1(simpleDateFormat.parse("15-12-2016 AD"));
         timelineDate.setDate2(simpleDateFormat.parse("20-12-2016 AD"));
         result.setTimelineDate(timelineDate);
+        timelineDate.getRange();
         resultList.add(result);
         result = new Result();
         timelineDate = new TimelineDate();
         timelineDate.setDate1(simpleDateFormat.parse("15-12-2016 AD"));
         timelineDate.setDate2(simpleDateFormat.parse("20-12-2016 AD"));
         result.setTimelineDate(timelineDate);
+        timelineDate.getRange();
         resultList.add(result);
-/*        result = new Result();
+        result = new Result();
         timelineDate = new TimelineDate();
         timelineDate.setDate1(simpleDateFormat.parse("01-01-0499 BC"));
         timelineDate.setDate2(simpleDateFormat.parse("31-12-9999 AD"));
         result.setTimelineDate(timelineDate);
-        resultList.add(result);*/
+        timelineDate.getRange();
+        resultList.add(result);
 
         ProduceRanges produceRanges = new ProduceRanges();
         produceRanges.produceRanges(resultList);
