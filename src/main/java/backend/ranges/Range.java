@@ -308,7 +308,7 @@ public class Range implements Cloneable, Comparable<Range> {
     @Override
     public int compareTo(Range o) {
         if (o.date1 != null && this.date1 != null) {
-            return o.date1.compareTo(this.date1);
+            return date1.compareTo(o.date1);
         }
         if (this.date1 == null) {
             return -1;

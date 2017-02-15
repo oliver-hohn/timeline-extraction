@@ -92,7 +92,18 @@ public class ListViewController implements Initializable, MenuBarControllerInter
      * @param results the input List.
      */
     private void sortAndReverse(List<Result> results) {
-        Collections.sort(results);
+        Collections.sort(results, new Comparator<Result>() {
+            @Override
+            public int compare(Result o1, Result o2) {//sort by date1
+                if (o1.getTimelineDate().getDate1() != null && o2.getTimelineDate().getDate1() != null) {
+                    return o1.getTimelineDate().getDate1().compareTo(o2.getTimelineDate().getDate1());
+                }
+                if (o1.getTimelineDate().getDate1() == null) {
+                    return -1;
+                }
+                return 1;
+            }
+        });
         Collections.reverse(results);
     }
 
@@ -102,9 +113,11 @@ public class ListViewController implements Initializable, MenuBarControllerInter
      * @param results the input List.
      */
     private void setTimelineList(List<Result> results) {
+/*
         ProduceRanges produceRanges = new ProduceRanges();
         produceRanges.produceRanges(results);
 
+*/
 
         timelineObservableList.clear();
         timelineObservableList.addAll(results);

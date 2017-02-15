@@ -34,8 +34,8 @@ public class ProduceRangesTest {
         Range range2008 = new Range(simpleDateFormat.parse("01-01-2008 AD"), simpleDateFormat.parse("31-05-2016 AD"));
         Range range2015 = new Range(simpleDateFormat.parse("01-01-2015 AD"), null);
         range2008.addChild(range2015);
-        range.addChild(range2008);
         range.addChild(range1980);
+        range.addChild(range2008);
         expectedTrees.add(range);
 
         Result result1;
@@ -94,11 +94,11 @@ public class ProduceRangesTest {
         Range range2008 = new Range(simpleDateFormat.parse("01-01-2008 AD"), simpleDateFormat.parse("31-05-2016 AD"));
         Range range2015 = new Range(simpleDateFormat.parse("01-01-2015 AD"), null);
         range2008.addChild(range2015);
-        range.addChild(range2008);
         range.addChild(range1980);
-        expectedTrees.add(range);
+        range.addChild(range2008);
         Range range400BC = new Range(simpleDateFormat.parse("01-01-499 BC"), simpleDateFormat.parse("31-12-400 BC"));
         expectedTrees.add(range400BC);
+        expectedTrees.add(range);
 
         Result result1;
         TimelineDate timelineDate1;
@@ -170,18 +170,18 @@ public class ProduceRangesTest {
         Range range0499 = new Range(simpleDateFormat.parse("01-01-0499 BC"), simpleDateFormat.parse("31-12-0400 BC"));
 
 
-        range01To99.getChildren().add(range201623);
-        range01To99.getChildren().add(range201612To20);
-        range01To99.getChildren().add(range201601);
-        range01To99.getChildren().add(range2008);
-        range01To99.getChildren().add(range1996);
         range01To99.getChildren().add(range1980);
+        range01To99.getChildren().add(range1996);
+        range01To99.getChildren().add(range2008);
+        range01To99.getChildren().add(range201601);
+        range01To99.getChildren().add(range201612To20);
+        range01To99.getChildren().add(range201623);
         range2008.getChildren().add(range2015);
-        range201612To20.getChildren().add(range201615To20);
         range201612To20.getChildren().add(range201612To18);
+        range201612To20.getChildren().add(range201615To20);
 
-        expectedTrees.add(range01To99);
         expectedTrees.add(range0499);
+        expectedTrees.add(range01To99);
 
         List<Result> results = new ArrayList<>();
         Result result;

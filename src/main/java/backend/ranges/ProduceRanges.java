@@ -40,9 +40,11 @@ public class ProduceRanges {
      */
     private List<Result> sortByRange(List<Result> inputResults) {
         Collections.sort(inputResults);//java +7 mergesort with O(nlogn) but if its almost sorted its closer to O(n)
+        System.out.println("Sorted by Range");
         for (Result result : inputResults) {
             System.out.println("For: " + result + " range: " + result.getTimelineDate().getRange());
         }
+
         return inputResults;
     }
 
