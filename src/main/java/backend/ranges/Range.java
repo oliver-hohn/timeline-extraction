@@ -25,16 +25,18 @@ public class Range implements Cloneable {
         children = new ArrayList<>();
     }
 
-    /*
-    1. check constraints return false if completely out of constraint
-    2. else attempt to add through one of the children (ie check if one already has the date)
-    3. if can add add, else extend range
-     */
-
     /**
-     * For the given Result, attempt to add it to the Results currently held by this Range, if that is not possible
-     * check whether it is within the bounds of dates, if it isn't then return false (as we can't add it to this Range),
-     * else attempt to add it to the children (and their children and so on).
+     * For the given Result, check that the dates of the Result are partially in the scope of this Range, if that is not
+     * possible then return false.
+     * If the Result is within this Rage, then attempt to find between the current Range and its children a Range where
+     * the Results range of dates fit in perfectly, if it can be added then add it else attempt to create a new Range
+     * child of this Range and find its location to place it.
+     * <p>
+     * Algorithm given by:
+     * 1.check constraints, if they are false then return false else move onto step 2.
+     * 2.attempt to add the Result to one of the children (or children-children, or etc) of this Range where they both
+     * have the same Range; move onto step 3 if that is unsuccessful.
+     * 3.create a new Range and find the location of where to add it in the Range (extending the Range where necessary)
      *
      * @param result the given Result.
      * @return true if the Result was added to this Range (i.e. this Tree) or its children or its children-children etc;
@@ -43,50 +45,51 @@ public class Range implements Cloneable {
     public boolean add(Result result) {
         TimelineDate timelineDate = result.getTimelineDate();
         //check constraints
-        if(!shouldAdd(timelineDate)){//check constraints if we can even add to this range (ie are we in the root constraints)
+        if (!shouldAdd(timelineDate)) {//check constraints if we can even add to this range (ie are we in the root constraints)
             return false;
         }
         //attempt to add through an existing range
         Range toAdd = checkCanAdd(result);
-        if(toAdd != null){
+        if (toAdd != null) {
             toAdd.results.add(result);//add to the results of the given range where we could add
             return true;
         }
         //now we try to extend the range
-        return addResultToChildren(result);
-/*
-        //check whether the given result can be added to this exact range (i.e it holds a timelinedate with a range of
-        //dates exactly equal to this). Checks of null, ie if we have null then the other must have it, else its not part of this exact range
+        return createRangeAndAdd(result);
+    }
+
+    /**
+     * Whether or not the given TimelineDate is partially or fully in the range of Dates of this Range. Whether or not
+     * we should try to add the Result of this TimelineDate to this Range.
+     *
+     * @param timelineDate the given TimelineDate.
+     * @return true if the TimelineDate is within/partially (ie if date1 is in the Range but not date2, or vice versa,
+     * or both dates are within the range)in this Range; false otherwise.
+     */
+    private boolean shouldAdd(TimelineDate timelineDate) {
+        //check the date1 is in constraint to t.date1 then if date2 then check with date2
+        return isWithinConstraints(date1, date2, timelineDate.getDate1())
+                || (timelineDate.getDate2() != null && isWithinConstraints(date1, date2, timelineDate.getDate2()));
+    }
+
+    /**
+     * Attempt to find a Range (either this or one of its children, or its children-children, etc) that has the date
+     * values that match the given Result.
+     *
+     * @param result the given Result.
+     * @return a Range that holds the same exact date values as the TimelineDate of the Result or null if that is not
+     * possible.
+     */
+    private Range checkCanAdd(Result result) {
+        TimelineDate timelineDate = result.getTimelineDate();
         if (timelineDate.getDate1().equals(date1) && ((date2 == null && timelineDate.getDate2() == null)
                 || (date2 != null && timelineDate.getDate2() != null && date2.equals(timelineDate.getDate2())))) {
-            //if we have the same start date and date2 != null -> date2 are equals
-            //then this Result belongs to the results of this Range
-            System.out.println("For the given Result: "+result+"its range is exactly in: "+printDate(date1)+" -> "+printDate(date2));
-            results.add(result);
-            return true;//we added it
-        }
-        //we couldnt add it directly to this Range, try its children
-        //TODO: check we are within the constraints, before attempting to add to the children, to improve performance
-        System.out.println("Adding result to children");
-        return addResultToChildren(result);*/
-    }
-
-    private boolean shouldAdd(TimelineDate timelineDate){
-        //check the date1 is in constraint to t.date1 then if date2 then check with date2
-        return isWithinConstraints(date1,date2, timelineDate.getDate1())
-                || (timelineDate.getDate2() !=null && isWithinConstraints(date1,date2, timelineDate.getDate2()));
-    }
-
-    private Range checkCanAdd(Result result){
-        TimelineDate timelineDate = result.getTimelineDate();
-        if(timelineDate.getDate1().equals(date1) && ((date2 == null && timelineDate.getDate2() == null)
-        || (date2 != null && timelineDate.getDate2() != null && date2.equals(timelineDate.getDate2())))){
             return this;
         }
         Range toReturn = null;
-        for(Range child: children){
+        for (Range child : children) {
             toReturn = child.checkCanAdd(result);
-            if(toReturn != null){
+            if (toReturn != null) {
                 return toReturn;
             }
         }
@@ -94,29 +97,16 @@ public class Range implements Cloneable {
     }
 
     /**
-     * For the given result, attempt to add it to the Children of this Range (which recursively calls add on their
-     * children until we reach a range exactly equal to it, or we have to create our own range because there is none).
+     * For the given Result, create a Range using its TimelineDate and attempt to find the location where this Range
+     * should be added in the Tree structure (ie find the lowest/best possible Range that should contain the created
+     * Range).
+     * Normally called if we couldn't find any Range that has the same exact Dates so we create a Range to contain it
+     * and attempt to find its spot (extending Ranges where necessary to self contain Ranges in bigger Ranges).
      *
      * @param result the given Result.
-     * @return true if the Result was added to the Children of this Range, false otherwise.
+     * @return true if the created Range was added to this (sub-)tree, false otherwise.
      */
-    private boolean addResultToChildren(Result result) {
-        //for all of the childrens, attempt to add this Result
-/*        for (Range child : children) {
-            System.out.println("Child: "+child);
-            if (child.add(result)) {//see if we can add it to one of the children (ie holds the same range, or we reach all
-                //the leaf nodes because we couldnt add it so we make a new child (as this is where the range
-                //should be
-                return true;//we could add it to one of the children
-            }
-        }*/
-/*        Range toAdd = checkCanAdd(result);
-        if(toAdd != null){//found a leaf where we can add
-            System.out.println("Added "+result+" to: "+printDate(toAdd.date1)+" and "+printDate(toAdd.date2));
-            toAdd.add(result);
-            return true;
-        }*/
-        System.out.println("Couldnt add to children");
+    private boolean createRangeAndAdd(Result result) {
         //we couldn't add it to any of the childrens so make new child and try to add it
         TimelineDate timelineDate = result.getTimelineDate();
         Range newChild = new Range(timelineDate.getDate1(), timelineDate.getDate2());
@@ -132,7 +122,7 @@ public class Range implements Cloneable {
      * is within the range, but date2 isn't or vice versa). In the latter case we extend this Range, such that it holds
      * the old range and the given range.
      *
-     * @param potentialChild the given Range.
+     * @param potentialChild the given Range (r').
      * @return true if the potentialChild could be added to the children of this Range, or we could extend the Range;
      * false otherwise.
      */
@@ -145,40 +135,32 @@ public class Range implements Cloneable {
                 if it matches then extend the ranges and add it to the new extended range (that holds as a child the old Range of this)
             otherwise return false (it doesn't belong in this area)
          */
-        System.out.println("Now checking cases for: "+printDate(potentialChild.date1)+" and "+printDate(potentialChild.date2)
-                +" In: "+printDate(date1)+ " and "+printDate(date2));
         if (isWithinConstraints(date1, date2, potentialChild.date1)
                 && (potentialChild.date2 == null || isWithinConstraints(date1, date2, potentialChild.date2))) {
-            System.out.println("Within constraints: " + printDate(potentialChild.date1) + " and " + printDate(potentialChild.date2));
-            //we are within the constraints, try to add to children, if cant because there are none, or we cant then add directly
+            //we are within the constraints, try to add to children Ranges, if cant because there are none, or we cant then add directly to this Ranges children
             for (Range child : children) {
-                System.out.println("Trying to add to child: " + child);
                 if (child.addChild(potentialChild)) {//successfully added to one of them
-                    System.out.println("We added");
                     return true;
                 }
             }
             //we couldnt add to any of them, then add directly to my children
-            System.out.println("Adding potential child");
             children.add(potentialChild);
-            System.out.println("Added potential child");
             return true;
-        } else if (isWithinConstraints(date1, date2, potentialChild.date1) && (potentialChild.date2 != null && !isWithinConstraints(date1, date2, potentialChild.date2))) {
-            System.out.println("Within constraints: " + printDate(potentialChild.date1) + " but not " + printDate(potentialChild.date2));
             //partial constraints
+        } else if (isWithinConstraints(date1, date2, potentialChild.date1) && (potentialChild.date2 != null && !isWithinConstraints(date1, date2, potentialChild.date2))) {
+            //checking if we need to extend the range (this case the first date is within the constraints but date2 isnt
             //date1 is in the range but date2 isnt so extend and us to the extensions children as we didnt fit in previous range (which is now its child)
-            extendRange(date1, potentialChild.date2);
-            children.add(potentialChild);
+            extendRange(date1, potentialChild.date2);//extend the range and add the child to the now extended range (as we fit in the now extended
+            children.add(potentialChild);//range, but not in its other child which was the previous range held before extending, else we wouldnt be here)
             return true;//if we called addChild it would just loop on the child that was the previous range, and thats the only child so there is no point checking just add to this
         } else if (!isWithinConstraints(date1, date2, potentialChild.date1) && (potentialChild.date2 != null && isWithinConstraints(date1, date2, potentialChild.date2))) {
-            System.out.println("not Within constraints: " + printDate(potentialChild.date1) + " but yes " + printDate(potentialChild.date2));
-            //date2 is in the range but date1 isnt so extend
+            //date2 is in the range but date1 isnt so extend and add to the children of the extended range.
             extendRange(potentialChild.date1, date2);
             children.add(potentialChild);
             return true;
         }
-        System.out.println("We didnt add");
-        return false;
+        //We werent able to add the potentialRange to this Range,
+        return false;//so return false (this method is recursive, so it will try on the next child of the parent Range that called it on this child)
     }
 
     /**
@@ -189,11 +171,8 @@ public class Range implements Cloneable {
      */
     private void extendRange(Date date1, Date date2) {
         try {
-            System.out.println("Extending the range to: " + printDate(date1) + " and " + printDate(date2));
-            System.out.println("The Range originally is: "+printDate(this.date1)+" and "+printDate(this.date2));
             Range cloneRange = (Range) clone();//the date of this will be a new child, we are setting its parent
-            //clear all the values and set the new ones
-            clear();
+            clear();//clear all the values and set the new ones
             this.date1 = date1;//extended range value
             this.date2 = date2;//extended range value
             children.add(cloneRange);//add what used to be this (but now we cloned it) as out child
@@ -237,8 +216,6 @@ public class Range implements Cloneable {
      * false otherwise.
      */
     private boolean isWithinConstraints(Date constraint1, Date constraint2, Date toCheck) {
-/*        System.out.println("Date1 constraint: " + printDate(constraint1) + " Date2 constraint: " + printDate(constraint2)
-                + "We are checking: " + printDate(toCheck));*/
         if (constraint1 != null && constraint2 != null) {
             return toCheck.compareTo(constraint1) >= 0 && toCheck.compareTo(constraint2) <= 0;
         }
@@ -270,7 +247,7 @@ public class Range implements Cloneable {
     /**
      * Returns a String of the given Range.
      *
-     * @return a String that shows the range of Dates held by this Range and the its child Ranges (recursive).
+     * @return a String that shows the range of Dates held by this Range, its Result and the its child Ranges (recursive).
      */
     @Override
     public String toString() {
@@ -278,7 +255,7 @@ public class Range implements Cloneable {
         if (date2 != null) {
             toReturn += " -> " + printDate(date2);
         }
-        toReturn+= " has results: "+results;
+        toReturn += " has results: " + results;
         toReturn += " and has children: \n" + children;
         return toReturn;
     }

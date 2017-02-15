@@ -15,6 +15,7 @@ import java.util.List;
  * Created by Oliver on 13/02/2017.
  */
 public class ProduceRangesTest {
+    //TODO: make fake results and compare the produced forest of Range trees to the expected forest of Range trees.
     @Test
     public void test() throws ParseException {
         List<Result> resultList = new ArrayList<>();
