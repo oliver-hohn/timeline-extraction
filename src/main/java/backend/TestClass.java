@@ -52,7 +52,7 @@ public class TestClass {
         result = new Result();
         timelineDate = new TimelineDate();
         timelineDate.setDate1(simpleDateFormat.parse("01-01-0499 BC"));
-        timelineDate.setDate2(simpleDateFormat.parse("31-12-9999 AD"));
+        timelineDate.setDate2(simpleDateFormat.parse("31-12-0400 BC"));
         result.setTimelineDate(timelineDate);
         timelineDate.getRange();
         resultList.add(result);

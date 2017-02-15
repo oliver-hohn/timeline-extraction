@@ -4,15 +4,13 @@ import backend.process.Result;
 import backend.process.TimelineDate;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * A Range of Dates (which can be only one date) which can be represented as a Node in a Tree, due to it holding a list of
  * its sub-ranges.
  */
-public class Range implements Cloneable {
+public class Range implements Cloneable, Comparable<Range> {
     private List<Result> results;//results that are exactly in this range
     private Date date1;//first part of range
     private Date date2;//only if we have a range of size > 0
@@ -258,5 +256,72 @@ public class Range implements Cloneable {
         toReturn += " has results: " + results;
         toReturn += " and has children: \n" + children;
         return toReturn;
+    }
+
+    /**
+     * Overwrote the equals method to check whether two Ranges are equal to each other: that is they hold the same Dates,
+     * results and their children are equal (recursive).
+     *
+     * @param obj the other Range we are checking if its equal to this Range.
+     * @return true if the other Range has the same Dates as this Range, holds the same Results as this Range, and their
+     * children are equal.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        try {
+            Range other = (Range) obj;
+            if (date1.equals(other.date1) && ((date2 == null & other.date2 == null) || (date2 != null & other.date2 != null && date2.equals(other.date2)))) {
+                if (children.isEmpty() && other.children.isEmpty()) {
+                    return results.equals(other.results);
+                } else {//they have children
+                    return results.equals(other.results) && children.equals(other.children);
+                }
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return false;
+    }
+
+
+    /**
+     * Sort the children held by this Range, and calls sortChildren on its children.
+     * Sorts them such that the resulting children list is in descending order based on date1 (ie at index 0 you have
+     * the newest range and at the last index the range with date1 furthest away.
+     */
+    public void sortChildren() {
+        if (children.size() > 0) {
+            Collections.sort(children);
+            for (Range range : children) {
+                range.sortChildren();
+            }
+        }
+    }
+
+
+    /**
+     * Implemented the Comparable interface to sort Ranges.
+     *
+     * @param o the other Range we are comparing to.
+     * @return 1 if this Range is greater than the other, 0 if they are equal and -1 if this Range is less than the other.
+     */
+    @Override
+    public int compareTo(Range o) {
+        if (o.date1 != null && this.date1 != null) {
+            return o.date1.compareTo(this.date1);
+        }
+        if (this.date1 == null) {
+            return -1;
+        }
+        return 1;
+    }
+
+    /**
+     * Get the list of Range children held by this Range.
+     *
+     * @return the list of Range children.
+     */
+    public List<Range> getChildren() {
+        return children;
     }
 }

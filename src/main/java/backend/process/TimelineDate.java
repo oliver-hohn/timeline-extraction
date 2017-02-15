@@ -23,6 +23,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
     private static final Map<Character, String> timeMap;
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd G");
     private final SimpleDateFormat dayMonthYearFormat = new SimpleDateFormat("dd-MM-yyyy G");
+
     static {
         /*
             Seasons are given according to educationuk.org, by:
@@ -72,7 +73,8 @@ public class TimelineDate implements Comparable<TimelineDate> {
     private String baseDate;
     private String durationData;//holds the latest duration data (additional info to show with event)
     //have a pair of list dates and duration string, if you use the dates pass in the string as additional info
-    private int range = 0;
+    private int range = -1;
+
     /**
      * Initialises the Calendar used to determine dates based on week number.
      */
@@ -406,11 +408,13 @@ public class TimelineDate implements Comparable<TimelineDate> {
         }
     }
 
-    private void updateRange(){
-        if(date1 != null && date2 != null){
+    private void updateRange() {
+        if (date1 != null && date2 != null) {
             DateTime dateTime1 = new DateTime(date1);
             DateTime dateTime2 = new DateTime(date2);
             range = Days.daysBetween(dateTime1, dateTime2).getDays();
+        } else {
+            range = 0;
         }
     }
 
@@ -475,6 +479,9 @@ public class TimelineDate implements Comparable<TimelineDate> {
      */
     @Override
     public int compareTo(TimelineDate o) {
+        if (range == -1) {
+            updateRange();
+        }
 /*        if (o.date1 != null && this.date1 != null) {
             return o.date1.compareTo(this.date1);
         }
@@ -482,11 +489,11 @@ public class TimelineDate implements Comparable<TimelineDate> {
             return -1;
         }
         return 1;*/
-        if(range > o.range){
+        if (range > o.range) {
             return 1;
-        }else if(range < o.range){
+        } else if (range < o.range) {
             return -1;
-        }else{
+        } else {
             return 0;
         }
     }

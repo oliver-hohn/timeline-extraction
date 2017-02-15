@@ -85,7 +85,18 @@ public class ProduceRanges {
      * For the forest of Range trees recursively sort the trees (and their subtrees) by their date1 in ascending order.
      */
     private void sortForest() {
-        //TODO: sort trees
+        //sort the roots first
+        Collections.sort(trees);
+        //for all the roots call sortChildren (which will recursively sort)
+        for (Range root : trees) {
+            root.sortChildren();
+        }
+
+        System.out.println("Sorted:\n");
+        //print the sorted trees:
+        for (Range root : trees) {
+            System.out.println(root);
+        }
     }
 
 
