@@ -303,7 +303,8 @@ public class Range implements Cloneable, Comparable<Range> {
      * Implemented the Comparable interface to sort Ranges.
      *
      * @param o the other Range we are comparing to.
-     * @return 1 if this Range is greater than the other, 0 if they are equal and -1 if this Range is less than the other.
+     * @return 1 if the date1 of this Range is greater than the other, 0 if they are equal and -1 if this Range's date1
+     * is less than the other.
      */
     @Override
     public int compareTo(Range o) {
@@ -325,7 +326,13 @@ public class Range implements Cloneable, Comparable<Range> {
         return children;
     }
 
-    public String getDateRange(){
+    /**
+     * Get a String representation of date1 and date2 (if set) of this Range (i.e. a String of the range of dates held
+     * by this Range).
+     *
+     * @return a String representation of the range of dates held.
+     */
+    public String getDateRange() {
         String toReturn = printDate(date1);
         if (date2 != null) {
             toReturn += " -> " + printDate(date2);
@@ -333,6 +340,12 @@ public class Range implements Cloneable, Comparable<Range> {
         return toReturn;
     }
 
+    /**
+     * A list of the Results held by this Range. These are Results that have the same exact TimelineDate range of dates
+     * as this Range (ie date1 and date2 of the Results and this Range are equal).
+     *
+     * @return the list of Results held by this Range.
+     */
     public List<Result> getResults() {
         return results;
     }

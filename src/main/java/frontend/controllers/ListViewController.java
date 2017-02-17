@@ -32,10 +32,8 @@ public class ListViewController implements Initializable, MenuBarControllerInter
     private StackPane stackPane;
     @FXML
     private VBox vBox;
-/*    @FXML
-    private ListView<Result> timelineListView;*/
     @FXML
-    private ListView<Range> timelineListView;
+    private ListView timelineListView;
     @FXML
     private Button loadDocumentsButton;
     @FXML
@@ -59,8 +57,8 @@ public class ListViewController implements Initializable, MenuBarControllerInter
         System.out.println("loadDocumentsButton: " + loadDocumentsButton);
         System.out.println("saveToButton: " + saveToButton);
         loadingDialog = new LoadingDialog(stackPane, vBox);//pass the root layout and main content layout to know where
-                    //to show the loading dialog, and what to disable.
-        timelineListView.getStylesheets().add(getClass().getResource("listViewThemeTimeline.css").toExternalForm());
+        //to show the loading dialog, and what to disable.
+
     }
 
     /**
@@ -118,27 +116,30 @@ public class ListViewController implements Initializable, MenuBarControllerInter
      * @param results the input List.
      */
     private void setTimelineList(List<Result> results) {
-
+        //if we are showing the Range timeline
         ProduceRanges produceRanges = new ProduceRanges();
         produceRanges.produceRanges(results);
-
-
-
         ObservableList<Range> ranges = FXCollections.observableArrayList();
         ranges.setAll(produceRanges.getTrees());
+        timelineListView.getStylesheets().add(getClass().getResource("listViewThemeTimeline.css").toExternalForm());
         timelineListView.setItems(ranges);
         timelineListView.setCellFactory(new Callback<ListView<Range>, ListCell<Range>>() {
             @Override
             public ListCell<Range> call(ListView<Range> param) {
-                return new ListCell<Range>(){
+                return new ListCell<Range>() {
+                    /**
+                     * Called whenever a row needs to be shown/created on the screen.
+                     * @param item the Range object for which this row has to be displayed for.
+                     * @param empty whether or nor the row is empty.
+                     */
                     @Override
                     protected void updateItem(Range item, boolean empty) {
                         super.updateItem(item, empty);
-                        if(item !=null){
+                        if (item != null) {
                             CustomTimelineRow customTimelineRow = new CustomTimelineRow(item);
                             setGraphic(customTimelineRow.getPane());
-                        } else{
-                          setGraphic(null);
+                        } else {
+                            setGraphic(null);
                         }
                     }
                 };
@@ -146,7 +147,7 @@ public class ListViewController implements Initializable, MenuBarControllerInter
         });
 
 
-
+        //if we are showing the Result timeline listViewTheme.css syle for that listview.
     /*
         timelineObservableList.clear();
         timelineObservableList.addAll(results);
@@ -156,11 +157,11 @@ public class ListViewController implements Initializable, MenuBarControllerInter
             public ListCell<Result> call(ListView<Result> param) {
                 return new ListCell<Result>() {
                     *//**
-                     * Called whenever a row needs to be shown/created on the screen.
-                     *
-                     * @param item the Result object for which this row has to display data for.
-                     * @param empty  whether or not the Row is empty (i.e. result == null).
-                     *//*
+         * Called whenever a row needs to be shown/created on the screen.
+         *
+         * @param item the Result object for which this row has to display data for.
+         * @param empty  whether or not the Row is empty (i.e. result == null).
+         *//*
                     @Override
                     protected void updateItem(Result item, boolean empty) {
                         super.updateItem(item, empty);

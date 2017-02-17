@@ -7,13 +7,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 
 /**
- * Created by Oliver on 17/02/2017.
+ * Controller for the custom Result rows in the ListView of the RangeData layout.
  */
 public class CustomResultRowController {
     @FXML
@@ -27,45 +27,64 @@ public class CustomResultRowController {
     @FXML
     private Label eventLabel;
     private Result result;
-    public CustomResultRowController(Result result){
-        this. result = result;
+
+    /**
+     * For the given Result, set up the data to be shown for this row, and the onclick events.
+     * Builds a layout that shows the subjects, and the event of the given Result, along with buttons to view the
+     * original document that produced this Result and the edit dialog to edit the Result.
+     *
+     * @param result the given Result.
+     */
+    public CustomResultRowController(Result result) {
+        this.result = result;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("customResultRow.fxml"));
         fxmlLoader.setController(this);
         try {
-            rootVBox = fxmlLoader.load();
-            setUpData();
-            setUpOnClicks();
+            rootVBox = fxmlLoader.load();//set the root layout
+            setUpData();//set the data
+            setUpOnClicks();//set the onclicks
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void setUpData(){
-        System.out.println("Setting Custom Result row for: "+result);
-        if(result != null){
+    /**
+     * Set the data held by the Result in the appropriate labels.
+     */
+    private void setUpData() {
+        if (result != null) {
             subjectsLabel.setText(result.getSubjectsAsString());
             eventLabel.setText(result.getEvent());
 
         }
     }
 
-    private void setUpOnClicks(){
+    /**
+     * Set the EventHandlers for the onClicks of the buttons of this Result row.
+     */
+    private void setUpOnClicks() {
         viewButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Clicked View on: "+result);
+                System.out.println("Clicked View on: " + result);
             }
         });
 
         editButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Clicked Event on: "+result);
+                System.out.println("Clicked Event on: " + result);
             }
         });
     }
 
-    public VBox getRootLayout(){
+    /**
+     * Get the root layout represented by this Controller (i.e. labels showing the subjects and events held by this
+     * Result, and buttons to view the document that produced the Result and edit the Result.
+     *
+     * @return the root layout represented by this Controller.
+     */
+    public Pane getRootLayout() {
         return rootVBox;
     }
 }
