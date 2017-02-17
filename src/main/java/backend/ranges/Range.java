@@ -324,4 +324,16 @@ public class Range implements Cloneable, Comparable<Range> {
     public List<Range> getChildren() {
         return children;
     }
+
+    public String getDateRange(){
+        String toReturn = printDate(date1);
+        if (date2 != null) {
+            toReturn += " -> " + printDate(date2);
+        }
+        return toReturn;
+    }
+
+    public List<Result> getResults() {
+        return results;
+    }
 }

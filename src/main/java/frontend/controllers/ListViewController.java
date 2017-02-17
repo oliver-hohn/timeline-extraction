@@ -3,6 +3,7 @@ package frontend.controllers;
 import backend.process.FileData;
 import backend.process.Result;
 import backend.ranges.ProduceRanges;
+import backend.ranges.Range;
 import frontend.dialogs.RemoveConfirmationDialog;
 import frontend.dialogs.LoadingDialog;
 import frontend.observers.DocumentsLoadedObserver;
@@ -31,8 +32,10 @@ public class ListViewController implements Initializable, MenuBarControllerInter
     private StackPane stackPane;
     @FXML
     private VBox vBox;
+/*    @FXML
+    private ListView<Result> timelineListView;*/
     @FXML
-    private ListView<Result> timelineListView;
+    private ListView<Range> timelineListView;
     @FXML
     private Button loadDocumentsButton;
     @FXML
@@ -56,7 +59,9 @@ public class ListViewController implements Initializable, MenuBarControllerInter
         System.out.println("loadDocumentsButton: " + loadDocumentsButton);
         System.out.println("saveToButton: " + saveToButton);
         loadingDialog = new LoadingDialog(stackPane, vBox);//pass the root layout and main content layout to know where
-    }                                       //to show the loading dialog, and what to disable.
+                    //to show the loading dialog, and what to disable.
+        timelineListView.getStylesheets().add(getClass().getResource("listViewThemeTimeline.css").toExternalForm());
+    }
 
     /**
      * Called to set the Observer for this Scene.
@@ -113,12 +118,36 @@ public class ListViewController implements Initializable, MenuBarControllerInter
      * @param results the input List.
      */
     private void setTimelineList(List<Result> results) {
-/*
+
         ProduceRanges produceRanges = new ProduceRanges();
         produceRanges.produceRanges(results);
 
-*/
 
+
+        ObservableList<Range> ranges = FXCollections.observableArrayList();
+        ranges.setAll(produceRanges.getTrees());
+        timelineListView.setItems(ranges);
+        timelineListView.setCellFactory(new Callback<ListView<Range>, ListCell<Range>>() {
+            @Override
+            public ListCell<Range> call(ListView<Range> param) {
+                return new ListCell<Range>(){
+                    @Override
+                    protected void updateItem(Range item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if(item !=null){
+                            CustomTimelineRow customTimelineRow = new CustomTimelineRow(item);
+                            setGraphic(customTimelineRow.getPane());
+                        } else{
+                          setGraphic(null);
+                        }
+                    }
+                };
+            }
+        });
+
+
+
+    /*
         timelineObservableList.clear();
         timelineObservableList.addAll(results);
         timelineListView.setItems(timelineObservableList);
@@ -126,12 +155,12 @@ public class ListViewController implements Initializable, MenuBarControllerInter
             @Override
             public ListCell<Result> call(ListView<Result> param) {
                 return new ListCell<Result>() {
-                    /**
+                    *//**
                      * Called whenever a row needs to be shown/created on the screen.
                      *
                      * @param item the Result object for which this row has to display data for.
                      * @param empty  whether or not the Row is empty (i.e. result == null).
-                     */
+                     *//*
                     @Override
                     protected void updateItem(Result item, boolean empty) {
                         super.updateItem(item, empty);
@@ -145,7 +174,7 @@ public class ListViewController implements Initializable, MenuBarControllerInter
                     }
                 };
             }
-        });
+        });*/
     }
 
     /**
