@@ -40,11 +40,11 @@ public class ProduceRanges {
      */
     private List<Result> sortByRange(List<Result> inputResults) {
         Collections.sort(inputResults);//java +7 mergesort with O(nlogn) but if its almost sorted its closer to O(n)
+        Collections.reverse(inputResults);//as the list has been sorted in ascending order and we want descending
         System.out.println("Sorted by Range");
-        for (Result result : inputResults) {
-            System.out.println("For: " + result + " range: " + result.getTimelineDate().getRange());
+        for(Result result: inputResults){
+            System.out.println(result+" "+result.getTimelineDate().getRange());
         }
-
         return inputResults;
     }
 
@@ -92,12 +92,6 @@ public class ProduceRanges {
         //for all the roots call sortChildren (which will recursively sort)
         for (Range root : trees) {
             root.sortChildren();
-        }
-
-        System.out.println("Sorted:\n");
-        //print the sorted trees:
-        for (Range root : trees) {
-            System.out.println(root);
         }
     }
 

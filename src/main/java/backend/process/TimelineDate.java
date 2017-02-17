@@ -506,7 +506,6 @@ public class TimelineDate implements Comparable<TimelineDate> {
      */
     @Override
     public boolean equals(Object obj) {
-        System.out.println("Comparing: " + this + " to " + obj);
         boolean toReturn;
         try {
             TimelineDate other = (TimelineDate) obj;

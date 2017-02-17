@@ -6,6 +6,7 @@ import backend.process.Result;
  * Implemented by the Observer of this TimelineRow (that is the holder of the ListView), so that the cells can communicate
  * with the overall listView.
  */
+//TODO: documentation
 public interface TimelineRowObserver {
     /**
      * Called by a TimelineRow to inform the Observer (holder of the ListView), that the data it is holding has been
@@ -16,6 +17,8 @@ public interface TimelineRowObserver {
      */
     void update(Result updatedResult, int position);
 
+    void update(Result previous, Result updatedResult);
+
     /**
      * Called by a TimelineRow to inform the Observer (holder of the ListView), that this event (in the given position),
      * needs to be deleted from the list.
@@ -23,4 +26,7 @@ public interface TimelineRowObserver {
      * @param position the position of the event to be deleted.
      */
     void delete(int position);
+
+
+    void delete(Result result);
 }

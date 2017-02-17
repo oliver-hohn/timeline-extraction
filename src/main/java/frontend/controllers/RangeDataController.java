@@ -2,6 +2,7 @@ package frontend.controllers;
 
 import backend.process.Result;
 import backend.ranges.Range;
+import frontend.observers.TimelineRowObserver;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -27,14 +28,18 @@ public class RangeDataController {
     @FXML
     private Label dateLabel;
     private ObservableList<Result> results;
+    private TimelineRowObserver timelineRowObserver;
+    private int rangePosition;
 
     /**
      * Constructor that sets up the layout to represent the data held by the given Range.
      *
      * @param range the given Range.
      */
-    public RangeDataController(Range range) {
+    public RangeDataController(Range range, TimelineRowObserver timelineRowObserver, int rangePosition) {
         this.range = range;
+        this.timelineRowObserver = timelineRowObserver;
+        this.rangePosition = rangePosition;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("rangeDataLayout.fxml"));//load the base layout
         fxmlLoader.setController(this);
         try {
@@ -63,9 +68,8 @@ public class RangeDataController {
                             @Override
                             protected void updateItem(Result item, boolean empty) {
                                 super.updateItem(item, empty);
-                                System.out.println("Item: " + item + " empty: " + empty);
                                 if (item != null) {//if we have a valid item, build its layout and set it
-                                    CustomResultRowController customResultRowController = new CustomResultRowController(item);
+                                    CustomResultRowController customResultRowController = new CustomResultRowController(item, timelineRowObserver, rangePosition);
                                     setGraphic(customResultRowController.getRootLayout());//set the layout built with the result
                                 } else {//dont have a valid result so dont show anything
                                     setGraphic(null);

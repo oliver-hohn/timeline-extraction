@@ -132,7 +132,7 @@ public class Result implements Comparable<Result>, Cloneable {
      */
     @Override
     public int compareTo(Result o) {
-        return o.timelineDate.compareTo(this.timelineDate);
+        return this.timelineDate.compareTo(o.timelineDate);
     }
 
     /**
@@ -217,6 +217,16 @@ public class Result implements Comparable<Result>, Cloneable {
         //set the original sentence
         copyResult.setOriginalString(originalString);
         return copyResult;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Result){
+            Result other = (Result) obj;
+            return subjects.equals(other.getSubjects()) && event.equals(other.event) && originalString.equals(other.originalString)
+                    && fileData.equals(other.fileData) && timelineDate.equals(other.getTimelineDate());
+        }
+        return false;
     }
 
     /**

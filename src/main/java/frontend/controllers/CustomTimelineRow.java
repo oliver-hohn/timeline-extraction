@@ -1,6 +1,7 @@
 package frontend.controllers;
 
 import backend.ranges.Range;
+import frontend.observers.TimelineRowObserver;
 import javafx.geometry.HPos;
 import javafx.geometry.Orientation;
 import javafx.geometry.VPos;
@@ -11,7 +12,7 @@ import javafx.scene.layout.Pane;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO: css, documentation, events, picker for what timeline layout to use
+//TODO: picker for what timeline layout to use, filedata
 
 
 /**
@@ -21,6 +22,7 @@ import java.util.List;
 public class CustomTimelineRow {
     private Range root;
     private GridPane rootLayout;
+    private TimelineRowObserver timelineRowObserver;
 
     /**
      * Constructor used to set up the layout of the Timeline row. Afterwards a call to getPane() will return the row
@@ -29,7 +31,8 @@ public class CustomTimelineRow {
      * @param root the root Range (which can hold Ranges as children which are added Recursively to the 2nd column of
      *             the GridPane.
      */
-    public CustomTimelineRow(Range root) {
+    public CustomTimelineRow(Range root, TimelineRowObserver timelineRowObserver) {
+        this.timelineRowObserver = timelineRowObserver;
         this.root = root;
         setUpLayout();//set up the layout of this Timeline Row
     }
@@ -70,8 +73,7 @@ public class CustomTimelineRow {
                 } else {
                     //layout for this Range
                     Range range = rangeList.get(i / 2);
-                    System.out.println(range);
-                    Pane toAdd = rangeDataLayout(range);//add the layout for this given Range
+                    Pane toAdd = rangeDataLayout(range, (i/2));//add the layout for this given Range
                     gridPane.add(toAdd, 0, i);
                     GridPane.setValignment(toAdd, VPos.TOP);//set the items added to top left of the layout
                     GridPane.setHalignment(toAdd, HPos.LEFT);
@@ -95,8 +97,8 @@ public class CustomTimelineRow {
      * @param range the given Range.
      * @return the layout representing the data of the given Range.
      */
-    private Pane rangeDataLayout(Range range) {
-        RangeDataController rangeDataController = new RangeDataController(range);
+    private Pane rangeDataLayout(Range range, int position) {
+        RangeDataController rangeDataController = new RangeDataController(range, timelineRowObserver, position);
         return rangeDataController.getRootBorderPane();
     }
 

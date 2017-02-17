@@ -109,7 +109,6 @@ public class Range implements Cloneable, Comparable<Range> {
         TimelineDate timelineDate = result.getTimelineDate();
         Range newChild = new Range(timelineDate.getDate1(), timelineDate.getDate2());
         newChild.add(result);//the new potential range child holds its result
-        System.out.println("Calling addChild");
         return addChild(newChild);// try and add this child (need to check constraints
     }
 

@@ -27,6 +27,7 @@ import java.util.*;
 /**
  * Controller for the layout where the ListView is shown. Allows the listview to be populated with Result data.
  */
+//TODO: documentation, sorting of saving (sort by date1)
 public class ListViewController implements Initializable, MenuBarControllerInter, DocumentsLoadedObserver, TimelineRowObserver {
     @FXML
     private StackPane stackPane;
@@ -119,6 +120,7 @@ public class ListViewController implements Initializable, MenuBarControllerInter
         //if we are showing the Range timeline
         ProduceRanges produceRanges = new ProduceRanges();
         produceRanges.produceRanges(results);
+        System.out.println("Produced Ranges");
         ObservableList<Range> ranges = FXCollections.observableArrayList();
         ranges.setAll(produceRanges.getTrees());
         timelineListView.getStylesheets().add(getClass().getResource("listViewThemeTimeline.css").toExternalForm());
@@ -136,7 +138,7 @@ public class ListViewController implements Initializable, MenuBarControllerInter
                     protected void updateItem(Range item, boolean empty) {
                         super.updateItem(item, empty);
                         if (item != null) {
-                            CustomTimelineRow customTimelineRow = new CustomTimelineRow(item);
+                            CustomTimelineRow customTimelineRow = new CustomTimelineRow(item, ListViewController.this);
                             setGraphic(customTimelineRow.getPane());
                         } else {
                             setGraphic(null);
@@ -371,6 +373,16 @@ public class ListViewController implements Initializable, MenuBarControllerInter
 
     }
 
+    @Override
+    public void update(Result previous, Result updatedResult) {
+        int pos = results.indexOf(previous);
+        System.out.println("Previous: "+pos);
+        if(pos != -1){
+            results.set(pos, updatedResult);
+            setTimelineListView(results, fileDatas);
+        }
+    }
+
     /**
      * Called by a member of the ListView, to inform the ListView that it needs to be removed from the List.
      * Thereby the list needs to be updated (i.e. set again).
@@ -384,6 +396,17 @@ public class ListViewController implements Initializable, MenuBarControllerInter
             results.remove(position);
             setTimelineListView(results, fileDatas);
         }
+    }
+
+    @Override
+    public void delete(Result result) {
+        int pos = results.indexOf(result);
+        System.out.println("pos: "+pos);
+        if(pos != -1){
+            results.remove(pos);
+            setTimelineListView(results, fileDatas);
+        }
+
     }
 
     /**
