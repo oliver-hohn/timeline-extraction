@@ -27,7 +27,6 @@ import java.util.*;
 /**
  * Controller for the layout where the ListView is shown. Allows the listview to be populated with Result data.
  */
-//TODO: sorting of saving (sort by date1)
 public class ListViewController implements Initializable, MenuBarControllerInter, DocumentsLoadedObserver, TimelineRowObserver {
     @FXML
     private StackPane stackPane;

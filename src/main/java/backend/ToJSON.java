@@ -23,6 +23,8 @@ public class ToJSON {
      * @return the JSON String representing the list of Result objects.
      */
     public static String toJSON(List<Result> results) {
+        //sort the list in ascending order
+        List<Result> sortedList = Sort.sortByDate1(results);
         String toReturn;
         final GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.excludeFieldsWithoutExposeAnnotation();
@@ -56,7 +58,7 @@ public class ToJSON {
         });
         //gsonBuilder.setPrettyPrinting();
         final Gson gson = gsonBuilder.create();
-        toReturn = gson.toJson(results);
+        toReturn = gson.toJson(sortedList);
         return toReturn;
     }
 }

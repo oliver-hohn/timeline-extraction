@@ -80,16 +80,18 @@ public class ToPDF {
      * @throws IOException due to working with streams.(I.e. trying to read or remove a file that is already open).
      */
     public void saveToPDF(List<Result> results, File file) throws IOException {
+        List<Result> sortedList = Sort.sortByDate1(results);//sort the list in ascending order
+
         int counterOfEvents = 0;
-        for (int i = 0; i < results.size(); i++) {
+        for (int i = 0; i < sortedList.size(); i++) {
             if (counterOfEvents >= 5) {//start a new page
                 reset();
                 counterOfEvents = 0;
             }
             if (i % 2 == 0) {//even
-                drawEvenEvent(results.get(i), contentStream, i);
+                drawEvenEvent(sortedList.get(i), contentStream, i);
             } else {//odd
-                drawOddEvent(results.get(i), contentStream, i);
+                drawOddEvent(sortedList.get(i), contentStream, i);
             }
             counterOfEvents++;
         }
