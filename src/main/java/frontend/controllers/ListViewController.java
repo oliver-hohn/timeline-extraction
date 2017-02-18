@@ -27,7 +27,7 @@ import java.util.*;
 /**
  * Controller for the layout where the ListView is shown. Allows the listview to be populated with Result data.
  */
-//TODO: documentation, sorting of saving (sort by date1)
+//TODO: sorting of saving (sort by date1)
 public class ListViewController implements Initializable, MenuBarControllerInter, DocumentsLoadedObserver, TimelineRowObserver {
     @FXML
     private StackPane stackPane;
@@ -373,13 +373,19 @@ public class ListViewController implements Initializable, MenuBarControllerInter
 
     }
 
+    /**
+     * Called by a member of the ListView, to inform the ListView to update, as it updated its values.
+     * The updated list can have this new Result row somewhere else as the user could have changed its date (and the list
+     * is sorted by dates).
+     * @param previous      the Result object that was previously in this Row.
+     * @param updatedResult the updated Result object of the TimelineRow.
+     */
     @Override
     public void update(Result previous, Result updatedResult) {
         int pos = results.indexOf(previous);
         System.out.println("Previous: "+pos);
         if(pos != -1){
-            results.set(pos, updatedResult);
-            setTimelineListView(results, fileDatas);
+            update(updatedResult, pos);
         }
     }
 
@@ -398,15 +404,18 @@ public class ListViewController implements Initializable, MenuBarControllerInter
         }
     }
 
+    /**
+     * Called by a member of the ListView, to inform the ListView that it needs to be removed from the List.
+     * Thereby the list needs to be updated (i.e. set again).
+     * @param result the given event (Result) to be deleted.
+     */
     @Override
     public void delete(Result result) {
         int pos = results.indexOf(result);
         System.out.println("pos: "+pos);
         if(pos != -1){
-            results.remove(pos);
-            setTimelineListView(results, fileDatas);
+            delete(pos);
         }
-
     }
 
     /**
