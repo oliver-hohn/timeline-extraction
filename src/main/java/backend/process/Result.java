@@ -223,8 +223,11 @@ public class Result implements Comparable<Result>, Cloneable {
     public boolean equals(Object obj) {
         if(obj instanceof Result){
             Result other = (Result) obj;
+            boolean areFileDataEqual = ((fileData == null && other.fileData == null) ||
+                    (fileData != null && other.fileData != null && fileData.equals(other.fileData)));//as FileData is the only one that could be null
+
             return subjects.equals(other.getSubjects()) && event.equals(other.event) && originalString.equals(other.originalString)
-                    && fileData.equals(other.fileData) && timelineDate.equals(other.getTimelineDate());
+                    && areFileDataEqual && timelineDate.equals(other.getTimelineDate());
         }
         return false;
     }

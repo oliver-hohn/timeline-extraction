@@ -44,6 +44,7 @@ public class ProduceRangesTest {
         timelineDate1 = new TimelineDate();
         timelineDate1.setDate1(simpleDateFormat.parse("01-01-0001 AD"));
         timelineDate1.setDate2(simpleDateFormat.parse("31-12-9999 AD"));
+        timelineDate1.getRange();
         result1.setTimelineDate(timelineDate1);
         resultList.add(result1);
         range.add(result1);
@@ -51,6 +52,7 @@ public class ProduceRangesTest {
         timelineDate1 = new TimelineDate();
         timelineDate1.setDate1(simpleDateFormat.parse("01-01-1980 AD"));
         timelineDate1.setDate2(simpleDateFormat.parse("31-12-1989 AD"));
+        timelineDate1.getRange();
         result1.setTimelineDate(timelineDate1);
         resultList.add(result1);
         range1980.add(result1);
@@ -58,12 +60,14 @@ public class ProduceRangesTest {
         timelineDate1 = new TimelineDate();
         timelineDate1.setDate1(simpleDateFormat.parse("01-01-2008 AD"));
         timelineDate1.setDate2(simpleDateFormat.parse("31-05-2016 AD"));
+        timelineDate1.getRange();
         result1.setTimelineDate(timelineDate1);
         resultList.add(result1);
         range2008.add(result1);
         result1 = new Result();
         timelineDate1 = new TimelineDate();
         timelineDate1.setDate1(simpleDateFormat.parse("01-01-2015 AD"));
+        timelineDate1.getRange();
         result1.setTimelineDate(timelineDate1);
         resultList.add(result1);
         range2015.add(result1);
@@ -106,6 +110,7 @@ public class ProduceRangesTest {
         timelineDate1 = new TimelineDate();
         timelineDate1.setDate1(simpleDateFormat.parse("01-01-0001 AD"));
         timelineDate1.setDate2(simpleDateFormat.parse("31-12-9999 AD"));
+        timelineDate1.getRange();
         result1.setTimelineDate(timelineDate1);
         resultList.add(result1);
         range.add(result1);
@@ -113,6 +118,7 @@ public class ProduceRangesTest {
         timelineDate1 = new TimelineDate();
         timelineDate1.setDate1(simpleDateFormat.parse("01-01-1980 AD"));
         timelineDate1.setDate2(simpleDateFormat.parse("31-12-1989 AD"));
+        timelineDate1.getRange();
         result1.setTimelineDate(timelineDate1);
         resultList.add(result1);
         range1980.add(result1);
@@ -120,12 +126,14 @@ public class ProduceRangesTest {
         timelineDate1 = new TimelineDate();
         timelineDate1.setDate1(simpleDateFormat.parse("01-01-2008 AD"));
         timelineDate1.setDate2(simpleDateFormat.parse("31-05-2016 AD"));
+        timelineDate1.getRange();
         result1.setTimelineDate(timelineDate1);
         resultList.add(result1);
         range2008.add(result1);
         result1 = new Result();
         timelineDate1 = new TimelineDate();
         timelineDate1.setDate1(simpleDateFormat.parse("01-01-2015 AD"));
+        timelineDate1.getRange();
         result1.setTimelineDate(timelineDate1);
         resultList.add(result1);
         range2015.add(result1);
@@ -133,6 +141,7 @@ public class ProduceRangesTest {
         timelineDate1 = new TimelineDate();
         timelineDate1.setDate1(simpleDateFormat.parse("01-01-0499 BC"));
         timelineDate1.setDate2(simpleDateFormat.parse("31-12-0400 BC"));
+        timelineDate1.getRange();
         result1.setTimelineDate(timelineDate1);
         resultList.add(result1);
         range400BC.add(result1);
