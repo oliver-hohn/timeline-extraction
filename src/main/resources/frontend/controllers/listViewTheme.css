@@ -12,7 +12,6 @@
 
 .list-cell:filled:selected:focused, .list-cell:filled:selected {
     -fx-focus-color: transparent;
-
 }
 
 .label{

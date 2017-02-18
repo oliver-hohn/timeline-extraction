@@ -1,5 +1,6 @@
 package frontend.controllers;
 
+import backend.Sort;
 import backend.process.FileData;
 import backend.process.Result;
 import backend.ranges.ProduceRanges;
@@ -28,24 +29,35 @@ import java.util.*;
  * Controller for the layout where the ListView is shown. Allows the listview to be populated with Result data.
  */
 public class ListViewController implements Initializable, MenuBarControllerInter, DocumentsLoadedObserver, TimelineRowObserver {
+    private enum ViewType {
+        RANGE, DATE
+    }
+
     @FXML
     private StackPane stackPane;
     @FXML
     private VBox vBox;
     @FXML
-    private ListView timelineListView;
+    private ListView<Object> timelineListView;
     @FXML
     private Button loadDocumentsButton;
     @FXML
     private Button saveToButton;
     @FXML
     private ListView<FileData> documentListView;
+    @FXML
+    private RadioMenuItem dateView;
+    @FXML
+    private RadioMenuItem rangeView;
     private List<Result> results;
     private List<FileData> fileDatas;
-    private ObservableList<Result> timelineObservableList = FXCollections.observableArrayList();
+    private ObservableList<Object> timelineObservableList = FXCollections.observableArrayList();
     private ObservableList<FileData> documentsLoadedObservableList = FXCollections.observableArrayList();
     private TimelineObserver timelineObserver;
     private LoadingDialog loadingDialog;
+    private ToggleGroup radioMenuItemGroup;
+    private ViewType viewType = ViewType.DATE;
+
 
     /**
      * Called when the layout is created.
@@ -58,6 +70,24 @@ public class ListViewController implements Initializable, MenuBarControllerInter
         System.out.println("saveToButton: " + saveToButton);
         loadingDialog = new LoadingDialog(stackPane, vBox);//pass the root layout and main content layout to know where
         //to show the loading dialog, and what to disable.
+        //set up the group of the radio buttons in the menu
+        //by default the dateView is shown
+        dateView.setSelected(true);
+        radioMenuItemGroup = new ToggleGroup();
+        rangeView.setToggleGroup(radioMenuItemGroup);
+        dateView.setToggleGroup(radioMenuItemGroup);
+        rangeView.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                showRangeTimeline();
+            }
+        });
+        dateView.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                showDateTimeline();
+            }
+        });
 
     }
 
@@ -95,50 +125,71 @@ public class ListViewController implements Initializable, MenuBarControllerInter
      * @param results the input List.
      */
     private void sortAndReverse(List<Result> results) {
-        Collections.sort(results, new Comparator<Result>() {
-            @Override
-            public int compare(Result o1, Result o2) {//sort by date1
-                if (o1.getTimelineDate().getDate1() != null && o2.getTimelineDate().getDate1() != null) {
-                    return o1.getTimelineDate().getDate1().compareTo(o2.getTimelineDate().getDate1());
-                }
-                if (o1.getTimelineDate().getDate1() == null) {
-                    return -1;
-                }
-                return 1;
-            }
-        });
+        Sort.sortByDate1(results);//sort the results by their date1 value
         Collections.reverse(results);
     }
 
     /**
-     * For the input List of Results, set it as the items of the TimelineList.
+     * For the input List of Results, set it as the items of the TimelineList. The type of timeline shown in the
+     * ListView is given by the ViewType (member of the class that is changed with the RadioMenuItems).
+     * <p>
+     * The ListView and its ObservableList both set their generic type to Object, this way we don't have to create a
+     * separate ListView when we want to swap from Results to Ranges (and vice versa). As when a ListView is set to
+     * use a list of Ranges (for example) it will set its type to that, so then when it attempts to set a list of
+     * Results it will throw an exception of the Casting failing (because its type is Ranges but its attempting to cast
+     * it to Result).
+     * <p>
+     * When a row needs to be created from an item in that list, its type is looked at to determine what layout to use.
+     * <p>
+     * In order to change between Timeline Views use a ViewType that sets which View to use, where the RadioMenuItems
+     * change its value according, with the default Timeline view being the Date Timeline (showing Results
+     * individually). To allow the ListView to show different views of lists that each hold different kind of data, the
+     * list and the observable had to be made of type Object as otherwise swapping from a list of Results to a list of
+     * Ranges and setting them to the ListView would throw an exception of the Casting failing of a Range to a Result
+     * (this also happens vice versa).
      *
      * @param results the input List.
      */
     private void setTimelineList(List<Result> results) {
-        //if we are showing the Range timeline
-        ProduceRanges produceRanges = new ProduceRanges();
-        produceRanges.produceRanges(results);
-        System.out.println("Produced Ranges");
-        ObservableList<Range> ranges = FXCollections.observableArrayList();
-        ranges.setAll(produceRanges.getTrees());
-        timelineListView.getStylesheets().add(getClass().getResource("listViewThemeTimeline.css").toExternalForm());
-        timelineListView.setItems(ranges);
-        timelineListView.setCellFactory(new Callback<ListView<Range>, ListCell<Range>>() {
+        //should show loading dialog while its setting the timeline
+        timelineObservableList.clear();
+        //check what kind of view we need to show
+        if (viewType == ViewType.RANGE) {
+            ProduceRanges produceRanges = new ProduceRanges();
+            produceRanges.produceRanges(results);
+            timelineListView.getStylesheets().setAll(getClass().getResource("listViewThemeTimeline.css").toExternalForm());
+            timelineObservableList.setAll(produceRanges.getTrees());
+        } else if (viewType == ViewType.DATE) {
+            timelineListView.getStylesheets().setAll(getClass().getResource("listViewTheme.css").toExternalForm());
+            timelineObservableList.setAll(results);
+        }
+        //assuming the observable list items have been set
+        timelineListView.setItems(timelineObservableList);
+        timelineListView.setCellFactory(new Callback<ListView<Object>, ListCell<Object>>() {
             @Override
-            public ListCell<Range> call(ListView<Range> param) {
-                return new ListCell<Range>() {
+            public ListCell<Object> call(ListView<Object> param) {
+                return new ListCell<Object>() {
                     /**
                      * Called whenever a row needs to be shown/created on the screen.
                      * @param item the Range object for which this row has to be displayed for.
                      * @param empty whether or nor the row is empty.
                      */
                     @Override
-                    protected void updateItem(Range item, boolean empty) {
+                    protected void updateItem(Object item, boolean empty) {
                         super.updateItem(item, empty);
-                        if (item != null) {
-                            CustomTimelineRow customTimelineRow = new CustomTimelineRow(item, ListViewController.this);
-                            setGraphic(customTimelineRow.getPane());
+                        if (item != null && !empty) {
+                            if (item instanceof Range) {
+                                Range range = (Range) item;
+                                CustomTimelineRow customTimelineRow = new CustomTimelineRow(range, ListViewController.this);
+                                setGraphic(customTimelineRow.getPane());
+                            } else if (item instanceof Result) {
+                                Result result = (Result) item;
+                                TimelineRowController timelineRowController = new TimelineRowController(getIndex(), ListViewController.this);
+                                timelineRowController.setData(result);
+                                setGraphic(timelineRowController.getGroup());
+                            } else {
+                                setGraphic(null);
+                            }
                         } else {
                             setGraphic(null);
                         }
@@ -146,37 +197,6 @@ public class ListViewController implements Initializable, MenuBarControllerInter
                 };
             }
         });
-
-
-        //if we are showing the Result timeline listViewTheme.css syle for that listview.
-    /*
-        timelineObservableList.clear();
-        timelineObservableList.addAll(results);
-        timelineListView.setItems(timelineObservableList);
-        timelineListView.setCellFactory(new Callback<ListView<Result>, ListCell<Result>>() {
-            @Override
-            public ListCell<Result> call(ListView<Result> param) {
-                return new ListCell<Result>() {
-                    *//**
-         * Called whenever a row needs to be shown/created on the screen.
-         *
-         * @param item the Result object for which this row has to display data for.
-         * @param empty  whether or not the Row is empty (i.e. result == null).
-         *//*
-                    @Override
-                    protected void updateItem(Result item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (item != null && !empty) {
-                            TimelineRowController timelineRowController = new TimelineRowController(getIndex(), ListViewController.this);
-                            timelineRowController.setData(item);
-                            setGraphic(timelineRowController.getGroup());
-                        } else {
-                            setGraphic(null);
-                        }
-                    }
-                };
-            }
-        });*/
     }
 
     /**
@@ -215,7 +235,9 @@ public class ListViewController implements Initializable, MenuBarControllerInter
      */
     public void setTimelineListView(List<Result> results, List<FileData> fileDatas) {
         this.results = results;
-        sortAndReverse(this.results);
+        if (viewType == ViewType.DATE) {//to not waste time sorting Results that will be sorted by their Ranges later anyways
+            sortAndReverse(this.results);
+        }
         setTimelineList(this.results);
 
         this.fileDatas = fileDatas;
@@ -376,14 +398,15 @@ public class ListViewController implements Initializable, MenuBarControllerInter
      * Called by a member of the ListView, to inform the ListView to update, as it updated its values.
      * The updated list can have this new Result row somewhere else as the user could have changed its date (and the list
      * is sorted by dates).
+     *
      * @param previous      the Result object that was previously in this Row.
      * @param updatedResult the updated Result object of the TimelineRow.
      */
     @Override
     public void update(Result previous, Result updatedResult) {
         int pos = results.indexOf(previous);
-        System.out.println("Previous: "+pos);
-        if(pos != -1){
+        System.out.println("Previous: " + pos);
+        if (pos != -1) {
             update(updatedResult, pos);
         }
     }
@@ -406,13 +429,14 @@ public class ListViewController implements Initializable, MenuBarControllerInter
     /**
      * Called by a member of the ListView, to inform the ListView that it needs to be removed from the List.
      * Thereby the list needs to be updated (i.e. set again).
+     *
      * @param result the given event (Result) to be deleted.
      */
     @Override
     public void delete(Result result) {
         int pos = results.indexOf(result);
-        System.out.println("pos: "+pos);
-        if(pos != -1){
+        System.out.println("pos: " + pos);
+        if (pos != -1) {
             delete(pos);
         }
     }
@@ -429,5 +453,26 @@ public class ListViewController implements Initializable, MenuBarControllerInter
      */
     public void removeLoadingDialog() {
         loadingDialog.removeLoadingDialog();
+    }
+
+    /**
+     * Called to show the Timeline with the individual dates and events in separate rows.
+     */
+    private void showDateTimeline() {
+        if (viewType != ViewType.DATE) {
+            viewType = ViewType.DATE;
+            //show what is shown
+            setTimelineListView(results, fileDatas);
+        }
+    }
+
+    /**
+     * Called to show the Timeline with the Results grouped into their ranges and then shown.
+     */
+    private void showRangeTimeline() {
+        if (viewType != ViewType.RANGE) {
+            viewType = ViewType.RANGE;
+            setTimelineListView(results, fileDatas);
+        }
     }
 }

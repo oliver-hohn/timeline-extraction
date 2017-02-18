@@ -12,9 +12,6 @@ import javafx.scene.layout.Pane;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO: picker for what timeline layout to use
-
-
 /**
  * Class for the Custom Rows in the Timeline. Builds a row made of a GridPane with the root Range (given in the
  * constructor) and recursively adds to the other coloumn the Ranges below this Range.
@@ -73,7 +70,7 @@ public class CustomTimelineRow {
                 } else {
                     //layout for this Range
                     Range range = rangeList.get(i / 2);
-                    Pane toAdd = rangeDataLayout(range, (i/2));//add the layout for this given Range
+                    Pane toAdd = rangeDataLayout(range, (i / 2));//add the layout for this given Range
                     gridPane.add(toAdd, 0, i);
                     GridPane.setValignment(toAdd, VPos.TOP);//set the items added to top left of the layout
                     GridPane.setHalignment(toAdd, HPos.LEFT);
