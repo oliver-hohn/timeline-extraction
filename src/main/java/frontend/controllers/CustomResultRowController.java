@@ -1,5 +1,6 @@
 package frontend.controllers;
 
+import backend.process.FileData;
 import backend.process.Result;
 import frontend.dialogs.EditEventDialog;
 import frontend.observers.DocumentReaderObserver;
@@ -34,6 +35,8 @@ public class CustomResultRowController {
     private Label subjectsLabel;
     @FXML
     private Label eventLabel;
+    @FXML
+    private Label fromLabel;
     private Result result;
     private TimelineRowObserver timelineRowObserver;
     private int rangePosition;
@@ -66,7 +69,10 @@ public class CustomResultRowController {
         if (result != null) {
             subjectsLabel.setText(result.getSubjectsAsString());
             eventLabel.setText(result.getEvent());
-
+            if(result.getFileData() != null){
+                FileData fileData = result.getFileData();
+                fromLabel.setText(fileData.getFileName()+" ("+fileData.getCreationDateFormattedDayMonthYear()+")");
+            }
         }
     }
 

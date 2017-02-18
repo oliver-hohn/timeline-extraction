@@ -12,7 +12,7 @@ import javafx.scene.layout.Pane;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO: picker for what timeline layout to use, filedata
+//TODO: picker for what timeline layout to use
 
 
 /**
