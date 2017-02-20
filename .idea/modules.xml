@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/NLPPrototype.iml" filepath="$PROJECT_DIR$/NLPPrototype.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/timeline-extraction.iml" filepath="$PROJECT_DIR$/.idea/modules/timeline-extraction.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/timeline-extraction_main.iml" filepath="$PROJECT_DIR$/.idea/modules/timeline-extraction_main.iml" group="timeline-extraction" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/timeline-extraction_test.iml" filepath="$PROJECT_DIR$/.idea/modules/timeline-extraction_test.iml" group="timeline-extraction" />
