@@ -5,8 +5,8 @@ import backend.process.FileData;
 import backend.process.Result;
 import backend.ranges.ProduceRanges;
 import backend.ranges.Range;
-import frontend.dialogs.RemoveConfirmationDialog;
 import frontend.dialogs.LoadingDialog;
+import frontend.dialogs.RemoveConfirmationDialog;
 import frontend.observers.DocumentsLoadedObserver;
 import frontend.observers.TimelineObserver;
 import frontend.observers.TimelineRowObserver;
@@ -16,7 +16,10 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
@@ -32,6 +35,9 @@ public class ListViewController implements Initializable, MenuBarControllerInter
     private enum ViewType {
         RANGE, DATE
     }
+
+    private final static double MAX_ZOOM = 1.0d;
+    private final static double MIN_ZOOM = 0.75d;
 
     @FXML
     private StackPane stackPane;
@@ -49,6 +55,8 @@ public class ListViewController implements Initializable, MenuBarControllerInter
     private RadioMenuItem dateView;
     @FXML
     private RadioMenuItem rangeView;
+    @FXML
+    private ScrollPane scrollPane;
     private List<Result> results;
     private List<FileData> fileDatas;
     private ObservableList<Object> timelineObservableList = FXCollections.observableArrayList();
@@ -130,6 +138,18 @@ public class ListViewController implements Initializable, MenuBarControllerInter
     }
 
     /**
+     * For the given Node make it visible and enable it depending on shouldShow. If shouldShow is true then make the
+     * node visible and enable it; if it false make the node invisible and disable it.
+     *
+     * @param node       the given Node.
+     * @param shouldShow whether or not the Node should be shown and enabled or not.
+     */
+    private void show(Node node, boolean shouldShow) {
+        node.setVisible(shouldShow);
+        node.setDisable(!shouldShow);
+    }
+
+    /**
      * For the input List of Results, set it as the items of the TimelineList. The type of timeline shown in the
      * ListView is given by the ViewType (member of the class that is changed with the RadioMenuItems).
      * <p>
@@ -147,6 +167,8 @@ public class ListViewController implements Initializable, MenuBarControllerInter
      * list and the observable had to be made of type Object as otherwise swapping from a list of Results to a list of
      * Ranges and setting them to the ListView would throw an exception of the Casting failing of a Range to a Result
      * (this also happens vice versa).
+     * <p>
+     * The timeline for the Range view is a ScrollPane that can be zoomed in/out.
      *
      * @param results the input List.
      */
@@ -155,13 +177,47 @@ public class ListViewController implements Initializable, MenuBarControllerInter
         timelineObservableList.clear();
         //check what kind of view we need to show
         if (viewType == ViewType.RANGE) {
+            //we need to show the range view, which supports zooming in and out (so we need to use a vbox and scrollpane,
+            //to be able to zoom)
             ProduceRanges produceRanges = new ProduceRanges();
-            produceRanges.produceRanges(results);
-            timelineListView.getStylesheets().setAll(getClass().getResource("listViewThemeTimeline.css").toExternalForm());
-            timelineObservableList.setAll(produceRanges.getTrees());
-        } else if (viewType == ViewType.DATE) {
+            produceRanges.produceRanges(results);//produce the results
+
+            VBox listVBox = new VBox();//the vbox that holds the Ranges
+            listVBox.setPadding(new Insets(10));
+            for (Range range : produceRanges.getTrees()) {//for each tree build its layout and add it to the vbox (row by row)
+                CustomTimelineRow customTimelineRow = new CustomTimelineRow(range, this);
+                listVBox.getChildren().add(customTimelineRow.getPane());
+            }
+            scrollPane.setContent(listVBox);//set the content of the scrollpane
+            scrollPane.addEventFilter(ScrollEvent.ANY, new EventHandler<ScrollEvent>() {//add the event handler for the zooming
+                @Override
+                public void handle(ScrollEvent event) {
+                    if (event.isControlDown()) {//if we are holding the control button
+                        double scale = getScale(event, listVBox);//get the value by which we scale
+                        listVBox.setScaleX(scale);//and set it
+                        listVBox.setScaleY(scale);
+                        event.consume();
+                    }
+                }
+
+                private double getScale(ScrollEvent scrollEvent, Node node) {
+                    double scale = node.getScaleX() + scrollEvent.getDeltaY() / 100;
+                    if (scale <= MIN_ZOOM) {//we only want the user to zoom out (not in, hence the scale is never over 1)
+                        scale = MIN_ZOOM;
+                    } else if (scale >= MAX_ZOOM) {
+                        scale = MAX_ZOOM;
+                    }
+                    return scale;
+                }
+            });
+            show(scrollPane, true);//show the scrollpane
+            show(timelineListView, false);//and hide the timeline list view
+            return;//no need to follow the rest
+        } else if (viewType == ViewType.DATE) {//if we have to show a date timeline
+            show(scrollPane, false);//hide the scrollpane
+            show(timelineListView, true);//show the timeline
             timelineListView.getStylesheets().setAll(getClass().getResource("listViewTheme.css").toExternalForm());
-            timelineObservableList.setAll(results);
+            timelineObservableList.setAll(results);//add the results
         }
         //assuming the observable list items have been set
         timelineListView.setItems(timelineObservableList);
