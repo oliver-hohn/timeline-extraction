@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
  * Holds the start and end date (appropriately) for each event in the timeline. It updates as new dates, relevant to the
  */
 //If just year-month should create range?
+//TODO: check on FUTURE_REF and other (as with articles got lots of start dates 0001-01-01)
 public class TimelineDate implements Comparable<TimelineDate> {
     private static final String year = "0001";
     private static final String month = "01";
@@ -528,6 +529,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
      */
     public void setDate1(Date date1) {
         this.date1 = date1;
+        updateRange();
     }
 
     /**
@@ -537,6 +539,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
      */
     public void setDate2(Date date2) {
         this.date2 = date2;
+        updateRange();
     }
 
     /**
