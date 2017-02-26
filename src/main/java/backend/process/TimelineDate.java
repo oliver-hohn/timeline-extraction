@@ -62,7 +62,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
     private final static Pattern onlyMonthPattern = Pattern.compile("\\d{2}");
     private final static Pattern onlyWeekNumberPattern = Pattern.compile("W\\d{2}");
     private final static Pattern onlySeasonPattern = Pattern.compile("[A-Z]{2}");
-    private final static Pattern onlyDayPattern = Pattern.compile("\\d{2}");
+    private final static Pattern onlyDayPattern = Pattern.compile("\\d{2}.*");
     private final static Pattern onlyPresentRefPattern = Pattern.compile(".*PRESENT_REF.*");
     private final static Pattern onlyBeforeYearPattern = Pattern.compile("(\\-\\d{4})|(\\-\\d{3}X)|(\\-\\d{2}XX)|(\\-\\dXXX)|(\\-XXXX)");
     private final static Pattern onlyWeekendPattern = Pattern.compile("WE");
@@ -302,7 +302,7 @@ public class TimelineDate implements Comparable<TimelineDate> {
                 }
                 if (onlyDayPattern.matcher(dateInfo[i]).matches()) {//got the day
                     System.out.println("Got day: " + dateInfo[i]);
-                    day1 = dateInfo[i];
+                    day1 = dateInfo[i].substring(0,2);
                 } else if (onlyWeekendPattern.matcher(dateInfo[i]).matches()) {//previously should have had week number so its a range
                     //checking its range has been set before
                     if (day1 != null && day2 != null && month1 != null && month2 != null) {
