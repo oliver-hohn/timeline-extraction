@@ -1,6 +1,7 @@
 package backend;
 
 import backend.process.TimelineDate;
+import edu.stanford.nlp.time.SUTime;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,6 +14,8 @@ import java.util.Date;
  */
 public class TimelineDateTest {
     private static final String PRESENT_REF = "PRESENT_REF";
+    private static final String PAST_REF = "PAST_REF";
+    private static final String FUTURE_REF = "FUTURE_REF";
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private String baseDate = "2016-12-30";//doesn't affect the output of most tests, but has to be still passed in.
 
@@ -320,4 +323,92 @@ public class TimelineDateTest {
         Assert.assertEquals(expectedDate1, timelineDate.getDate1());
         Assert.assertEquals(expectedDate2, timelineDate.getDate2());
     }
+
+    /**
+     * Tests the case when the input is a week number with the day of the week.
+     *
+     * @throws ParseException when the expected date is created.
+     */
+    @Test
+    public void testWeekDate() throws ParseException {
+        String input = "2016-W47-7";//the seventh day in week 47 in iso 8601 is the sunday
+        String expectedDateStr = "2016-11-27";//this the actual date for sunday
+        Date expectedDate = simpleDateFormat.parse(expectedDateStr);
+        TimelineDate timelineDate = new TimelineDate();
+        timelineDate.parse(input, baseDate);
+        Assert.assertEquals(expectedDate, timelineDate.getDate1());
+        Assert.assertEquals(null, timelineDate.getDate2());
+    }
+
+    /**
+     * Tests that when a Past reference is passed, a range of dates from the start of AD years until the base date is
+     * created.
+     *
+     * @throws ParseException when the expected dates are created.
+     */
+    @Test
+    public void testPastRef() throws ParseException {
+        String input = PAST_REF;
+        String expectedDateStr1 = "0001-01-01";
+        String expectedDateStr2 = baseDate;//past ref points from start of year in AD to base date
+        Date expectedDate1 = simpleDateFormat.parse(expectedDateStr1);
+        Date expectedDate2 = simpleDateFormat.parse(expectedDateStr2);
+        TimelineDate timelineDate = new TimelineDate();
+        timelineDate.parse(input, baseDate);
+        Assert.assertEquals(expectedDate1, timelineDate.getDate1());
+        Assert.assertEquals(expectedDate2, timelineDate.getDate2());
+    }
+
+    /**
+     * Tests that when a Future reference is passed, a range of dates from the base date until the end of times is
+     * created.
+     *
+     * @throws ParseException when creating the expected dates.
+     */
+    @Test
+    public void testFutureRef() throws ParseException {
+        String input = FUTURE_REF;
+        String expectedDateStr1 = baseDate;
+        String expectedDateStr2 = "9999-12-31";
+        Date expectedDate1 = simpleDateFormat.parse(expectedDateStr1);
+        Date expectedDate2 = simpleDateFormat.parse(expectedDateStr2);
+        TimelineDate timelineDate = new TimelineDate();
+        timelineDate.parse(input, baseDate);
+        Assert.assertEquals(expectedDate1, timelineDate.getDate1());
+        Assert.assertEquals(expectedDate2, timelineDate.getDate2());
+    }
+
+    /**
+     * Tests that TimelineDate enforces the Rules of expanding the Range of dates.
+     * I.e. when pass a date which is earlier than the current date1, then date1 should be updated, or if a date is
+     * passed in that is further away in the future than date2, then date2 should be updated. However, if a date is
+     * passed in that is within the range, then the date1, and date2 values should not be changed.
+     *
+     * @throws ParseException when creating the expected Dates.
+     */
+    @Test
+    public void testEnforceRule() throws ParseException {
+        String input = baseDate;
+        Date expectedDate1 = simpleDateFormat.parse(input);
+        Date expectedDate2 = null;
+        TimelineDate timelineDate = new TimelineDate();
+        timelineDate.parse(input, baseDate);
+        Assert.assertEquals(expectedDate1, timelineDate.getDate1());
+        Assert.assertNull(timelineDate.getDate2());
+        input = "2015-12-15";
+        timelineDate.parse(input, baseDate);
+        expectedDate1 = simpleDateFormat.parse(input);
+        Assert.assertEquals(expectedDate1, timelineDate.getDate1());
+        Assert.assertNull(timelineDate.getDate2());
+        input = "2077-01-05";
+        timelineDate.parse(input, baseDate);
+        expectedDate2 = simpleDateFormat.parse(input);
+        Assert.assertEquals(expectedDate1, timelineDate.getDate1());
+        Assert.assertEquals(expectedDate2, timelineDate.getDate2());
+        input = "2055-12-24";
+        timelineDate.parse(input, baseDate);//dates shouldnt have changed as range hasnt expanded
+        Assert.assertEquals(expectedDate1, timelineDate.getDate1());
+        Assert.assertEquals(expectedDate2, timelineDate.getDate2());
+    }
+
 }
