@@ -8,6 +8,7 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.RadioMenuItem?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
@@ -27,6 +28,7 @@
                   <Menu mnemonicParsing="false" text="File">
                      <items>
                         <MenuItem mnemonicParsing="false" onAction="#close" text="Close" />
+                        <MenuItem mnemonicParsing="false" onAction="#about" text="About" />
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#preferences" text="Preferences..." />
                      </items>
@@ -35,11 +37,6 @@
                      <items>
                         <RadioMenuItem fx:id="dateView" mnemonicParsing="false" text="Date View" />
                         <RadioMenuItem fx:id="rangeView" mnemonicParsing="false" text="Range View" />
-                     </items>
-                  </Menu>
-                  <Menu mnemonicParsing="false" text="About">
-                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#about" text="About" />
                      </items>
                   </Menu>
                </menus>
@@ -103,6 +100,7 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                   </ListView>
+                  <ScrollPane fx:id="scrollPane" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2147483647" GridPane.rowSpan="2147483647" GridPane.valignment="TOP" />
                </children>
             </GridPane>
          </children>

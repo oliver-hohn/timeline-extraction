@@ -10,16 +10,16 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-
-<StackPane fx:id="stackPane" fx:controller="frontend.controllers.StartUpController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane fx:id="stackPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="frontend.controllers.StartUpController">
    <children>
-      <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" StackPane.alignment="CENTER" fx:id="vBox">
+      <VBox fx:id="vBox" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" StackPane.alignment="CENTER">
          <children>
             <MenuBar>
                <menus>
                   <Menu mnemonicParsing="false" text="File">
                      <items>
                         <MenuItem mnemonicParsing="false" onAction="#close" text="Close" />
+                        <MenuItem mnemonicParsing="false" onAction="#about" text="About" />
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" onAction="#preferences" text="Preferences..." />
                      </items>
@@ -27,11 +27,6 @@
                   <Menu disable="true" mnemonicParsing="false" text="Timeline">
                      <items>
                         <MenuItem mnemonicParsing="false" onAction="#timeline" text="Delete" />
-                     </items>
-                  </Menu>
-                  <Menu mnemonicParsing="false" text="About">
-                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#about" text="About" />
                      </items>
                   </Menu>
                </menus>

@@ -9,6 +9,7 @@ import backend.system.BackEndSystem;
 import backend.system.Settings;
 import frontend.controllers.ListViewController;
 import frontend.controllers.StartUpController;
+import frontend.dialogs.AboutDialog;
 import frontend.dialogs.FileConfirmationDialog;
 import frontend.dialogs.SettingsDialog;
 import frontend.observers.StartUpObserver;
@@ -190,6 +191,7 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
     @Override
     public void showAbout() {
         System.out.println(TAG + "show about information");
+        new AboutDialog().getAboutDialog().showAndWait();
     }
 
     /**
