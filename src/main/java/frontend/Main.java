@@ -1,7 +1,7 @@
 package frontend;
 
-import backend.ToJSON;
-import backend.ToPDF;
+import backend.helpers.ToJSON;
+import backend.helpers.ToPDF;
 import backend.process.FileData;
 import backend.process.ProcessFiles;
 import backend.process.Result;

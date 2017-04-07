@@ -21,7 +21,7 @@
    <children>
       <ImageView fx:id="removingImageView" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
          <image>
-            <Image url="@ic_close_black_24dp_1x.png" />
+            <Image url="@iccloseblack.png" />
          </image>
       </ImageView>
       <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">

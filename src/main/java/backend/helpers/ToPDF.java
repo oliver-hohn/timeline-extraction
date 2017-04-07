@@ -1,4 +1,4 @@
-package backend;
+package backend.helpers;
 
 import backend.process.Result;
 import org.apache.commons.lang3.text.WordUtils;

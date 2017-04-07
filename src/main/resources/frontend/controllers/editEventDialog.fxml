@@ -58,7 +58,7 @@
                <right>
                   <ImageView fx:id="addImageView" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
                      <image>
-                        <Image url="@ic_add_circle_outline_black_24dp_1x.png" />
+                        <Image url="@icaddcircleoutline.png" />
                      </image>
                   </ImageView>
                </right>

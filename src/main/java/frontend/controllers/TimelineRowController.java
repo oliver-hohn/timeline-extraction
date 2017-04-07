@@ -22,7 +22,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
- * Controller class for each row in the timline listview.
+ * Controller class for each row in the timeline listview.
  */
 public class TimelineRowController {
     @FXML

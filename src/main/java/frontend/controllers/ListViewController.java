@@ -1,6 +1,6 @@
 package frontend.controllers;
 
-import backend.Sort;
+import backend.helpers.Sort;
 import backend.process.FileData;
 import backend.process.Result;
 import backend.ranges.ProduceRanges;
