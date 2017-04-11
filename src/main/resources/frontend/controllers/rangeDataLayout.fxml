@@ -13,7 +13,7 @@
             <Font name="System Bold" size="19.0" />
          </font>
       </Label>
-      <ListView fx:id="resultsListView" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" prefHeight="160.0" prefWidth="350.0" stylesheets="@listViewThemeTimeline.css" VBox.vgrow="ALWAYS">
+      <ListView fx:id="resultsListView" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" prefWidth="350.0" stylesheets="@listViewThemeTimeline.css" VBox.vgrow="ALWAYS">
          <VBox.margin>
             <Insets bottom="5.0" left="15.0" right="5.0" top="5.0" />
          </VBox.margin></ListView>
