@@ -56,7 +56,6 @@ public class Main extends Application implements StartUpObserver, TimelineObserv
         //need to start engine
         BackEndSystem.getInstance();//thread waits for this to be done
         Settings settings = BackEndSystem.getInstance().getSettings();
-        System.out.println("Called getInstance");
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("startup.fxml"));
         primaryStage.setScene(new Scene(fxmlLoader.load(), settings.getWidth(), settings.getHeight()));
         primaryStage.setTitle("Automated Timeline Extractor - Oliver Philip Hohn");

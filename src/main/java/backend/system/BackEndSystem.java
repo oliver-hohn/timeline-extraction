@@ -34,7 +34,6 @@ public class BackEndSystem {
                 "tokenize,ssplit,pos,lemma,ner,entitymentions,parse,dcoref",
                 "tokenize.language", "en"
         ));
-        System.out.println("Finished running");
         systemState = SystemState.STARTED;
         settings = new Settings(true);//load the settings of the file, or use default Settings
     }

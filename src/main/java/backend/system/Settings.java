@@ -65,10 +65,8 @@ public class Settings implements Cloneable {
             //now need to read settings file
             System.out.println("Could find settings.ini file");
             String text = getJSONString(settingsFile);
-            System.out.println("String in file: " + text);
             JsonElement jsonElement = new JsonParser().parse(text);
             JsonObject jsonObject = jsonElement.getAsJsonObject();
-            System.out.println(jsonObject);
             setValues(jsonObject);
         } catch (Exception e) {
             return false;
@@ -120,7 +118,6 @@ public class Settings implements Cloneable {
         final Gson gson = gsonBuilder.create();
         try {
             String json = gson.toJson(this);
-            System.out.println(json);
             saveToSettingsFile(json);
         } catch (Exception e) {
             e.printStackTrace();

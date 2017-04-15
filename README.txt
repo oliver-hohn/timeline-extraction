@@ -1,7 +1,7 @@
-[JK2] Automated Timeline Extraction, Oliver Philip Höhn
+[JK2] Automated Timeline Extraction, Oliver Philip Hï¿½hn
 
 The following README will provide commands to run the program, and other general information.
-
+The project requires Java 8 (or above), and a JDK 8 (or above).
 
 Gradle(v3.3+) is installed:
 	If you have Gradle installed, then proceed to this ROOT directory in command line or terminal.

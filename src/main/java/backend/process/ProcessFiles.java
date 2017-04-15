@@ -46,19 +46,15 @@ public class ProcessFiles implements ProcessFileCallback {
         //this will also set up the StanfordCoreNLP (when GUI is implemented, it will already by set up, as it will be the first thing ran)
         System.out.println("Will try to run, with maxNoOfThreads: " + maxNoOfThreads + " and available permits: " + semaphore.availablePermits());
         if (BackEndSystem.getInstance().getSystemState() != SystemState.PROCESSING && files.size() == fileDatas.size()) {//if we arent processing, then we can begin to do that
-            System.out.println("Is running");
             filesToGo = files.size();//and when we need to call
             BackEndSystem.getInstance().setSystemState(SystemState.PROCESSING);
-            System.out.println("In Thread: " + Thread.currentThread().toString());
             for (int i = 0; i < files.size(); i++) {
                 File file = files.get(i);
                 FileData fileData = fileDatas.get(i);//should be the same
                 //check they are the same?
                 //acquire from the semaphore
                 try {
-                    System.out.println("Trying to acquire semaphore for file: " + file);
                     semaphore.acquire();//will wait if there is already maxnoofthreads running, until one finishes: then it gets to run
-                    System.out.println("Acquired semaphore for file: " + file);
                     //process file
                     Thread thread = new ProcessFile(file, this, fileData);//pass a reference so that the thread can call this when it finishes processing the file
                     thread.start();//start processing this file(get its text and pass it to the backend.process.Engine)
@@ -68,9 +64,7 @@ public class ProcessFiles implements ProcessFileCallback {
                 }
             }
             try {
-                System.out.println("Going to wait until the last files are processed.");
                 semaphoreFinished.acquire();
-                System.out.println("The last files have been processed.");
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -231,7 +225,6 @@ public class ProcessFiles implements ProcessFileCallback {
                 PDFTextStripper pdfTextStripper = new PDFTextStripper();
                 //pdfTextStripper.setSortByPosition(true);//in the case the program that created the page, didnt place the text in the order it is shown (so could read text in wrong order)
                 toReturn = pdfTextStripper.getText(pdDocument).replaceAll(pdfTextStripper.getLineSeparator(), "");//to then get its text
-                System.out.println("Line Seperator: " + pdfTextStripper.getLineSeparator());
                 pdDocument.close();//always remember to close the stream, or document in this case
             } catch (IOException e) {
                 e.printStackTrace();
