@@ -1,4 +1,6 @@
-[JK2] Automated Timeline Extraction, Oliver Philip H�hn
+[JK2] Automated Timeline Extraction, Oliver Philip Höhn
+
+-- NOTE: This is currently not being maintained --
 
 The following README will provide commands to run the program, and other general information.
 The project requires Java 8 (or above), and a JDK 8 (or above).
